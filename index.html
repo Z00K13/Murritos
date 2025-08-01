@@ -3,459 +3,345 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Murritos - Sistema Restaurante</title>
+    <title>Murritos - Sistema de Pedidos</title>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <style>
         :root {
-            --black: #000000;
-            --red: #FF0000;
-            --yellow: #FFD700;
-            --white: #FFFFFF;
+            --primary-color: #e63946;
+            --dark-color: #1a1a1a;
+            --light-color: #ffffff;
+            --gray-color: #f5f5f5;
         }
-        
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Arial', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        
+
         body {
-            background-color: var(--black);
-            color: var(--white);
+            background-color: var(--light-color);
+            color: var(--dark-color);
         }
-        
+
         header {
-            background-color: var(--red);
-            color: var(--yellow);
-            padding: 15px 0;
-            text-align: center;
-            border-bottom: 3px solid var(--yellow);
-            position: relative;
-        }
-        
-        h1 {
-            font-size: 2.5rem;
-            text-shadow: 2px 2px var(--black);
-        }
-        
-        .auth-container {
-            position: absolute;
-            top: 10px;
-            right: 20px;
-            display: flex;
-            align-items: center;
-        }
-        
-        .auth-button {
-            background-color: var(--yellow);
-            color: var(--black);
-            border: none;
-            padding: 5px 10px;
-            border-radius: 3px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-        
-        .admin-login {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
-            z-index: 1000;
-            display: none;
-            justify-content: center;
-            align-items: center;
-        }
-        
-        .admin-login-content {
-            background-color: #111;
-            padding: 20px;
-            border-radius: 5px;
-            border: 2px solid var(--yellow);
-            width: 300px;
-        }
-        
-        .admin-login-header {
+            background-color: var(--dark-color);
+            color: var(--light-color);
+            padding: 1rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid var(--red);
         }
-        
-        .admin-login-title {
-            color: var(--yellow);
-            font-size: 1.3rem;
-        }
-        
-        .close-admin-login {
-            background-color: transparent;
-            color: var(--white);
-            border: none;
+
+        .logo {
             font-size: 1.5rem;
-            cursor: pointer;
-        }
-        
-        .admin-login-form input {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 15px;
-            background-color: #333;
-            border: 1px solid var(--red);
-            color: var(--white);
-            border-radius: 3px;
-        }
-        
-        .admin-login-form button {
-            width: 100%;
-            padding: 10px;
-            background-color: var(--red);
-            color: var(--white);
-            border: none;
-            border-radius: 3px;
-            cursor: pointer;
             font-weight: bold;
+            color: var(--primary-color);
         }
-        
-        .admin-login-error {
-            color: var(--yellow);
-            margin-top: 10px;
-            text-align: center;
-            display: none;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        
-        .tabs {
+
+        nav {
             display: flex;
-            margin-bottom: 20px;
-            border-bottom: 2px solid var(--red);
+            gap: 1rem;
         }
-        
-        .tab {
-            padding: 10px 20px;
-            background-color: var(--black);
-            color: var(--white);
-            border: 1px solid var(--red);
-            border-bottom: none;
+
+        nav button {
+            background: none;
+            border: none;
+            color: var(--light-color);
             cursor: pointer;
-            margin-right: 5px;
-            border-radius: 5px 5px 0 0;
+            font-size: 1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
             transition: all 0.3s;
         }
-        
-        .tab.active {
-            background-color: var(--red);
-            color: var(--yellow);
-            font-weight: bold;
+
+        nav button:hover, nav button.active {
+            background-color: var(--primary-color);
         }
-        
-        .tab:hover:not(.active) {
-            background-color: #333;
-        }
-        
-        .tab-content {
-            display: none;
-            padding: 20px;
-            background-color: #111;
-            border: 1px solid var(--red);
-            border-radius: 0 0 5px 5px;
-        }
-        
-        .tab-content.active {
-            display: block;
-        }
-        
-        /* Estilos para la sección de Ventas */
-        .sales-filters {
+
+        .admin-login {
             display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
-            padding: 10px;
-            background-color: #222;
-            border-radius: 5px;
-        }
-        
-        .sales-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        
-        .sales-table th, .sales-table td {
-            border: 1px solid var(--red);
-            padding: 10px;
-            text-align: center;
-        }
-        
-        .sales-table th {
-            background-color: var(--red);
-            color: var(--yellow);
-        }
-        
-        .sales-table tr:nth-child(even) {
-            background-color: #222;
-        }
-        
-        /* Estilos para la sección de Menú */
-        .menu-categories {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
-            margin-top: 20px;
-        }
-        
-        .category {
-            background-color: #222;
-            border: 2px solid var(--yellow);
-            border-radius: 5px;
-            padding: 15px;
-        }
-        
-        .category-header {
-            display: flex;
-            justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid var(--red);
+            gap: 0.5rem;
         }
-        
-        .category-title {
-            color: var(--yellow);
-            font-size: 1.2rem;
-            font-weight: bold;
-        }
-        
-        .category-actions button {
-            background-color: var(--red);
-            color: var(--white);
+
+        .admin-login input {
+            padding: 0.3rem;
             border: none;
-            padding: 5px 10px;
-            border-radius: 3px;
+            border-radius: 4px;
+        }
+
+        .admin-login button {
+            background-color: var(--primary-color);
+            color: var(--light-color);
+            border: none;
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
             cursor: pointer;
-            margin-left: 5px;
         }
-        
-        .items-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-            gap: 10px;
+
+        main {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
         }
-        
-        .menu-item {
-            background-color: #333;
-            border: 1px solid var(--red);
-            border-radius: 5px;
-            padding: 10px;
-            position: relative;
-        }
-        
-        .menu-item-name {
-            font-weight: bold;
-            margin-bottom: 5px;
-            color: var(--white);
-        }
-        
-        .menu-item-price {
-            color: var(--yellow);
-        }
-        
-        .item-actions {
-            position: absolute;
-            top: 5px;
-            right: 5px;
+
+        section {
             display: none;
         }
-        
-        .menu-item:hover .item-actions {
+
+        section.active {
             display: block;
         }
-        
-        .item-actions button {
-            background-color: var(--black);
-            color: var(--white);
-            border: 1px solid var(--red);
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 10px;
-            margin-left: 2px;
+
+        h2 {
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 0.5rem;
         }
-        
-        .add-item-form, .add-category-form {
-            margin-top: 20px;
-            padding: 15px;
-            background-color: #222;
-            border-radius: 5px;
-            border: 1px solid var(--red);
-        }
-        
-        .form-group {
-            margin-bottom: 10px;
-        }
-        
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            color: var(--yellow);
-        }
-        
-        .form-group input {
-            width: 100%;
-            padding: 8px;
-            background-color: #333;
-            border: 1px solid var(--red);
-            color: var(--white);
-            border-radius: 3px;
-        }
-        
-        .form-actions button {
-            background-color: var(--red);
-            color: var(--white);
-            border: none;
-            padding: 8px 15px;
-            border-radius: 3px;
-            cursor: pointer;
-            margin-right: 10px;
-        }
-        
+
         /* Estilos para la sección de Pedidos */
-        .orders-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
-            margin-top: 20px;
-        }
-        
-        .order-card {
-            background-color: #222;
-            border: 2px solid var(--red);
-            border-radius: 5px;
-            padding: 15px;
-        }
-        
-        .order-header {
+        .order-controls {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid var(--red);
+            gap: 1rem;
+            margin-bottom: 1rem;
         }
-        
-        .order-mesa {
-            font-weight: bold;
-            color: var(--yellow);
+
+        .order-controls input, .order-controls select {
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
         }
-        
-        .order-fecha {
-            color: #aaa;
-            font-size: 0.9rem;
+
+        .order-controls button {
+            background-color: var(--primary-color);
+            color: var(--light-color);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
         }
-        
+
+        .current-order {
+            background-color: var(--gray-color);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+        }
+
         .order-items {
-            margin-bottom: 15px;
+            margin: 1rem 0;
         }
-        
+
         .order-item {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 5px;
-            padding-bottom: 5px;
-            border-bottom: 1px dotted #444;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #ddd;
         }
-        
-        .order-total {
-            font-weight: bold;
-            text-align: right;
-            color: var(--yellow);
-            margin-top: 10px;
-        }
-        
-        .order-actions {
-            margin-top: 15px;
-            text-align: right;
-        }
-        
-        .order-actions button {
-            background-color: var(--red);
-            color: var(--white);
-            border: none;
-            padding: 5px 10px;
-            border-radius: 3px;
-            cursor: pointer;
-            margin-left: 5px;
-        }
-        
-        .new-order-form {
-            margin-top: 30px;
-            padding: 15px;
-            background-color: #222;
-            border-radius: 5px;
-            border: 1px solid var(--red);
-        }
-        
-        .order-form-items {
-            margin-top: 15px;
-        }
-        
-        .order-form-item {
+
+        .order-item-controls {
             display: flex;
-            align-items: center;
-            margin-bottom: 10px;
+            gap: 0.5rem;
         }
-        
-        .order-form-item select, .order-form-item input {
-            padding: 8px;
-            background-color: #333;
-            border: 1px solid var(--red);
-            color: var(--white);
-            border-radius: 3px;
-            margin-right: 10px;
-        }
-        
-        .order-form-item select {
-            flex: 2;
-        }
-        
-        .order-form-item input {
-            flex: 1;
-            width: 60px;
-        }
-        
-        .order-form-item button {
-            background-color: var(--black);
-            color: var(--white);
-            border: 1px solid var(--red);
-            width: 25px;
-            height: 25px;
-            border-radius: 50%;
-            cursor: pointer;
-        }
-        
-        .add-item-btn {
-            background-color: var(--yellow);
-            color: var(--black);
+
+        .order-item-controls button {
+            background: none;
             border: none;
-            padding: 5px 10px;
-            border-radius: 3px;
             cursor: pointer;
-            margin-top: 10px;
+            color: var(--primary-color);
+        }
+
+        .order-comments {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-top: 1rem;
+        }
+
+        .order-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .menu-items {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .menu-item {
+            background-color: var(--gray-color);
+            padding: 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .menu-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .menu-item h3 {
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .menu-item p {
             font-weight: bold;
         }
-        
-        /* Modal para detalles de venta */
+
+        /* Estilos para la sección de Ventas */
+        .sales-filters {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .sales-filters select, .sales-filters button {
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .sales-list {
+            margin-top: 1rem;
+        }
+
+        .sale {
+            background-color: var(--gray-color);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .sale-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .sale-items {
+            margin: 0.5rem 0;
+        }
+
+        .sale-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.2rem 0;
+        }
+
+        .sale-total {
+            font-weight: bold;
+            text-align: right;
+            margin-top: 0.5rem;
+        }
+
+        .sale-actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 0.5rem;
+        }
+
+        .sale-actions button {
+            background-color: var(--primary-color);
+            color: var(--light-color);
+            border: none;
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        /* Estilos para la sección de Menú (admin) */
+        .menu-sections {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .menu-section {
+            background-color: var(--gray-color);
+            padding: 1rem;
+            border-radius: 8px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .section-header h3 {
+            color: var(--primary-color);
+        }
+
+        .section-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .section-actions button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--primary-color);
+        }
+
+        .section-items {
+            margin-top: 1rem;
+        }
+
+        .section-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .item-actions {
+            display: flex;
+            gap: 0.3rem;
+        }
+
+        .item-actions button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--primary-color);
+            font-size: 0.8rem;
+        }
+
+        .add-form {
+            margin-top: 1rem;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .add-form input {
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            flex-grow: 1;
+        }
+
+        .add-form button {
+            background-color: var(--primary-color);
+            color: var(--light-color);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
         .modal {
             display: none;
             position: fixed;
@@ -463,1181 +349,769 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
-            z-index: 1000;
+            background-color: rgba(0,0,0,0.5);
             justify-content: center;
             align-items: center;
+            z-index: 1000;
         }
-        
+
         .modal-content {
-            background-color: #111;
-            padding: 20px;
-            border-radius: 5px;
-            border: 2px solid var(--yellow);
-            width: 80%;
+            background-color: var(--light-color);
+            padding: 2rem;
+            border-radius: 8px;
+            width: 90%;
             max-width: 500px;
         }
-        
+
         .modal-header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid var(--red);
+            margin-bottom: 1rem;
         }
-        
-        .modal-title {
-            color: var(--yellow);
-            font-size: 1.3rem;
+
+        .modal-header h3 {
+            color: var(--primary-color);
         }
-        
-        .close-modal {
-            background-color: transparent;
-            color: var(--white);
+
+        .modal-header button {
+            background: none;
             border: none;
             font-size: 1.5rem;
             cursor: pointer;
         }
-        
-        /* Notificaciones */
-        .notification {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            padding: 15px;
-            background-color: var(--red);
-            color: var(--white);
-            border-radius: 5px;
-            display: none;
-            z-index: 1001;
+
+        .modal-body input, .modal-body textarea {
+            width: 100%;
+            padding: 0.5rem;
+            margin-bottom: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
         }
-        
-        /* Responsive */
-        @media (max-width: 768px) {
-            .menu-categories, .orders-container {
-                grid-template-columns: 1fr;
-            }
-            
-            .tabs {
-                flex-wrap: wrap;
-            }
-            
-            .tab {
-                flex: 1 0 auto;
-                margin-bottom: 5px;
-            }
-            
-            .auth-container {
-                position: static;
-                justify-content: center;
-                margin-top: 10px;
-            }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+        }
+
+        .modal-actions button {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .modal-actions button.cancel {
+            background-color: #ddd;
+        }
+
+        .modal-actions button.confirm {
+            background-color: var(--primary-color);
+            color: var(--light-color);
         }
     </style>
 </head>
 <body>
     <header>
-        <h1>MURRITOS - Sistema Restaurante</h1>
-        <div class="auth-container">
-            <button class="auth-button" id="auth-button">Modo Admin</button>
+        <div class="logo">MURRITOS</div>
+        <nav>
+            <button class="nav-btn active" data-section="orders">Pedidos</button>
+            <button class="nav-btn" data-section="sales">Ventas</button>
+            <button class="nav-btn" data-section="menu">Menú</button>
+        </nav>
+        <div class="admin-login">
+            <input type="password" id="admin-password" placeholder="Contraseña admin">
+            <button id="admin-login-btn">Acceder</button>
         </div>
     </header>
-    
-    <!-- Modal para login de admin -->
-    <div class="admin-login" id="admin-login">
-        <div class="admin-login-content">
-            <div class="admin-login-header">
-                <h3 class="admin-login-title">Acceso Administrador</h3>
-                <button class="close-admin-login">&times;</button>
-            </div>
-            <div class="admin-login-form">
-                <input type="password" id="admin-password" placeholder="Contraseña">
-                <button id="admin-login-submit">Ingresar</button>
-                <div class="admin-login-error" id="admin-login-error">Contraseña incorrecta</div>
-            </div>
-        </div>
-    </div>
-    
-    <div class="container">
-        <div class="tabs" id="tabs">
-            <div class="tab" data-tab="sales">Ventas</div>
-            <div class="tab active" data-tab="menu">Menú</div>
-            <div class="tab" data-tab="orders">Pedidos</div>
-        </div>
-        
-        <!-- Sección de Ventas -->
-        <div id="sales" class="tab-content">
-            <div class="sales-filters">
-                <div>
-                    <label for="sales-period">Periodo:</label>
-                    <select id="sales-period">
-                        <option value="day">Hoy</option>
-                        <option value="week">Esta semana</option>
-                        <option value="month">Este mes</option>
-                    </select>
-                </div>
-                <div>
-                    <label for="sales-mesa">Filtrar por mesa:</label>
-                    <select id="sales-mesa">
-                        <option value="all">Todas</option>
-                        <option value="1">Mesa 1</option>
-                        <option value="2">Mesa 2</option>
-                        <option value="3">Mesa 3</option>
-                        <option value="4">Mesa 4</option>
-                        <option value="5">Mesa 5</option>
-                        <option value="6">Mesa 6</option>
-                        <option value="7">Mesa 7</option>
-                        <option value="8">Mesa 8</option>
-                    </select>
-                </div>
-            </div>
-            
-            <table class="sales-table">
-                <thead>
-                    <tr>
-                        <th>Fecha</th>
-                        <th>Mesa</th>
-                        <th>Total</th>
-                        <th>Detalles</th>
-                    </tr>
-                </thead>
-                <tbody id="sales-list">
-                    <!-- Las ventas se cargarán aquí dinámicamente -->
-                </tbody>
-            </table>
-            
-            <div class="sales-total">
-                <h3>Total del periodo: <span id="sales-total-amount">$0.00</span></h3>
-            </div>
-        </div>
-        
-        <!-- Sección de Menú -->
-        <div id="menu" class="tab-content active">
-            <button id="add-category-btn" class="add-item-btn">+ Agregar Categoría</button>
-            
-            <div class="menu-categories" id="menu-categories">
-                <!-- Las categorías y elementos del menú se cargarán aquí dinámicamente -->
-            </div>
-            
-            <!-- Formulario para agregar categoría (inicialmente oculto) -->
-            <div id="add-category-form" class="add-category-form" style="display: none;">
-                <div class="form-group">
-                    <label for="category-name">Nombre de la categoría:</label>
-                    <input type="text" id="category-name" placeholder="Ej. Hamburguesas">
-                </div>
-                <div class="form-actions">
-                    <button id="save-category">Guardar</button>
-                    <button id="cancel-category">Cancelar</button>
-                </div>
-            </div>
-        </div>
-        
+
+    <main>
         <!-- Sección de Pedidos -->
-        <div id="orders" class="tab-content">
-            <div class="orders-container" id="orders-list">
-                <!-- Los pedidos activos se cargarán aquí dinámicamente -->
+        <section id="orders" class="active">
+            <h2>Tomar Pedido</h2>
+            <div class="order-controls">
+                <input type="text" id="table-name" placeholder="Nombre de la mesa">
+                <select id="menu-sections-select">
+                    <option value="">Selecciona una sección</option>
+                </select>
+                <button id="start-order-btn">Iniciar Pedido</button>
             </div>
-            
-            <button id="new-order-btn" class="add-item-btn">+ Nuevo Pedido</button>
-            
-            <!-- Formulario para nuevo pedido (inicialmente oculto) -->
-            <div id="new-order-form" class="new-order-form" style="display: none;">
-                <div class="form-group">
-                    <label for="order-mesa">Mesa:</label>
-                    <select id="order-mesa">
-                        <option value="1">Mesa 1</option>
-                        <option value="2">Mesa 2</option>
-                        <option value="3">Mesa 3</option>
-                        <option value="4">Mesa 4</option>
-                        <option value="5">Mesa 5</option>
-                        <option value="6">Mesa 6</option>
-                        <option value="7">Mesa 7</option>
-                        <option value="8">Mesa 8</option>
-                    </select>
-                </div>
-                
-                <div class="order-form-items" id="order-items-container">
-                    <!-- Los items del pedido se agregarán aquí -->
-                </div>
-                
-                <button id="add-order-item" class="add-item-btn">+ Agregar Item</button>
-                
-                <div class="order-total">
-                    Total: <span id="order-total-amount">$0.00</span>
-                </div>
-                
+
+            <div id="current-order" class="current-order" style="display: none;">
+                <h3>Pedido para: <span id="current-table-name"></span></h3>
+                <div class="order-items" id="order-items-list"></div>
+                <textarea class="order-comments" id="order-comments" placeholder="Comentarios adicionales..."></textarea>
                 <div class="order-actions">
-                    <button id="save-order">Guardar Pedido</button>
-                    <button id="cancel-order">Cancelar</button>
+                    <button id="cancel-order-btn">Cancelar</button>
+                    <button id="complete-order-btn">Completar Pedido</button>
                 </div>
             </div>
-        </div>
-    </div>
-    
-    <!-- Modal para detalles de venta -->
-    <div id="sale-details-modal" class="modal">
+
+            <div id="menu-items-container">
+                <div class="menu-items" id="menu-items-list"></div>
+            </div>
+        </section>
+
+        <!-- Sección de Ventas -->
+        <section id="sales">
+            <h2>Ventas</h2>
+            <div class="sales-filters">
+                <select id="sales-filter">
+                    <option value="today">Hoy</option>
+                    <option value="week">Esta semana</option>
+                    <option value="month">Este mes</option>
+                    <option value="all">Todos</option>
+                </select>
+                <button id="apply-filter-btn">Aplicar</button>
+            </div>
+            <div class="sales-list" id="sales-list"></div>
+        </section>
+
+        <!-- Sección de Menú (Admin) -->
+        <section id="menu">
+            <h2>Administrar Menú</h2>
+            <div class="menu-sections" id="menu-sections-list"></div>
+            <div class="add-form">
+                <input type="text" id="new-section-name" placeholder="Nombre de nueva sección">
+                <button id="add-section-btn">Agregar Sección</button>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal para editar items -->
+    <div class="modal" id="edit-modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 class="modal-title">Detalles de Venta</h3>
-                <button class="close-modal">&times;</button>
+                <h3 id="modal-title">Editar Item</h3>
+                <button id="close-modal-btn">&times;</button>
             </div>
-            <div id="sale-details-content">
-                <!-- Los detalles de la venta se cargarán aquí -->
+            <div class="modal-body">
+                <input type="text" id="edit-name" placeholder="Nombre">
+                <input type="number" id="edit-price" placeholder="Precio" step="0.01">
+                <textarea id="edit-description" placeholder="Descripción"></textarea>
             </div>
-        </div>
-    </div>
-    
-    <!-- Modal para editar item del menú -->
-    <div id="edit-item-modal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title">Editar Item</h3>
-                <button class="close-modal">&times;</button>
-            </div>
-            <div class="form-group">
-                <label for="edit-item-name">Nombre:</label>
-                <input type="text" id="edit-item-name">
-            </div>
-            <div class="form-group">
-                <label for="edit-item-price">Precio:</label>
-                <input type="number" id="edit-item-price" min="0" step="0.01">
-            </div>
-            <div class="form-actions">
-                <button id="save-item-changes">Guardar Cambios</button>
-                <button id="cancel-item-edit">Cancelar</button>
+            <div class="modal-actions">
+                <button class="cancel" id="cancel-edit-btn">Cancelar</button>
+                <button class="confirm" id="confirm-edit-btn">Guardar</button>
             </div>
         </div>
     </div>
-    
-    <!-- Notificación -->
-    <div id="notification" class="notification"></div>
-    
+
     <script>
-        // Configuración de Firebase - REEMPLAZA CON TUS DATOS
+        // Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyC70WGYyyvUVyK_d_haRQKQSXyoroNrx2w",
             authDomain: "murritos-3640e.firebaseapp.com",
             databaseURL: "https://murritos-3640e-default-rtdb.firebaseio.com",
             projectId: "murritos-3640e",
-            storageBucket: "murritos-3640e.firebasestorage.app",
+            storageBucket: "murritos-3640e.appspot.com",
             messagingSenderId: "286299522702",
             appId: "1:286299522702:web:9eacfa403ff6bcf78aabdf"
         };
-        
-        // Inicializar Firebase
-        firebase.initializeApp(firebaseConfig);
+
+        // Initialize Firebase
+        const app = firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
-        
-        // Variables globales
-        let currentTab = 'menu';
-        let currentEditingItemId = null;
-        let currentEditingCategoryId = null;
-        let menuCategories = {};
-        let activeOrders = {};
-        let salesData = {};
+
+        // Variables de estado
         let isAdmin = false;
-        
-        // Referencias a elementos del DOM
-        const tabs = document.querySelectorAll('.tab');
-        const tabContents = document.querySelectorAll('.tab-content');
+        let currentOrder = null;
+        let currentOrderItems = [];
+        let editingItem = null;
+        let editingType = null; // 'section' o 'item'
+        let editingId = null;
+
+        // Elementos del DOM
+        const adminPasswordInput = document.getElementById('admin-password');
+        const adminLoginBtn = document.getElementById('admin-login-btn');
+        const navBtns = document.querySelectorAll('.nav-btn');
+        const sections = document.querySelectorAll('section');
+        const tableNameInput = document.getElementById('table-name');
+        const menuSectionsSelect = document.getElementById('menu-sections-select');
+        const startOrderBtn = document.getElementById('start-order-btn');
+        const currentOrderDiv = document.getElementById('current-order');
+        const currentTableNameSpan = document.getElementById('current-table-name');
+        const orderItemsList = document.getElementById('order-items-list');
+        const orderComments = document.getElementById('order-comments');
+        const cancelOrderBtn = document.getElementById('cancel-order-btn');
+        const completeOrderBtn = document.getElementById('complete-order-btn');
+        const menuItemsList = document.getElementById('menu-items-list');
+        const salesFilter = document.getElementById('sales-filter');
+        const applyFilterBtn = document.getElementById('apply-filter-btn');
         const salesList = document.getElementById('sales-list');
-        const menuCategoriesContainer = document.getElementById('menu-categories');
-        const ordersList = document.getElementById('orders-list');
-        const notification = document.getElementById('notification');
-        const authButton = document.getElementById('auth-button');
-        const adminLoginModal = document.getElementById('admin-login');
-        
+        const menuSectionsList = document.getElementById('menu-sections-list');
+        const newSectionNameInput = document.getElementById('new-section-name');
+        const addSectionBtn = document.getElementById('add-section-btn');
+        const editModal = document.getElementById('edit-modal');
+        const modalTitle = document.getElementById('modal-title');
+        const editNameInput = document.getElementById('edit-name');
+        const editPriceInput = document.getElementById('edit-price');
+        const editDescriptionInput = document.getElementById('edit-description');
+        const closeModalBtn = document.getElementById('close-modal-btn');
+        const cancelEditBtn = document.getElementById('cancel-edit-btn');
+        const confirmEditBtn = document.getElementById('confirm-edit-btn');
+
+        // Event Listeners
+        adminLoginBtn.addEventListener('click', toggleAdmin);
+        navBtns.forEach(btn => btn.addEventListener('click', switchSection));
+        startOrderBtn.addEventListener('click', startOrder);
+        cancelOrderBtn.addEventListener('click', cancelOrder);
+        completeOrderBtn.addEventListener('click', completeOrder);
+        applyFilterBtn.addEventListener('click', loadSales);
+        addSectionBtn.addEventListener('click', addSection);
+        closeModalBtn.addEventListener('click', closeModal);
+        cancelEditBtn.addEventListener('click', closeModal);
+        confirmEditBtn.addEventListener('click', saveEdit);
+
         // Inicializar la aplicación
-        document.addEventListener('DOMContentLoaded', function() {
-            setupEventListeners();
-            loadInitialData();
-            updateUIForAuthState();
+        document.addEventListener('DOMContentLoaded', () => {
+            loadMenuSections();
+            loadSales();
         });
-        
-        function setupEventListeners() {
-            // Cambio de pestañas
-            tabs.forEach(tab => {
-                tab.addEventListener('click', function() {
-                    tabs.forEach(t => t.classList.remove('active'));
-                    tabContents.forEach(c => c.classList.remove('active'));
-                    
-                    this.classList.add('active');
-                    currentTab = this.getAttribute('data-tab');
-                    document.getElementById(currentTab).classList.add('active');
-                });
-            });
-            
-            // Botón de modo admin
-            authButton.addEventListener('click', function() {
+
+        // Funciones
+        function toggleAdmin() {
+            if (adminPasswordInput.value === 'Tonrry13') {
+                isAdmin = !isAdmin;
+                adminPasswordInput.value = '';
+                alert(isAdmin ? 'Modo administrador activado' : 'Modo administrador desactivado');
                 if (isAdmin) {
-                    // Salir del modo admin
-                    isAdmin = false;
-                    authButton.textContent = 'Modo Admin';
-                    showNotification('Has salido del modo administrador', 'success');
-                    updateUIForAuthState();
-                } else {
-                    // Mostrar modal para contraseña de admin
-                    adminLoginModal.style.display = 'flex';
-                    document.getElementById('admin-password').value = '';
-                    document.getElementById('admin-login-error').style.display = 'none';
+                    loadMenuSections();
                 }
-            });
+            } else {
+                alert('Contraseña incorrecta');
+            }
+        }
+
+        function switchSection(e) {
+            const sectionId = e.target.dataset.section;
             
-            // Login de admin
-            document.getElementById('admin-login-submit').addEventListener('click', function() {
-                const password = document.getElementById('admin-password').value;
+            navBtns.forEach(btn => btn.classList.remove('active'));
+            e.target.classList.add('active');
+            
+            sections.forEach(section => section.classList.remove('active'));
+            document.getElementById(sectionId).classList.add('active');
+        }
+
+        function startOrder() {
+            const tableName = tableNameInput.value.trim();
+            if (!tableName) {
+                alert('Por favor ingresa un nombre para la mesa');
+                return;
+            }
+
+            currentOrder = {
+                tableName,
+                timestamp: firebase.database.ServerValue.TIMESTAMP,
+                status: 'open'
+            };
+
+            currentOrderItems = [];
+            currentTableNameSpan.textContent = tableName;
+            orderComments.value = '';
+            currentOrderDiv.style.display = 'block';
+            renderOrderItems();
+        }
+
+        function cancelOrder() {
+            currentOrder = null;
+            currentOrderItems = [];
+            currentOrderDiv.style.display = 'none';
+            tableNameInput.value = '';
+        }
+
+        function completeOrder() {
+            if (currentOrderItems.length === 0) {
+                alert('No hay items en el pedido');
+                return;
+            }
+
+            const orderData = {
+                ...currentOrder,
+                items: currentOrderItems,
+                comments: orderComments.value.trim(),
+                status: 'completed',
+                total: calculateOrderTotal()
+            };
+
+            const newOrderRef = database.ref('orders').push();
+            newOrderRef.set(orderData)
+                .then(() => {
+                    alert('Pedido completado con éxito');
+                    cancelOrder();
+                    loadSales();
+                })
+                .catch(error => {
+                    console.error('Error al guardar el pedido:', error);
+                    alert('Error al guardar el pedido');
+                });
+        }
+
+        function calculateOrderTotal() {
+            return currentOrderItems.reduce((total, item) => total + (item.price * item.quantity), 0);
+        }
+
+        function addItemToOrder(item) {
+            const existingItem = currentOrderItems.find(i => i.id === item.id);
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                currentOrderItems.push({
+                    ...item,
+                    quantity: 1
+                });
+            }
+            renderOrderItems();
+        }
+
+        function removeItemFromOrder(itemId) {
+            const itemIndex = currentOrderItems.findIndex(i => i.id === itemId);
+            if (itemIndex !== -1) {
+                currentOrderItems.splice(itemIndex, 1);
+                renderOrderItems();
+            }
+        }
+
+        function updateItemQuantity(itemId, newQuantity) {
+            const item = currentOrderItems.find(i => i.id === itemId);
+            if (item) {
+                if (newQuantity <= 0) {
+                    removeItemFromOrder(itemId);
+                } else {
+                    item.quantity = newQuantity;
+                    renderOrderItems();
+                }
+            }
+        }
+
+        function renderOrderItems() {
+            orderItemsList.innerHTML = '';
+            
+            if (currentOrderItems.length === 0) {
+                orderItemsList.innerHTML = '<p>No hay items en el pedido</p>';
+                return;
+            }
+
+            currentOrderItems.forEach(item => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'order-item';
                 
-                if (password === 'Tonrry13') {
-                    isAdmin = true;
-                    adminLoginModal.style.display = 'none';
-                    authButton.textContent = 'Salir de Admin';
-                    showNotification('Modo administrador activado', 'success');
-                    updateUIForAuthState();
+                itemDiv.innerHTML = `
+                    <div>
+                        <span>${item.name}</span>
+                        <span>$${item.price.toFixed(2)}</span>
+                    </div>
+                    <div class="order-item-controls">
+                        <input type="number" value="${item.quantity}" min="1" 
+                            onchange="updateItemQuantity('${item.id}', this.value)">
+                        <button onclick="removeItemFromOrder('${item.id}')">✕</button>
+                    </div>
+                `;
+                
+                orderItemsList.appendChild(itemDiv);
+            });
+
+            const totalDiv = document.createElement('div');
+            totalDiv.className = 'order-item';
+            totalDiv.innerHTML = `
+                <div>
+                    <strong>Total</strong>
+                </div>
+                <div>
+                    <strong>$${calculateOrderTotal().toFixed(2)}</strong>
+                </div>
+            `;
+            orderItemsList.appendChild(totalDiv);
+        }
+
+        function loadMenuSections() {
+            database.ref('menuSections').once('value')
+                .then(snapshot => {
+                    const sections = snapshot.val() || {};
+                    renderMenuSectionsSelect(sections);
+                    
+                    if (isAdmin) {
+                        renderMenuSectionsAdmin(sections);
+                    } else {
+                        renderMenuItems(sections);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error al cargar secciones del menú:', error);
+                });
+        }
+
+        function renderMenuSectionsSelect(sections) {
+            menuSectionsSelect.innerHTML = '<option value="">Selecciona una sección</option>';
+            
+            Object.entries(sections).forEach(([id, section]) => {
+                const option = document.createElement('option');
+                option.value = id;
+                option.textContent = section.name;
+                menuSectionsSelect.appendChild(option);
+            });
+
+            menuSectionsSelect.addEventListener('change', (e) => {
+                const sectionId = e.target.value;
+                if (sectionId) {
+                    database.ref(`menuSections/${sectionId}/items`).once('value')
+                        .then(snapshot => {
+                            const items = snapshot.val() || {};
+                            renderMenuItemsForSection(items);
+                        });
                 } else {
-                    document.getElementById('admin-login-error').style.display = 'block';
+                    menuItemsList.innerHTML = '';
                 }
             });
+        }
+
+        function renderMenuItemsForSection(items) {
+            menuItemsList.innerHTML = '';
             
-            // Cerrar modal de admin
-            document.querySelector('.close-admin-login').addEventListener('click', function() {
-                adminLoginModal.style.display = 'none';
+            Object.entries(items).forEach(([id, item]) => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'menu-item';
+                itemDiv.innerHTML = `
+                    <h3>${item.name}</h3>
+                    <p>$${item.price.toFixed(2)}</p>
+                    ${item.description ? `<p>${item.description}</p>` : ''}
+                `;
+                itemDiv.addEventListener('click', () => addItemToOrder({...item, id}));
+                menuItemsList.appendChild(itemDiv);
             });
+        }
+
+        function renderMenuItems(sections) {
+            menuItemsList.innerHTML = '';
             
-            // Menú - Agregar categoría
-            document.getElementById('add-category-btn').addEventListener('click', function() {
-                if (!isAdmin) {
-                    showNotification('Solo los administradores pueden agregar categorías', 'error');
+            Object.entries(sections).forEach(([sectionId, section]) => {
+                if (section.items) {
+                    Object.entries(section.items).forEach(([itemId, item]) => {
+                        const itemDiv = document.createElement('div');
+                        itemDiv.className = 'menu-item';
+                        itemDiv.innerHTML = `
+                            <h3>${item.name}</h3>
+                            <p>$${item.price.toFixed(2)}</p>
+                            ${item.description ? `<p>${item.description}</p>` : ''}
+                        `;
+                        itemDiv.addEventListener('click', () => addItemToOrder({...item, id: itemId}));
+                        menuItemsList.appendChild(itemDiv);
+                    });
+                }
+            });
+        }
+
+        function renderMenuSectionsAdmin(sections) {
+            menuSectionsList.innerHTML = '';
+            
+            Object.entries(sections).forEach(([id, section]) => {
+                const sectionDiv = document.createElement('div');
+                sectionDiv.className = 'menu-section';
+                sectionDiv.innerHTML = `
+                    <div class="section-header">
+                        <h3>${section.name}</h3>
+                        <div class="section-actions">
+                            <button onclick="editSection('${id}', '${section.name}')">✏️</button>
+                            <button onclick="deleteSection('${id}')">✕</button>
+                        </div>
+                    </div>
+                    <div class="section-items" id="section-items-${id}"></div>
+                    <div class="add-form">
+                        <input type="text" id="new-item-name-${id}" placeholder="Nombre del platillo">
+                        <input type="number" id="new-item-price-${id}" placeholder="Precio" step="0.01">
+                        <button onclick="addItem('${id}')">Agregar</button>
+                    </div>
+                `;
+                menuSectionsList.appendChild(sectionDiv);
+                
+                if (section.items) {
+                    renderSectionItems(id, section.items);
+                }
+            });
+        }
+
+        function renderSectionItems(sectionId, items) {
+            const itemsContainer = document.getElementById(`section-items-${sectionId}`);
+            if (!itemsContainer) return;
+            
+            itemsContainer.innerHTML = '';
+            
+            Object.entries(items).forEach(([id, item]) => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'section-item';
+                itemDiv.innerHTML = `
+                    <div>
+                        <strong>${item.name}</strong> - $${item.price.toFixed(2)}
+                        ${item.description ? `<p>${item.description}</p>` : ''}
+                    </div>
+                    <div class="item-actions">
+                        <button onclick="editItem('${sectionId}', '${id}', '${item.name}', ${item.price}, '${item.description || ''}')">✏️</button>
+                        <button onclick="deleteItem('${sectionId}', '${id}')">✕</button>
+                    </div>
+                `;
+                itemsContainer.appendChild(itemDiv);
+            });
+        }
+
+        function addSection() {
+            const name = newSectionNameInput.value.trim();
+            if (!name) {
+                alert('Por favor ingresa un nombre para la sección');
+                return;
+            }
+
+            const newSectionRef = database.ref('menuSections').push();
+            newSectionRef.set({
+                name,
+                items: {}
+            })
+            .then(() => {
+                newSectionNameInput.value = '';
+                loadMenuSections();
+            })
+            .catch(error => {
+                console.error('Error al agregar sección:', error);
+                alert('Error al agregar sección');
+            });
+        }
+
+        function addItem(sectionId) {
+            const nameInput = document.getElementById(`new-item-name-${sectionId}`);
+            const priceInput = document.getElementById(`new-item-price-${sectionId}`);
+            
+            const name = nameInput.value.trim();
+            const price = parseFloat(priceInput.value);
+            
+            if (!name || isNaN(price) {
+                alert('Por favor ingresa un nombre y precio válidos');
+                return;
+            }
+
+            const newItemRef = database.ref(`menuSections/${sectionId}/items`).push();
+            newItemRef.set({
+                name,
+                price,
+                description: ''
+            })
+            .then(() => {
+                nameInput.value = '';
+                priceInput.value = '';
+                loadMenuSections();
+            })
+            .catch(error => {
+                console.error('Error al agregar item:', error);
+                alert('Error al agregar item');
+            });
+        }
+
+        function editSection(id, name) {
+            editingType = 'section';
+            editingId = id;
+            modalTitle.textContent = 'Editar Sección';
+            editNameInput.value = name;
+            editPriceInput.style.display = 'none';
+            editDescriptionInput.style.display = 'none';
+            openModal();
+        }
+
+        function editItem(sectionId, itemId, name, price, description) {
+            editingType = 'item';
+            editingId = { sectionId, itemId };
+            modalTitle.textContent = 'Editar Platillo';
+            editNameInput.value = name;
+            editPriceInput.value = price;
+            editDescriptionInput.value = description;
+            editPriceInput.style.display = 'block';
+            editDescriptionInput.style.display = 'block';
+            openModal();
+        }
+
+        function openModal() {
+            editModal.style.display = 'flex';
+        }
+
+        function closeModal() {
+            editModal.style.display = 'none';
+            editingItem = null;
+            editingType = null;
+            editingId = null;
+        }
+
+        function saveEdit() {
+            if (editingType === 'section') {
+                const newName = editNameInput.value.trim();
+                if (!newName) {
+                    alert('Por favor ingresa un nombre válido');
                     return;
                 }
-                document.getElementById('add-category-form').style.display = 'block';
-                document.getElementById('category-name').focus();
-            });
-            
-            document.getElementById('save-category').addEventListener('click', saveCategory);
-            document.getElementById('cancel-category').addEventListener('click', function() {
-                document.getElementById('add-category-form').style.display = 'none';
-                document.getElementById('category-name').value = '';
-            });
-            
-            // Pedidos - Nuevo pedido
-            document.getElementById('new-order-btn').addEventListener('click', function() {
-                document.getElementById('new-order-form').style.display = 'block';
-                document.getElementById('order-mesa').focus();
-                resetOrderForm();
-            });
-            
-            document.getElementById('add-order-item').addEventListener('click', addOrderItem);
-            document.getElementById('save-order').addEventListener('click', saveOrder);
-            document.getElementById('cancel-order').addEventListener('click', function() {
-                document.getElementById('new-order-form').style.display = 'none';
-            });
-            
-            // Modal de detalles de venta
-            document.querySelectorAll('.close-modal').forEach(button => {
-                button.addEventListener('click', function() {
-                    document.getElementById('sale-details-modal').style.display = 'none';
-                });
-            });
-            
-            // Modal de edición de item
-            document.getElementById('cancel-item-edit').addEventListener('click', function() {
-                document.getElementById('edit-item-modal').style.display = 'none';
-            });
-            
-            document.getElementById('save-item-changes').addEventListener('click', saveItemChanges);
-            
-            // Filtros de ventas
-            document.getElementById('sales-period').addEventListener('change', updateSalesDisplay);
-            document.getElementById('sales-mesa').addEventListener('change', updateSalesDisplay);
-        }
-        
-        function updateUIForAuthState() {
-            // Mostrar/ocultar pestañas según el rol
-            document.querySelectorAll('.tab').forEach(tab => {
-                const tabName = tab.getAttribute('data-tab');
-                if (tabName === 'sales' && !isAdmin) {
-                    tab.style.display = 'none';
-                } else {
-                    tab.style.display = 'block';
-                }
-            });
-            
-            // Activar la primera pestaña disponible
-            const availableTabs = document.querySelectorAll('.tab[style="display: block"]');
-            if (availableTabs.length > 0) {
-                tabs.forEach(t => t.classList.remove('active'));
-                tabContents.forEach(c => c.classList.remove('active'));
-                
-                // Buscar la pestaña activa actualmente visible
-                let activeTabFound = false;
-                tabs.forEach(tab => {
-                    if (tab.classList.contains('active') && tab.style.display === 'block' && !activeTabFound) {
-                        tab.classList.add('active');
-                        currentTab = tab.getAttribute('data-tab');
-                        document.getElementById(currentTab).classList.add('active');
-                        activeTabFound = true;
-                    }
-                });
-                
-                // Si no se encontró una pestaña activa visible, activar la primera disponible
-                if (!activeTabFound) {
-                    const firstTab = availableTabs[0];
-                    firstTab.classList.add('active');
-                    currentTab = firstTab.getAttribute('data-tab');
-                    document.getElementById(currentTab).classList.add('active');
-                }
-            }
-        }
-        
-        function loadInitialData() {
-            // Cargar categorías del menú
-            database.ref('menuCategories').on('value', (snapshot) => {
-                menuCategories = snapshot.val() || {};
-                renderMenuCategories();
-            });
-            
-            // Cargar pedidos activos
-            database.ref('activeOrders').on('value', (snapshot) => {
-                activeOrders = snapshot.val() || {};
-                renderActiveOrders();
-            });
-            
-            // Cargar ventas (solo para admins)
-            if (isAdmin) {
-                database.ref('sales').on('value', (snapshot) => {
-                    salesData = snapshot.val() || {};
-                    updateSalesDisplay();
-                });
-            }
-        }
-        
-        // Funciones para la sección de Ventas
-        function updateSalesDisplay() {
-            if (!isAdmin) return;
-            
-            const period = document.getElementById('sales-period').value;
-            const mesaFilter = document.getElementById('sales-mesa').value;
-            const now = new Date();
-            let filteredSales = [];
-            let total = 0;
-            
-            // Filtrar ventas según el periodo seleccionado
-            for (const saleId in salesData) {
-                const sale = salesData[saleId];
-                const saleDate = new Date(sale.date);
-                
-                // Filtrar por mesa
-                if (mesaFilter !== 'all' && sale.mesa.toString() !== mesaFilter) {
-                    continue;
-                }
-                
-                // Filtrar por periodo
-                let includeSale = false;
-                
-                if (period === 'day') {
-                    includeSale = isSameDay(saleDate, now);
-                } else if (period === 'week') {
-                    includeSale = isSameWeek(saleDate, now);
-                } else if (period === 'month') {
-                    includeSale = isSameMonth(saleDate, now);
-                }
-                
-                if (includeSale) {
-                    filteredSales.push({
-                        id: saleId,
-                        ...sale
+
+                database.ref(`menuSections/${editingId}/name`).set(newName)
+                    .then(() => {
+                        closeModal();
+                        loadMenuSections();
+                    })
+                    .catch(error => {
+                        console.error('Error al editar sección:', error);
+                        alert('Error al editar sección');
                     });
-                    total += sale.total;
+            } else if (editingType === 'item') {
+                const newName = editNameInput.value.trim();
+                const newPrice = parseFloat(editPriceInput.value);
+                const newDescription = editDescriptionInput.value.trim();
+                
+                if (!newName || isNaN(newPrice)) {
+                    alert('Por favor ingresa un nombre y precio válidos');
+                    return;
                 }
+
+                database.ref(`menuSections/${editingId.sectionId}/items/${editingId.itemId}`).update({
+                    name: newName,
+                    price: newPrice,
+                    description: newDescription
+                })
+                .then(() => {
+                    closeModal();
+                    loadMenuSections();
+                })
+                .catch(error => {
+                    console.error('Error al editar item:', error);
+                    alert('Error al editar item');
+                });
             }
+        }
+
+        function deleteSection(id) {
+            if (confirm('¿Estás seguro de que quieres eliminar esta sección y todos sus platillos?')) {
+                database.ref(`menuSections/${id}`).remove()
+                    .then(() => {
+                        loadMenuSections();
+                    })
+                    .catch(error => {
+                        console.error('Error al eliminar sección:', error);
+                        alert('Error al eliminar sección');
+                    });
+            }
+        }
+
+        function deleteItem(sectionId, itemId) {
+            if (confirm('¿Estás seguro de que quieres eliminar este platillo?')) {
+                database.ref(`menuSections/${sectionId}/items/${itemId}`).remove()
+                    .then(() => {
+                        loadMenuSections();
+                    })
+                    .catch(error => {
+                        console.error('Error al eliminar platillo:', error);
+                        alert('Error al eliminar platillo');
+                    });
+            }
+        }
+
+        function loadSales() {
+            const filter = salesFilter.value;
+            let query = database.ref('orders').orderByChild('status').equalTo('completed');
             
-            // Ordenar por fecha (más reciente primero)
-            filteredSales.sort((a, b) => new Date(b.date) - new Date(a.date));
-            
-            // Mostrar ventas
-            renderSalesList(filteredSales);
-            document.getElementById('sales-total-amount').textContent = `$${total.toFixed(2)}`;
+            if (filter === 'today') {
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                query = database.ref('orders').orderByChild('timestamp').startAt(today.getTime());
+            } else if (filter === 'week') {
+                const weekAgo = new Date();
+                weekAgo.setDate(weekAgo.getDate() - 7);
+                query = database.ref('orders').orderByChild('timestamp').startAt(weekAgo.getTime());
+            } else if (filter === 'month') {
+                const monthAgo = new Date();
+                monthAgo.setMonth(monthAgo.getMonth() - 1);
+                query = database.ref('orders').orderByChild('timestamp').startAt(monthAgo.getTime());
+            }
+
+            query.once('value')
+                .then(snapshot => {
+                    const orders = snapshot.val() || {};
+                    renderSales(orders);
+                })
+                .catch(error => {
+                    console.error('Error al cargar ventas:', error);
+                    alert('Error al cargar ventas');
+                });
         }
-        
-        function isSameDay(date1, date2) {
-            return date1.getDate() === date2.getDate() && 
-                   date1.getMonth() === date2.getMonth() && 
-                   date1.getFullYear() === date2.getFullYear();
-        }
-        
-        function isSameWeek(date1, date2) {
-            const oneDay = 24 * 60 * 60 * 1000;
-            const diffDays = Math.round(Math.abs((date1 - date2) / oneDay));
-            return diffDays <= 7 && date1.getDay() <= date2.getDay();
-        }
-        
-        function isSameMonth(date1, date2) {
-            return date1.getMonth() === date2.getMonth() && 
-                   date1.getFullYear() === date2.getFullYear();
-        }
-        
-        function renderSalesList(sales) {
+
+        function renderSales(orders) {
             salesList.innerHTML = '';
             
-            if (sales.length === 0) {
-                salesList.innerHTML = '<tr><td colspan="4" style="text-align: center;">No hay ventas registradas para este periodo</td></tr>';
+            if (Object.keys(orders).length === 0) {
+                salesList.innerHTML = '<p>No hay ventas registradas</p>';
                 return;
             }
+
+            // Ordenar por fecha (más reciente primero)
+            const sortedOrders = Object.entries(orders).sort((a, b) => b[1].timestamp - a[1].timestamp);
             
-            sales.forEach(sale => {
-                const row = document.createElement('tr');
-                const saleDate = new Date(sale.date);
-                const formattedDate = saleDate.toLocaleDateString() + ' ' + saleDate.toLocaleTimeString();
+            sortedOrders.forEach(([id, order]) => {
+                const saleDiv = document.createElement('div');
+                saleDiv.className = 'sale';
                 
-                row.innerHTML = `
-                    <td>${formattedDate}</td>
-                    <td>Mesa ${sale.mesa}</td>
-                    <td>$${sale.total.toFixed(2)}</td>
-                    <td><button class="view-details" data-sale-id="${sale.id}">Ver Detalles</button></td>
-                `;
+                const date = new Date(order.timestamp);
+                const dateStr = date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
                 
-                salesList.appendChild(row);
-            });
-            
-            // Agregar event listeners para los botones de detalles
-            document.querySelectorAll('.view-details').forEach(button => {
-                button.addEventListener('click', function() {
-                    const saleId = this.getAttribute('data-sale-id');
-                    showSaleDetails(saleId);
-                });
-            });
-        }
-        
-        function showSaleDetails(saleId) {
-            const sale = salesData[saleId];
-            const saleDate = new Date(sale.date);
-            const formattedDate = saleDate.toLocaleDateString() + ' ' + saleDate.toLocaleTimeString();
-            
-            let itemsHtml = '';
-            sale.items.forEach(item => {
-                itemsHtml += `
-                    <div class="order-item">
-                        <span>${item.name}</span>
-                        <span>${item.quantity} x $${item.price.toFixed(2)} = $${(item.quantity * item.price).toFixed(2)}</span>
+                saleDiv.innerHTML = `
+                    <div class="sale-header">
+                        <span><strong>Mesa:</strong> ${order.tableName}</span>
+                        <span>${dateStr}</span>
                     </div>
-                `;
-            });
-            
-            document.getElementById('sale-details-content').innerHTML = `
-                <div class="order-header">
-                    <span class="order-mesa">Mesa ${sale.mesa}</span>
-                    <span class="order-fecha">${formattedDate}</span>
-                </div>
-                <div class="order-items">
-                    ${itemsHtml}
-                </div>
-                <div class="order-total">
-                    Total: $${sale.total.toFixed(2)}
-                </div>
-            `;
-            
-            document.getElementById('sale-details-modal').style.display = 'flex';
-        }
-        
-        // Funciones para la sección de Menú
-        function renderMenuCategories() {
-            menuCategoriesContainer.innerHTML = '';
-            
-            if (Object.keys(menuCategories).length === 0) {
-                menuCategoriesContainer.innerHTML = '<p>No hay categorías en el menú. Agrega una categoría para comenzar.</p>';
-                return;
-            }
-            
-            for (const categoryId in menuCategories) {
-                const category = menuCategories[categoryId];
-                const categoryElement = document.createElement('div');
-                categoryElement.className = 'category';
-                categoryElement.setAttribute('data-category-id', categoryId);
-                
-                let itemsHtml = '';
-                if (category.items && Object.keys(category.items).length > 0) {
-                    for (const itemId in category.items) {
-                        const item = category.items[itemId];
-                        itemsHtml += `
-                            <div class="menu-item" data-item-id="${itemId}">
-                                ${isAdmin ? `
-                                <div class="item-actions">
-                                    <button class="edit-item" title="Editar">✏️</button>
-                                    <button class="delete-item" title="Eliminar">🗑️</button>
-                                </div>
-                                ` : ''}
-                                <div class="menu-item-name">${item.name}</div>
-                                <div class="menu-item-price">$${item.price.toFixed(2)}</div>
-                            </div>
-                        `;
-                    }
-                } else {
-                    itemsHtml = '<p>No hay items en esta categoría.</p>';
-                }
-                
-                categoryElement.innerHTML = `
-                    <div class="category-header">
-                        <div class="category-title">${category.name}</div>
-                        ${isAdmin ? `
-                        <div class="category-actions">
-                            <button class="add-item" title="Agregar item">+</button>
-                            <button class="edit-category" title="Editar categoría">✏️</button>
-                            <button class="delete-category" title="Eliminar categoría">🗑️</button>
-                        </div>
-                        ` : ''}
+                    <div class="sale-items" id="sale-items-${id}"></div>
+                    <div class="sale-total">
+                        Total: $${order.total.toFixed(2)}
                     </div>
-                    <div class="items-container">
-                        ${itemsHtml}
+                    <div class="sale-actions">
+                        <button onclick="deleteSale('${id}')">Eliminar</button>
                     </div>
                 `;
                 
-                menuCategoriesContainer.appendChild(categoryElement);
-            }
-            
-            // Agregar event listeners para los botones de categorías e items
-            if (isAdmin) {
-                document.querySelectorAll('.add-item').forEach(button => {
-                    button.addEventListener('click', function() {
-                        const categoryId = this.closest('.category').getAttribute('data-category-id');
-                        showAddItemForm(categoryId);
-                    });
-                });
+                salesList.appendChild(saleDiv);
                 
-                document.querySelectorAll('.edit-category').forEach(button => {
-                    button.addEventListener('click', function() {
-                        const categoryId = this.closest('.category').getAttribute('data-category-id');
-                        editCategory(categoryId);
-                    });
-                });
-                
-                document.querySelectorAll('.delete-category').forEach(button => {
-                    button.addEventListener('click', function() {
-                        const categoryId = this.closest('.category').getAttribute('data-category-id');
-                        if (confirm(`¿Estás seguro de que quieres eliminar la categoría "${menuCategories[categoryId].name}" y todos sus items?`)) {
-                            deleteCategory(categoryId);
-                        }
-                    });
-                });
-                
-                document.querySelectorAll('.edit-item').forEach(button => {
-                    button.addEventListener('click', function() {
-                        const itemId = this.closest('.menu-item').getAttribute('data-item-id');
-                        const categoryId = this.closest('.category').getAttribute('data-category-id');
-                        editItem(categoryId, itemId);
-                    });
-                });
-                
-                document.querySelectorAll('.delete-item').forEach(button => {
-                    button.addEventListener('click', function() {
-                        const itemId = this.closest('.menu-item').getAttribute('data-item-id');
-                        const categoryId = this.closest('.category').getAttribute('data-category-id');
-                        const itemName = menuCategories[categoryId].items[itemId].name;
-                        
-                        if (confirm(`¿Estás seguro de que quieres eliminar el item "${itemName}"?`)) {
-                            deleteItem(categoryId, itemId);
-                        }
-                    });
-                });
-            }
-        }
-        
-        function showAddItemForm(categoryId) {
-            currentEditingCategoryId = categoryId;
-            currentEditingItemId = null;
-            
-            const modal = document.getElementById('edit-item-modal');
-            document.querySelector('.modal-title').textContent = 'Agregar Nuevo Item';
-            document.getElementById('edit-item-name').value = '';
-            document.getElementById('edit-item-price').value = '';
-            modal.style.display = 'flex';
-        }
-        
-        function saveCategory() {
-            const categoryName = document.getElementById('category-name').value.trim();
-            
-            if (!categoryName) {
-                showNotification('El nombre de la categoría no puede estar vacío', 'error');
-                return;
-            }
-            
-            const newCategory = {
-                name: categoryName,
-                items: {}
-            };
-            
-            // Guardar en Firebase
-            const newCategoryRef = database.ref('menuCategories').push();
-            newCategoryRef.set(newCategory)
-                .then(() => {
-                    showNotification('Categoría agregada correctamente', 'success');
-                    document.getElementById('add-category-form').style.display = 'none';
-                    document.getElementById('category-name').value = '';
-                })
-                .catch(error => {
-                    showNotification('Error al agregar categoría: ' + error.message, 'error');
-                });
-        }
-        
-        function editCategory(categoryId) {
-            const category = menuCategories[categoryId];
-            currentEditingCategoryId = categoryId;
-            
-            document.getElementById('category-name').value = category.name;
-            document.getElementById('add-category-form').style.display = 'block';
-            document.getElementById('save-category').textContent = 'Actualizar';
-            document.getElementById('save-category').onclick = updateCategory;
-        }
-        
-        function updateCategory() {
-            const categoryName = document.getElementById('category-name').value.trim();
-            
-            if (!categoryName) {
-                showNotification('El nombre de la categoría no puede estar vacío', 'error');
-                return;
-            }
-            
-            database.ref(`menuCategories/${currentEditingCategoryId}`).update({
-                name: categoryName
-            })
-            .then(() => {
-                showNotification('Categoría actualizada correctamente', 'success');
-                document.getElementById('add-category-form').style.display = 'none';
-                document.getElementById('category-name').value = '';
-                document.getElementById('save-category').textContent = 'Guardar';
-                document.getElementById('save-category').onclick = saveCategory;
-                currentEditingCategoryId = null;
-            })
-            .catch(error => {
-                showNotification('Error al actualizar categoría: ' + error.message, 'error');
-            });
-        }
-        
-        function deleteCategory(categoryId) {
-            database.ref(`menuCategories/${categoryId}`).remove()
-                .then(() => {
-                    showNotification('Categoría eliminada correctamente', 'success');
-                })
-                .catch(error => {
-                    showNotification('Error al eliminar categoría: ' + error.message, 'error');
-                });
-        }
-        
-        function editItem(categoryId, itemId) {
-            const item = menuCategories[categoryId].items[itemId];
-            currentEditingItemId = itemId;
-            currentEditingCategoryId = categoryId;
-            
-            const modal = document.getElementById('edit-item-modal');
-            document.querySelector('.modal-title').textContent = 'Editar Item';
-            document.getElementById('edit-item-name').value = item.name;
-            document.getElementById('edit-item-price').value = item.price;
-            modal.style.display = 'flex';
-        }
-        
-        function saveItemChanges() {
-            const name = document.getElementById('edit-item-name').value.trim();
-            const price = parseFloat(document.getElementById('edit-item-price').value);
-            
-            if (!name) {
-                showNotification('El nombre del item no puede estar vacío', 'error');
-                return;
-            }
-            
-            if (isNaN(price) || price <= 0) {
-                showNotification('El precio debe ser un número mayor que cero', 'error');
-                return;
-            }
-            
-            const itemData = {
-                name: name,
-                price: price
-            };
-            
-            let updatePromise;
-            
-            if (currentEditingItemId) {
-                // Actualizar item existente
-                updatePromise = database.ref(`menuCategories/${currentEditingCategoryId}/items/${currentEditingItemId}`).update(itemData);
-            } else {
-                // Crear nuevo item
-                updatePromise = database.ref(`menuCategories/${currentEditingCategoryId}/items`).push(itemData);
-            }
-            
-            updatePromise
-                .then(() => {
-                    showNotification(currentEditingItemId ? 'Item actualizado correctamente' : 'Item agregado correctamente', 'success');
-                    document.getElementById('edit-item-modal').style.display = 'none';
-                    currentEditingItemId = null;
-                    currentEditingCategoryId = null;
-                })
-                .catch(error => {
-                    showNotification('Error al guardar item: ' + error.message, 'error');
-                });
-        }
-        
-        function deleteItem(categoryId, itemId) {
-            database.ref(`menuCategories/${categoryId}/items/${itemId}`).remove()
-                .then(() => {
-                    showNotification('Item eliminado correctamente', 'success');
-                })
-                .catch(error => {
-                    showNotification('Error al eliminar item: ' + error.message, 'error');
-                });
-        }
-        
-        // Funciones para la sección de Pedidos
-        function renderActiveOrders() {
-            ordersList.innerHTML = '';
-            
-            if (Object.keys(activeOrders).length === 0) {
-                ordersList.innerHTML = '<p>No hay pedidos activos en este momento.</p>';
-                return;
-            }
-            
-            for (const orderId in activeOrders) {
-                const order = activeOrders[orderId];
-                const orderDate = new Date(order.date);
-                const formattedDate = orderDate.toLocaleDateString() + ' ' + orderDate.toLocaleTimeString();
-                
-                let itemsHtml = '';
-                let total = 0;
-                
+                const itemsContainer = document.getElementById(`sale-items-${id}`);
                 order.items.forEach(item => {
-                    itemsHtml += `
-                        <div class="order-item">
-                            <span>${item.name}</span>
-                            <span>${item.quantity} x $${item.price.toFixed(2)} = $${(item.quantity * item.price).toFixed(2)}</span>
-                        </div>
+                    const itemDiv = document.createElement('div');
+                    itemDiv.className = 'sale-item';
+                    itemDiv.innerHTML = `
+                        <span>${item.quantity} x ${item.name}</span>
+                        <span>$${(item.price * item.quantity).toFixed(2)}</span>
                     `;
-                    total += item.quantity * item.price;
+                    itemsContainer.appendChild(itemDiv);
                 });
                 
-                const orderElement = document.createElement('div');
-                orderElement.className = 'order-card';
-                orderElement.innerHTML = `
-                    <div class="order-header">
-                        <span class="order-mesa">Mesa ${order.mesa}</span>
-                        <span class="order-fecha">${formattedDate}</span>
-                    </div>
-                    <div class="order-items">
-                        ${itemsHtml}
-                    </div>
-                    <div class="order-total">
-                        Total: $${total.toFixed(2)}
-                    </div>
-                    <div class="order-actions">
-                        ${isAdmin ? `<button class="close-order" data-order-id="${orderId}">Cerrar Cuenta</button>` : ''}
-                        <button class="add-more-items" data-order-id="${orderId}">Agregar Más Items</button>
-                    </div>
-                `;
-                
-                ordersList.appendChild(orderElement);
-            }
-            
-            // Agregar event listeners para los botones de pedidos
-            document.querySelectorAll('.close-order').forEach(button => {
-                button.addEventListener('click', function() {
-                    const orderId = this.getAttribute('data-order-id');
-                    closeOrder(orderId);
-                });
-            });
-            
-            document.querySelectorAll('.add-more-items').forEach(button => {
-                button.addEventListener('click', function() {
-                    const orderId = this.getAttribute('data-order-id');
-                    addMoreItemsToOrder(orderId);
-                });
-            });
-        }
-        
-        function resetOrderForm() {
-            document.getElementById('order-items-container').innerHTML = '';
-            document.getElementById('order-total-amount').textContent = '$0.00';
-            addOrderItem(); // Agregar un item por defecto
-        }
-        
-        function addOrderItem() {
-            const container = document.getElementById('order-items-container');
-            const itemId = Date.now();
-            
-            // Crear select de items
-            let options = '<option value="">Selecciona un item</option>';
-            
-            for (const categoryId in menuCategories) {
-                const category = menuCategories[categoryId];
-                
-                if (category.items) {
-                    for (const itemId in category.items) {
-                        const item = category.items[itemId];
-                        options += `<option value="${categoryId}_${itemId}" data-price="${item.price}">${category.name} - ${item.name} ($${item.price.toFixed(2)})</option>`;
-                    }
-                }
-            }
-            
-            const itemElement = document.createElement('div');
-            itemElement.className = 'order-form-item';
-            itemElement.innerHTML = `
-                <select class="order-item-select" onchange="updateOrderItemPrice(this)">
-                    ${options}
-                </select>
-                <input type="number" class="order-item-quantity" min="1" value="1" onchange="updateOrderTotal()">
-                <button class="remove-order-item" onclick="removeOrderItem(this)">×</button>
-            `;
-            
-            container.appendChild(itemElement);
-            updateOrderTotal();
-        }
-        
-        function updateOrderItemPrice(selectElement) {
-            const selectedOption = selectElement.options[selectElement.selectedIndex];
-            const price = selectedOption.getAttribute('data-price');
-            
-            if (price) {
-                selectElement.setAttribute('data-price', price);
-                updateOrderTotal();
-            }
-        }
-        
-        function removeOrderItem(button) {
-            button.parentElement.remove();
-            updateOrderTotal();
-        }
-        
-        function updateOrderTotal() {
-            let total = 0;
-            const items = document.querySelectorAll('.order-form-item');
-            
-            items.forEach(item => {
-                const select = item.querySelector('.order-item-select');
-                const quantityInput = item.querySelector('.order-item-quantity');
-                
-                if (select.selectedIndex > 0 && quantityInput.value > 0) {
-                    const price = parseFloat(select.options[select.selectedIndex].getAttribute('data-price'));
-                    const quantity = parseInt(quantityInput.value);
-                    total += price * quantity;
+                if (order.comments) {
+                    const commentsDiv = document.createElement('div');
+                    commentsDiv.className = 'sale-item';
+                    commentsDiv.innerHTML = `<em>Comentarios: ${order.comments}</em>`;
+                    itemsContainer.appendChild(commentsDiv);
                 }
             });
-            
-            document.getElementById('order-total-amount').textContent = `$${total.toFixed(2)}`;
         }
-        
-        function saveOrder() {
-            const mesa = document.getElementById('order-mesa').value;
-            const items = [];
-            let isValid = true;
-            
-            // Validar items
-            document.querySelectorAll('.order-form-item').forEach(item => {
-                const select = item.querySelector('.order-item-select');
-                const quantityInput = item.querySelector('.order-item-quantity');
-                
-                if (select.selectedIndex === 0 || quantityInput.value <= 0) {
-                    isValid = false;
-                    return;
-                }
-                
-                const [categoryId, itemId] = select.value.split('_');
-                const menuItem = menuCategories[categoryId].items[itemId];
-                const quantity = parseInt(quantityInput.value);
-                
-                items.push({
-                    name: menuItem.name,
-                    price: menuItem.price,
-                    quantity: quantity
-                });
-            });
-            
-            if (!isValid) {
-                showNotification('Todos los items deben tener un producto seleccionado y una cantidad válida', 'error');
-                return;
+
+        function deleteSale(id) {
+            if (confirm('¿Estás seguro de que quieres eliminar esta venta?')) {
+                database.ref(`orders/${id}`).remove()
+                    .then(() => {
+                        loadSales();
+                    })
+                    .catch(error => {
+                        console.error('Error al eliminar venta:', error);
+                        alert('Error al eliminar venta');
+                    });
             }
-            
-            if (items.length === 0) {
-                showNotification('Debe agregar al menos un item al pedido', 'error');
-                return;
-            }
-            
-            const total = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-            const newOrder = {
-                mesa: mesa,
-                items: items,
-                total: total,
-                date: new Date().toISOString(),
-                status: 'active'
-            };
-            
-            // Guardar en Firebase
-            database.ref('activeOrders').push(newOrder)
-                .then(() => {
-                    showNotification('Pedido guardado correctamente', 'success');
-                    document.getElementById('new-order-form').style.display = 'none';
-                })
-                .catch(error => {
-                    showNotification('Error al guardar pedido: ' + error.message, 'error');
-                });
         }
-        
-        function closeOrder(orderId) {
-            const order = activeOrders[orderId];
-            
-            // Mover a ventas
-            const saleData = {
-                mesa: order.mesa,
-                items: order.items,
-                total: order.total,
-                date: order.date
-            };
-            
-            // Agregar a ventas y eliminar de pedidos activos
-            database.ref('sales').push(saleData)
-                .then(() => {
-                    return database.ref(`activeOrders/${orderId}`).remove();
-                })
-                .then(() => {
-                    showNotification('Cuenta cerrada correctamente', 'success');
-                })
-                .catch(error => {
-                    showNotification('Error al cerrar cuenta: ' + error.message, 'error');
-                });
-        }
-        
-        function addMoreItemsToOrder(orderId) {
-            const order = activeOrders[orderId];
-            
-            // Mostrar formulario con los items actuales
-            document.getElementById('new-order-form').style.display = 'block';
-            document.getElementById('order-mesa').value = order.mesa;
-            document.getElementById('order-items-container').innerHTML = '';
-            
-            // Agregar items existentes
-            order.items.forEach(item => {
-                addExistingOrderItem(item);
-            });
-            
-            // Cambiar el botón de guardar para actualizar en lugar de crear nuevo
-            document.getElementById('save-order').textContent = 'Actualizar Pedido';
-            document.getElementById('save-order').onclick = function() {
-                updateOrder(orderId);
-            };
-        }
-        
-        function addExistingOrderItem(item) {
-            const container = document.getElementById('order-items-container');
-            const itemId = Date.now();
-            
-            // Crear select de items
-            let options = '<option value="">Selecciona un item</option>';
-            let selectedValue = '';
-            
-            for (const categoryId in menuCategories) {
-                const category = menuCategories[categoryId];
-                
-                if (category.items) {
-                    for (const menuItemId in category.items) {
-                        const menuItem = category.items[menuItemId];
-                        
-                        // Marcar como seleccionado si coincide con el item actual
-                        if (menuItem.name === item.name && menuItem.price === item.price) {
-                            selectedValue = `${categoryId}_${menuItemId}`;
-                            options += `<option value="${categoryId}_${menuItemId}" data-price="${menuItem.price}" selected>${category.name} - ${menuItem.name} ($${menuItem.price.toFixed(2)})</option>`;
-                        } else {
-                            options += `<option value="${categoryId}_${menuItemId}" data-price="${menuItem.price}">${category.name} - ${menuItem.name} ($${menuItem.price.toFixed(2)})</option>`;
-                        }
-                    }
-                }
-            }
-            
-            const itemElement = document.createElement('div');
-            itemElement.className = 'order-form-item';
-            itemElement.innerHTML = `
-                <select class="order-item-select" onchange="updateOrderItemPrice(this)">
-                    ${options}
-                </select>
-                <input type="number" class="order-item-quantity" min="1" value="${item.quantity}" onchange="updateOrderTotal()">
-                <button class="remove-order-item" onclick="removeOrderItem(this)">×</button>
-            `;
-            
-            if (selectedValue) {
-                itemElement.querySelector('select').value = selectedValue;
-            }
-            
-            container.appendChild(itemElement);
-            updateOrderTotal();
-        }
-        
-        function updateOrder(orderId) {
-            const mesa = document.getElementById('order-mesa').value;
-            const items = [];
-            let isValid = true;
-            
-            // Validar items
-            document.querySelectorAll('.order-form-item').forEach(item => {
-                const select = item.querySelector('.order-item-select');
-                const quantityInput = item.querySelector('.order-item-quantity');
-                
-                if (select.selectedIndex === 0 || quantityInput.value <= 0) {
-                    isValid = false;
-                    return;
-                }
-                
-                const [categoryId, itemId] = select.value.split('_');
-                const menuItem = menuCategories[categoryId].items[itemId];
-                const quantity = parseInt(quantityInput.value);
-                
-                items.push({
-                    name: menuItem.name,
-                    price: menuItem.price,
-                    quantity: quantity
-                });
-            });
-            
-            if (!isValid) {
-                showNotification('Todos los items deben tener un producto seleccionado y una cantidad válida', 'error');
-                return;
-            }
-            
-            if (items.length === 0) {
-                showNotification('Debe agregar al menos un item al pedido', 'error');
-                return;
-            }
-            
-            const total = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-            
-            // Actualizar en Firebase
-            database.ref(`activeOrders/${orderId}`).update({
-                mesa: mesa,
-                items: items,
-                total: total
-            })
-            .then(() => {
-                showNotification('Pedido actualizado correctamente', 'success');
-                document.getElementById('new-order-form').style.display = 'none';
-                
-                // Restaurar el botón de guardar a su estado original
-                document.getElementById('save-order').textContent = 'Guardar Pedido';
-                document.getElementById('save-order').onclick = saveOrder;
-            })
-            .catch(error => {
-                showNotification('Error al actualizar pedido: ' + error.message, 'error');
-            });
-        }
-        
-        // Funciones auxiliares
-        function showNotification(message, type) {
-            notification.textContent = message;
-            notification.style.backgroundColor = type === 'error' ? 'var(--red)' : 'green';
-            notification.style.display = 'block';
-            
-            setTimeout(() => {
-                notification.style.display = 'none';
-            }, 3000);
-        }
-        
-        // Hacer funciones accesibles globalmente para los event listeners inline
-        window.updateOrderItemPrice = updateOrderItemPrice;
-        window.updateOrderTotal = updateOrderTotal;
-        window.removeOrderItem = removeOrderItem;
+
+        // Hacer funciones accesibles globalmente para los eventos en línea
+        window.updateItemQuantity = updateItemQuantity;
+        window.removeItemFromOrder = removeItemFromOrder;
+        window.addItemToOrder = addItemToOrder;
+        window.editSection = editSection;
+        window.editItem = editItem;
+        window.deleteSection = deleteSection;
+        window.deleteItem = deleteItem;
+        window.addItem = addItem;
+        window.deleteSale = deleteSale;
     </script>
 </body>
 </html>
