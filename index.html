@@ -4,21 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Murritos - Sistema de Pedidos</title>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         :root {
             --primary-color: #e63946;
-            --dark-color: #1a1a1a;
-            --light-color: #ffffff;
-            --gray-color: #f5f5f5;
+            --dark-color: #1d3557;
+            --light-color: #f1faee;
+            --white: #ffffff;
+            --black: #000000;
+            --gray: #6c757d;
+            --light-gray: #f8f9fa;
+            --dark-gray: #343a40;
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Roboto', sans-serif;
         }
 
         body {
@@ -26,262 +30,373 @@
             color: var(--dark-color);
         }
 
+        .admin-login {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .admin-login.show {
+            display: flex;
+        }
+
+        .login-box {
+            background-color: var(--white);
+            padding: 2rem;
+            border-radius: 8px;
+            width: 300px;
+            text-align: center;
+        }
+
+        .login-box h2 {
+            margin-bottom: 1.5rem;
+            color: var(--dark-color);
+        }
+
+        .login-box input {
+            width: 100%;
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+            border: 1px solid var(--gray);
+            border-radius: 4px;
+        }
+
+        .login-box button {
+            width: 100%;
+            padding: 0.75rem;
+            background-color: var(--primary-color);
+            color: var(--white);
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .login-box button:hover {
+            background-color: #c1121f;
+        }
+
         header {
-            background-color: var(--dark-color);
-            color: var(--light-color);
-            padding: 1rem;
+            background-color: var(--white);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 1rem 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        .logo {
-            font-size: 1.5rem;
-            font-weight: bold;
+        .logo h1 {
             color: var(--primary-color);
+            font-weight: 700;
         }
 
-        nav {
+        nav ul {
             display: flex;
-            gap: 1rem;
+            list-style: none;
         }
 
-        nav button {
-            background: none;
-            border: none;
-            color: var(--light-color);
-            cursor: pointer;
-            font-size: 1rem;
+        nav ul li {
+            margin: 0 1rem;
             padding: 0.5rem 1rem;
+            cursor: pointer;
             border-radius: 4px;
-            transition: all 0.3s;
-        }
-
-        nav button:hover, nav button.active {
-            background-color: var(--primary-color);
-        }
-
-        .admin-login {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
         }
 
-        .admin-login input {
-            padding: 0.3rem;
-            border: none;
-            border-radius: 4px;
+        nav ul li i {
+            margin-right: 0.5rem;
         }
 
-        .admin-login button {
+        nav ul li.active {
             background-color: var(--primary-color);
-            color: var(--light-color);
-            border: none;
-            padding: 0.3rem 0.6rem;
-            border-radius: 4px;
-            cursor: pointer;
+            color: var(--white);
+        }
+
+        .user-info {
+            font-weight: 500;
+        }
+
+        .user-info.admin {
+            color: var(--primary-color);
         }
 
         main {
             padding: 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
         }
 
-        section {
+        .section {
             display: none;
         }
 
-        section.active {
+        .section.active {
             display: block;
-        }
-
-        h2 {
-            margin-bottom: 1.5rem;
-            color: var(--primary-color);
-            border-bottom: 2px solid var(--primary-color);
-            padding-bottom: 0.5rem;
-        }
-
-        /* Estilos para la sección de Pedidos */
-        .order-controls {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 1rem;
-        }
-
-        .order-controls input, .order-controls select {
-            padding: 0.5rem;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-
-        .order-controls button {
-            background-color: var(--primary-color);
-            color: var(--light-color);
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        .current-order {
-            background-color: var(--gray-color);
-            padding: 1rem;
-            border-radius: 8px;
-            margin-bottom: 2rem;
-        }
-
-        .order-items {
-            margin: 1rem 0;
-        }
-
-        .order-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 0.5rem 0;
-            border-bottom: 1px solid #ddd;
-        }
-
-        .order-item-controls {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .order-item-controls button {
-            background: none;
-            border: none;
-            cursor: pointer;
-            color: var(--primary-color);
-        }
-
-        .order-comments {
-            width: 100%;
-            padding: 0.5rem;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            margin-top: 1rem;
-        }
-
-        .order-actions {
-            display: flex;
-            justify-content: flex-end;
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-
-        .menu-items {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-
-        .menu-item {
-            background-color: var(--gray-color);
-            padding: 1rem;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .menu-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-
-        .menu-item h3 {
-            color: var(--primary-color);
-            margin-bottom: 0.5rem;
-        }
-
-        .menu-item p {
-            font-weight: bold;
-        }
-
-        /* Estilos para la sección de Ventas */
-        .sales-filters {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 1rem;
-        }
-
-        .sales-filters select, .sales-filters button {
-            padding: 0.5rem;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-
-        .sales-list {
-            margin-top: 1rem;
-        }
-
-        .sale {
-            background-color: var(--gray-color);
-            padding: 1rem;
-            border-radius: 8px;
-            margin-bottom: 1rem;
-        }
-
-        .sale-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 0.5rem;
-        }
-
-        .sale-items {
-            margin: 0.5rem 0;
-        }
-
-        .sale-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 0.2rem 0;
-        }
-
-        .sale-total {
-            font-weight: bold;
-            text-align: right;
-            margin-top: 0.5rem;
-        }
-
-        .sale-actions {
-            display: flex;
-            justify-content: flex-end;
-            margin-top: 0.5rem;
-        }
-
-        .sale-actions button {
-            background-color: var(--primary-color);
-            color: var(--light-color);
-            border: none;
-            padding: 0.3rem 0.6rem;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        /* Estilos para la sección de Menú (admin) */
-        .menu-sections {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-
-        .menu-section {
-            background-color: var(--gray-color);
-            padding: 1rem;
-            border-radius: 8px;
         }
 
         .section-header {
             display: flex;
             justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-header h2 {
+            color: var(--dark-color);
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: var(--white);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+        }
+
+        .btn-primary i {
+            margin-right: 0.5rem;
+        }
+
+        .btn-primary:hover {
+            background-color: #c1121f;
+        }
+
+        .btn-secondary {
+            background-color: var(--gray);
+            color: var(--white);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--dark-gray);
+        }
+
+        .order-controls {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .active-orders {
+            flex: 1;
+            background-color: var(--white);
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .order-details {
+            flex: 2;
+            background-color: var(--white);
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            min-height: 500px;
+        }
+
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            color: var(--gray);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .orders-list {
+            margin-top: 1rem;
+        }
+
+        .order-card {
+            background-color: var(--light-gray);
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .order-card:hover {
+            background-color: #e9ecef;
+        }
+
+        .order-card.active {
+            border-left: 4px solid var(--primary-color);
+            background-color: #e9ecef;
+        }
+
+        .order-card h4 {
+            margin-bottom: 0.5rem;
+        }
+
+        .order-card p {
+            font-size: 0.875rem;
+            color: var(--gray);
+        }
+
+        .order-items {
+            margin-top: 1.5rem;
+        }
+
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .order-item:last-child {
+            border-bottom: none;
+        }
+
+        .order-item-info {
+            flex: 2;
+        }
+
+        .order-item-price {
+            flex: 1;
+            text-align: right;
+        }
+
+        .order-item-comments {
+            font-size: 0.75rem;
+            color: var(--gray);
+            margin-top: 0.25rem;
+            font-style: italic;
+        }
+
+        .order-actions {
+            margin-top: 1.5rem;
+            display: flex;
+            gap: 1rem;
+        }
+
+        .order-total {
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            border-top: 2px solid var(--dark-color);
+            text-align: right;
+            font-weight: 700;
+            font-size: 1.25rem;
+        }
+
+        .sales-summary {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .summary-card {
+            flex: 1;
+            background-color: var(--white);
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            text-align: center;
+        }
+
+        .summary-card h3 {
+            margin-bottom: 1rem;
+            color: var(--gray);
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        .summary-card p {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .summary-card.total p {
+            color: var(--primary-color);
+        }
+
+        .time-filters {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-filter {
+            background-color: var(--light-gray);
+            color: var(--dark-color);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .btn-filter.active {
+            background-color: var(--primary-color);
+            color: var(--white);
+        }
+
+        .sales-list {
+            background-color: var(--white);
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        th {
+            background-color: var(--light-gray);
+            font-weight: 500;
+        }
+
+        tr:hover {
+            background-color: var(--light-gray);
+        }
+
+        .menu-sections {
+            background-color: var(--white);
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .menu-section {
+            margin-bottom: 2rem;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 1rem;
         }
 
         .section-header h3 {
-            color: var(--primary-color);
+            color: var(--dark-color);
         }
 
         .section-actions {
@@ -289,57 +404,31 @@
             gap: 0.5rem;
         }
 
-        .section-actions button {
-            background: none;
-            border: none;
-            cursor: pointer;
+        .menu-items {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .menu-item {
+            background-color: var(--light-gray);
+            padding: 1rem;
+            border-radius: 4px;
+        }
+
+        .menu-item h4 {
+            margin-bottom: 0.5rem;
+        }
+
+        .menu-item p {
             color: var(--primary-color);
-        }
-
-        .section-items {
-            margin-top: 1rem;
-        }
-
-        .section-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 0.5rem 0;
-            border-bottom: 1px solid #ddd;
+            font-weight: 500;
         }
 
         .item-actions {
-            display: flex;
-            gap: 0.3rem;
-        }
-
-        .item-actions button {
-            background: none;
-            border: none;
-            cursor: pointer;
-            color: var(--primary-color);
-            font-size: 0.8rem;
-        }
-
-        .add-form {
-            margin-top: 1rem;
+            margin-top: 0.5rem;
             display: flex;
             gap: 0.5rem;
-        }
-
-        .add-form input {
-            padding: 0.5rem;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            flex-grow: 1;
-        }
-
-        .add-form button {
-            background-color: var(--primary-color);
-            color: var(--light-color);
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
-            cursor: pointer;
         }
 
         .modal {
@@ -349,156 +438,290 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0,0,0,0.5);
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 100;
             justify-content: center;
             align-items: center;
-            z-index: 1000;
+        }
+
+        .modal.show {
+            display: flex;
         }
 
         .modal-content {
-            background-color: var(--light-color);
+            background-color: var(--white);
             padding: 2rem;
             border-radius: 8px;
-            width: 90%;
+            width: 100%;
             max-width: 500px;
+            position: relative;
         }
 
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 1rem;
+        .modal-content.small {
+            max-width: 400px;
         }
 
-        .modal-header h3 {
-            color: var(--primary-color);
-        }
-
-        .modal-header button {
-            background: none;
-            border: none;
+        .close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
             font-size: 1.5rem;
             cursor: pointer;
         }
 
-        .modal-body input, .modal-body textarea {
-            width: 100%;
-            padding: 0.5rem;
+        .form-group {
             margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
             border: 1px solid #ddd;
             border-radius: 4px;
         }
 
-        .modal-actions {
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .modal-buttons {
             display: flex;
             justify-content: flex-end;
             gap: 1rem;
+            margin-top: 1.5rem;
         }
 
-        .modal-actions button {
-            padding: 0.5rem 1rem;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        .modal-actions button.cancel {
-            background-color: #ddd;
-        }
-
-        .modal-actions button.confirm {
-            background-color: var(--primary-color);
-            color: var(--light-color);
+        @media (max-width: 768px) {
+            .order-controls {
+                flex-direction: column;
+            }
+            
+            header {
+                flex-direction: column;
+                padding: 1rem;
+            }
+            
+            nav ul {
+                margin-top: 1rem;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
         }
     </style>
 </head>
 <body>
+    <div class="admin-login" id="adminLogin">
+        <div class="login-box">
+            <h2>Acceso Administrador</h2>
+            <input type="password" id="adminPassword" placeholder="Contraseña">
+            <button onclick="checkAdminPassword()">Ingresar</button>
+        </div>
+    </div>
+
     <header>
-        <div class="logo">MURRITOS</div>
+        <div class="logo">
+            <h1>MURRITOS</h1>
+        </div>
         <nav>
-            <button class="nav-btn active" data-section="orders">Pedidos</button>
-            <button class="nav-btn" data-section="sales">Ventas</button>
-            <button class="nav-btn" data-section="menu">Menú</button>
+            <ul>
+                <li class="active" data-section="orders"><i class="fas fa-clipboard-list"></i> Pedidos</li>
+                <li data-section="sales"><i class="fas fa-chart-line"></i> Ventas</li>
+                <li data-section="menu" id="menuTab"><i class="fas fa-utensils"></i> Menú</li>
+            </ul>
         </nav>
-        <div class="admin-login">
-            <input type="password" id="admin-password" placeholder="Contraseña admin">
-            <button id="admin-login-btn">Acceder</button>
+        <div class="user-info">
+            <span id="userType">Mesero</span>
         </div>
     </header>
 
     <main>
         <!-- Sección de Pedidos -->
-        <section id="orders" class="active">
-            <h2>Tomar Pedido</h2>
+        <section id="orders" class="section active">
+            <div class="section-header">
+                <h2>Pedidos</h2>
+                <button id="newOrderBtn" class="btn-primary"><i class="fas fa-plus"></i> Nueva Orden</button>
+            </div>
+            
             <div class="order-controls">
-                <input type="text" id="table-name" placeholder="Nombre de la mesa">
-                <select id="menu-sections-select">
-                    <option value="">Selecciona una sección</option>
-                </select>
-                <button id="start-order-btn">Iniciar Pedido</button>
-            </div>
-
-            <div id="current-order" class="current-order" style="display: none;">
-                <h3>Pedido para: <span id="current-table-name"></span></h3>
-                <div class="order-items" id="order-items-list"></div>
-                <textarea class="order-comments" id="order-comments" placeholder="Comentarios adicionales..."></textarea>
-                <div class="order-actions">
-                    <button id="cancel-order-btn">Cancelar</button>
-                    <button id="complete-order-btn">Completar Pedido</button>
+                <div class="active-orders" id="activeOrders">
+                    <h3>Órdenes Activas</h3>
+                    <div class="orders-list" id="activeOrdersList"></div>
                 </div>
-            </div>
-
-            <div id="menu-items-container">
-                <div class="menu-items" id="menu-items-list"></div>
+                
+                <div class="order-details" id="orderDetails">
+                    <div class="empty-state">
+                        <i class="fas fa-clipboard-list"></i>
+                        <p>Selecciona una orden o crea una nueva</p>
+                    </div>
+                </div>
             </div>
         </section>
 
         <!-- Sección de Ventas -->
-        <section id="sales">
-            <h2>Ventas</h2>
-            <div class="sales-filters">
-                <select id="sales-filter">
-                    <option value="today">Hoy</option>
-                    <option value="week">Esta semana</option>
-                    <option value="month">Este mes</option>
-                    <option value="all">Todos</option>
-                </select>
-                <button id="apply-filter-btn">Aplicar</button>
+        <section id="sales" class="section">
+            <div class="section-header">
+                <h2>Ventas</h2>
+                <div class="time-filters">
+                    <button class="btn-filter active" data-filter="day">Hoy</button>
+                    <button class="btn-filter" data-filter="week">Esta Semana</button>
+                    <button class="btn-filter" data-filter="month">Este Mes</button>
+                </div>
             </div>
-            <div class="sales-list" id="sales-list"></div>
+            
+            <div class="sales-summary">
+                <div class="summary-card total">
+                    <h3>Total Vendido</h3>
+                    <p id="totalSales">$0.00</p>
+                </div>
+                <div class="summary-card orders">
+                    <h3>Órdenes</h3>
+                    <p id="totalOrders">0</p>
+                </div>
+            </div>
+            
+            <div class="sales-list">
+                <h3>Historial de Ventas</h3>
+                <table id="salesTable">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Mesa</th>
+                            <th>Items</th>
+                            <th>Total</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="salesList">
+                        <!-- Las ventas se cargarán aquí -->
+                    </tbody>
+                </table>
+            </div>
         </section>
 
-        <!-- Sección de Menú (Admin) -->
-        <section id="menu">
-            <h2>Administrar Menú</h2>
-            <div class="menu-sections" id="menu-sections-list"></div>
-            <div class="add-form">
-                <input type="text" id="new-section-name" placeholder="Nombre de nueva sección">
-                <button id="add-section-btn">Agregar Sección</button>
+        <!-- Sección de Menú -->
+        <section id="menu" class="section">
+            <div class="section-header">
+                <h2>Administrar Menú</h2>
+                <div class="admin-controls">
+                    <button id="addSectionBtn" class="btn-primary"><i class="fas fa-plus"></i> Agregar Sección</button>
+                </div>
+            </div>
+            
+            <div class="menu-sections" id="menuSections">
+                <!-- Las secciones del menú se cargarán aquí -->
             </div>
         </section>
     </main>
 
-    <!-- Modal para editar items -->
-    <div class="modal" id="edit-modal">
+    <!-- Modales -->
+    <div class="modal" id="newOrderModal">
         <div class="modal-content">
-            <div class="modal-header">
-                <h3 id="modal-title">Editar Item</h3>
-                <button id="close-modal-btn">&times;</button>
+            <span class="close">&times;</span>
+            <h2>Nueva Orden</h2>
+            <div class="form-group">
+                <label for="tableName">Nombre de la Mesa:</label>
+                <input type="text" id="tableName" placeholder="Ej. Mesa 1, Barra 2, etc.">
             </div>
-            <div class="modal-body">
-                <input type="text" id="edit-name" placeholder="Nombre">
-                <input type="number" id="edit-price" placeholder="Precio" step="0.01">
-                <textarea id="edit-description" placeholder="Descripción"></textarea>
+            <button id="createOrderBtn" class="btn-primary">Crear Orden</button>
+        </div>
+    </div>
+
+    <div class="modal" id="addItemModal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Agregar Item</h2>
+            <div class="form-group">
+                <label for="itemSection">Sección:</label>
+                <select id="itemSection"></select>
             </div>
-            <div class="modal-actions">
-                <button class="cancel" id="cancel-edit-btn">Cancelar</button>
-                <button class="confirm" id="confirm-edit-btn">Guardar</button>
+            <div class="form-group">
+                <label for="itemSelect">Item:</label>
+                <select id="itemSelect"></select>
+            </div>
+            <div class="form-group">
+                <label for="itemQuantity">Cantidad:</label>
+                <input type="number" id="itemQuantity" min="1" value="1">
+            </div>
+            <div class="form-group">
+                <label for="itemComments">Comentarios:</label>
+                <textarea id="itemComments" rows="2"></textarea>
+            </div>
+            <button id="addItemToOrderBtn" class="btn-primary">Agregar a Orden</button>
+        </div>
+    </div>
+
+    <div class="modal" id="closeOrderModal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Cerrar Orden</h2>
+            <div class="order-summary" id="closeOrderSummary"></div>
+            <div class="form-group">
+                <label for="finalComments">Comentarios Finales:</label>
+                <textarea id="finalComments" rows="3"></textarea>
+            </div>
+            <button id="confirmCloseOrderBtn" class="btn-primary">Confirmar Cierre</button>
+        </div>
+    </div>
+
+    <div class="modal" id="sectionModal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="sectionModalTitle">Nueva Sección</h2>
+            <div class="form-group">
+                <label for="sectionName">Nombre de la Sección:</label>
+                <input type="text" id="sectionName" placeholder="Ej. Entradas, Platos Fuertes, etc.">
+            </div>
+            <button id="saveSectionBtn" class="btn-primary">Guardar</button>
+        </div>
+    </div>
+
+    <div class="modal" id="itemModal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="itemModalTitle">Nuevo Item</h2>
+            <div class="form-group">
+                <label for="itemName">Nombre del Item:</label>
+                <input type="text" id="itemName" placeholder="Ej. Burrito de Carnitas, etc.">
+            </div>
+            <div class="form-group">
+                <label for="itemPrice">Precio:</label>
+                <input type="number" id="itemPrice" min="0" step="0.01" placeholder="0.00">
+            </div>
+            <button id="saveItemBtn" class="btn-primary">Guardar</button>
+        </div>
+    </div>
+
+    <div class="modal" id="confirmModal">
+        <div class="modal-content small">
+            <h2 id="confirmModalTitle">Confirmar</h2>
+            <p id="confirmModalMessage">¿Estás seguro que deseas realizar esta acción?</p>
+            <div class="modal-buttons">
+                <button id="confirmModalCancel" class="btn-secondary">Cancelar</button>
+                <button id="confirmModalConfirm" class="btn-primary">Confirmar</button>
             </div>
         </div>
     </div>
 
+    <!-- Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <script>
-        // Firebase configuration
+        // Configuración de Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyC70WGYyyvUVyK_d_haRQKQSXyoroNrx2w",
             authDomain: "murritos-3640e.firebaseapp.com",
@@ -509,609 +732,905 @@
             appId: "1:286299522702:web:9eacfa403ff6bcf78aabdf"
         };
 
-        // Initialize Firebase
-        const app = firebase.initializeApp(firebaseConfig);
+        // Inicializar Firebase
+        firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
-        // Variables de estado
+        // Variables globales
         let isAdmin = false;
-        let currentOrder = null;
-        let currentOrderItems = [];
-        let editingItem = null;
-        let editingType = null; // 'section' o 'item'
-        let editingId = null;
+        let currentOrderId = null;
+        let currentSectionId = null;
+        let currentItemId = null;
+        let currentFilter = 'day';
 
-        // Elementos del DOM
-        const adminPasswordInput = document.getElementById('admin-password');
-        const adminLoginBtn = document.getElementById('admin-login-btn');
-        const navBtns = document.querySelectorAll('.nav-btn');
-        const sections = document.querySelectorAll('section');
-        const tableNameInput = document.getElementById('table-name');
-        const menuSectionsSelect = document.getElementById('menu-sections-select');
-        const startOrderBtn = document.getElementById('start-order-btn');
-        const currentOrderDiv = document.getElementById('current-order');
-        const currentTableNameSpan = document.getElementById('current-table-name');
-        const orderItemsList = document.getElementById('order-items-list');
-        const orderComments = document.getElementById('order-comments');
-        const cancelOrderBtn = document.getElementById('cancel-order-btn');
-        const completeOrderBtn = document.getElementById('complete-order-btn');
-        const menuItemsList = document.getElementById('menu-items-list');
-        const salesFilter = document.getElementById('sales-filter');
-        const applyFilterBtn = document.getElementById('apply-filter-btn');
-        const salesList = document.getElementById('sales-list');
-        const menuSectionsList = document.getElementById('menu-sections-list');
-        const newSectionNameInput = document.getElementById('new-section-name');
-        const addSectionBtn = document.getElementById('add-section-btn');
-        const editModal = document.getElementById('edit-modal');
-        const modalTitle = document.getElementById('modal-title');
-        const editNameInput = document.getElementById('edit-name');
-        const editPriceInput = document.getElementById('edit-price');
-        const editDescriptionInput = document.getElementById('edit-description');
-        const closeModalBtn = document.getElementById('close-modal-btn');
-        const cancelEditBtn = document.getElementById('cancel-edit-btn');
-        const confirmEditBtn = document.getElementById('confirm-edit-btn');
-
-        // Event Listeners
-        adminLoginBtn.addEventListener('click', toggleAdmin);
-        navBtns.forEach(btn => btn.addEventListener('click', switchSection));
-        startOrderBtn.addEventListener('click', startOrder);
-        cancelOrderBtn.addEventListener('click', cancelOrder);
-        completeOrderBtn.addEventListener('click', completeOrder);
-        applyFilterBtn.addEventListener('click', loadSales);
-        addSectionBtn.addEventListener('click', addSection);
-        closeModalBtn.addEventListener('click', closeModal);
-        cancelEditBtn.addEventListener('click', closeModal);
-        confirmEditBtn.addEventListener('click', saveEdit);
-
-        // Inicializar la aplicación
-        document.addEventListener('DOMContentLoaded', () => {
+        // Inicialización de la aplicación
+        document.addEventListener('DOMContentLoaded', function() {
+            // Verificar si hay un admin logueado
+            checkAdminSession();
+            
+            // Configurar event listeners
+            setupEventListeners();
+            
+            // Cargar datos iniciales
+            loadActiveOrders();
+            loadSalesData();
             loadMenuSections();
-            loadSales();
         });
 
-        // Funciones
-        function toggleAdmin() {
-            if (adminPasswordInput.value === 'Tonrry13') {
-                isAdmin = !isAdmin;
-                adminPasswordInput.value = '';
-                alert(isAdmin ? 'Modo administrador activado' : 'Modo administrador desactivado');
-                if (isAdmin) {
-                    loadMenuSections();
-                }
+        // Configurar event listeners
+        function setupEventListeners() {
+            // Navegación entre secciones
+            document.querySelectorAll('nav ul li').forEach(item => {
+                item.addEventListener('click', function() {
+                    // Remover clase active de todos los items
+                    document.querySelectorAll('nav ul li').forEach(li => {
+                        li.classList.remove('active');
+                    });
+                    
+                    // Agregar clase active al item clickeado
+                    this.classList.add('active');
+                    
+                    // Ocultar todas las secciones
+                    document.querySelectorAll('.section').forEach(section => {
+                        section.classList.remove('active');
+                    });
+                    
+                    // Mostrar la sección correspondiente
+                    const sectionId = this.getAttribute('data-section');
+                    document.getElementById(sectionId).classList.add('active');
+                });
+            });
+            
+            // Botón nueva orden
+            document.getElementById('newOrderBtn').addEventListener('click', openNewOrderModal);
+            
+            // Botón crear orden
+            document.getElementById('createOrderBtn').addEventListener('click', createNewOrder);
+            
+            // Botón agregar item a orden
+            document.getElementById('addItemToOrderBtn').addEventListener('click', addItemToOrder);
+            
+            // Botón confirmar cierre de orden
+            document.getElementById('confirmCloseOrderBtn').addEventListener('click', closeOrder);
+            
+            // Botón agregar sección
+            document.getElementById('addSectionBtn').addEventListener('click', openSectionModal);
+            
+            // Botón guardar sección
+            document.getElementById('saveSectionBtn').addEventListener('click', saveSection);
+            
+            // Botón guardar item
+            document.getElementById('saveItemBtn').addEventListener('click', saveItem);
+            
+            // Filtros de ventas
+            document.querySelectorAll('.btn-filter').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.btn-filter').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    currentFilter = this.getAttribute('data-filter');
+                    loadSalesData();
+                });
+            });
+            
+            // Cerrar modales
+            document.querySelectorAll('.close').forEach(closeBtn => {
+                closeBtn.addEventListener('click', function() {
+                    this.closest('.modal').classList.remove('show');
+                });
+            });
+            
+            // Cerrar modales al hacer clic fuera
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.addEventListener('click', function(e) {
+                    if (e.target === this) {
+                        this.classList.remove('show');
+                    }
+                });
+            });
+        }
+
+        // Verificar sesión de admin
+        function checkAdminSession() {
+            const adminSession = localStorage.getItem('murritos_admin');
+            if (adminSession === 'true') {
+                isAdmin = true;
+                document.getElementById('userType').textContent = 'Administrador';
+                document.getElementById('userType').classList.add('admin');
+                document.getElementById('menuTab').style.display = 'flex';
+            } else {
+                document.getElementById('adminLogin').classList.add('show');
+                document.getElementById('menuTab').style.display = 'none';
+            }
+        }
+
+        // Verificar contraseña de admin
+        function checkAdminPassword() {
+            const password = document.getElementById('adminPassword').value;
+            if (password === 'Tonrry13') {
+                isAdmin = true;
+                localStorage.setItem('murritos_admin', 'true');
+                document.getElementById('adminLogin').classList.remove('show');
+                document.getElementById('userType').textContent = 'Administrador';
+                document.getElementById('userType').classList.add('admin');
+                document.getElementById('menuTab').style.display = 'flex';
+                loadMenuSections();
             } else {
                 alert('Contraseña incorrecta');
             }
         }
 
-        function switchSection(e) {
-            const sectionId = e.target.dataset.section;
+        // Cargar órdenes activas
+        function loadActiveOrders() {
+            const activeOrdersList = document.getElementById('activeOrdersList');
+            activeOrdersList.innerHTML = '<p>Cargando órdenes...</p>';
             
-            navBtns.forEach(btn => btn.classList.remove('active'));
-            e.target.classList.add('active');
-            
-            sections.forEach(section => section.classList.remove('active'));
-            document.getElementById(sectionId).classList.add('active');
+            database.ref('orders').orderByChild('status').equalTo('active').on('value', snapshot => {
+                const orders = snapshot.val();
+                activeOrdersList.innerHTML = '';
+                
+                if (orders) {
+                    Object.entries(orders).forEach(([id, order]) => {
+                        const orderCard = document.createElement('div');
+                        orderCard.className = 'order-card';
+                        orderCard.setAttribute('data-order-id', id);
+                        
+                        orderCard.innerHTML = `
+                            <h4>${order.tableName}</h4>
+                            <p>${order.items ? Object.keys(order.items).length : 0} items</p>
+                            <p>${formatDate(order.createdAt)}</p>
+                        `;
+                        
+                        orderCard.addEventListener('click', function() {
+                            document.querySelectorAll('.order-card').forEach(card => {
+                                card.classList.remove('active');
+                            });
+                            this.classList.add('active');
+                            currentOrderId = id;
+                            loadOrderDetails(id);
+                        });
+                        
+                        activeOrdersList.appendChild(orderCard);
+                    });
+                } else {
+                    activeOrdersList.innerHTML = '<p>No hay órdenes activas</p>';
+                }
+            });
         }
 
-        function startOrder() {
-            const tableName = tableNameInput.value.trim();
+        // Cargar detalles de una orden
+        function loadOrderDetails(orderId) {
+            const orderDetails = document.getElementById('orderDetails');
+            orderDetails.innerHTML = '<p>Cargando detalles...</p>';
+            
+            database.ref(`orders/${orderId}`).once('value').then(snapshot => {
+                const order = snapshot.val();
+                
+                if (order) {
+                    let itemsHtml = '';
+                    let total = 0;
+                    
+                    if (order.items) {
+                        Object.entries(order.items).forEach(([id, item]) => {
+                            itemsHtml += `
+                                <div class="order-item" data-item-id="${id}">
+                                    <div class="order-item-info">
+                                        <h4>${item.name}</h4>
+                                        <p class="order-item-comments">${item.comments || ''}</p>
+                                    </div>
+                                    <div class="order-item-price">
+                                        $${item.price.toFixed(2)} x ${item.quantity} = $${(item.price * item.quantity).toFixed(2)}
+                                    </div>
+                                </div>
+                            `;
+                            total += item.price * item.quantity;
+                        });
+                    }
+                    
+                    orderDetails.innerHTML = `
+                        <div class="order-header">
+                            <h3>${order.tableName}</h3>
+                            <p>Creada: ${formatDate(order.createdAt)}</p>
+                        </div>
+                        
+                        <div class="order-items" id="orderItems">
+                            ${itemsHtml || '<p>No hay items en esta orden</p>'}
+                        </div>
+                        
+                        <div class="order-total">
+                            Total: $${total.toFixed(2)}
+                        </div>
+                        
+                        <div class="order-actions">
+                            <button id="addItemBtn" class="btn-primary"><i class="fas fa-plus"></i> Agregar Item</button>
+                            <button id="closeOrderBtn" class="btn-primary"><i class="fas fa-check"></i> Cerrar Orden</button>
+                        </div>
+                    `;
+                    
+                    // Reasignar event listeners
+                    document.getElementById('addItemBtn').addEventListener('click', openAddItemModal);
+                    document.getElementById('closeOrderBtn').addEventListener('click', openCloseOrderModal);
+                    
+                    // Agregar evento para eliminar items (doble clic)
+                    document.querySelectorAll('.order-item').forEach(item => {
+                        item.addEventListener('dblclick', function() {
+                            const itemId = this.getAttribute('data-item-id');
+                            showConfirmModal(
+                                'Eliminar Item', 
+                                '¿Estás seguro que deseas eliminar este item de la orden?',
+                                () => removeItemFromOrder(orderId, itemId)
+                            );
+                        });
+                    });
+                }
+            });
+        }
+
+        // Cargar datos de ventas
+        function loadSalesData() {
+            const salesList = document.getElementById('salesList');
+            salesList.innerHTML = '<tr><td colspan="5">Cargando ventas...</td></tr>';
+            
+            let startDate, endDate = new Date();
+            endDate.setHours(23, 59, 59, 999);
+            
+            switch (currentFilter) {
+                case 'day':
+                    startDate = new Date();
+                    startDate.setHours(0, 0, 0, 0);
+                    break;
+                case 'week':
+                    startDate = new Date();
+                    startDate.setDate(startDate.getDate() - startDate.getDay());
+                    startDate.setHours(0, 0, 0, 0);
+                    break;
+                case 'month':
+                    startDate = new Date();
+                    startDate.setDate(1);
+                    startDate.setHours(0, 0, 0, 0);
+                    break;
+            }
+            
+            database.ref('orders').orderByChild('closedAt').startAt(startDate.getTime()).endAt(endDate.getTime()).once('value').then(snapshot => {
+                const orders = snapshot.val();
+                salesList.innerHTML = '';
+                let totalSales = 0;
+                let totalOrders = 0;
+                
+                if (orders) {
+                    Object.entries(orders).forEach(([id, order]) => {
+                        if (order.status === 'closed') {
+                            totalOrders++;
+                            let orderTotal = 0;
+                            
+                            if (order.items) {
+                                Object.values(order.items).forEach(item => {
+                                    orderTotal += item.price * item.quantity;
+                                });
+                            }
+                            
+                            totalSales += orderTotal;
+                            
+                            const saleRow = document.createElement('tr');
+                            saleRow.innerHTML = `
+                                <td>${formatDate(order.closedAt)}</td>
+                                <td>${order.tableName}</td>
+                                <td>${order.items ? Object.keys(order.items).length : 0}</td>
+                                <td>$${orderTotal.toFixed(2)}</td>
+                                <td>
+                                    <button class="btn-secondary btn-sm view-order" data-order-id="${id}">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button class="btn-secondary btn-sm delete-order" data-order-id="${id}">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            `;
+                            
+                            salesList.appendChild(saleRow);
+                        }
+                    });
+                    
+                    // Agregar event listeners a los botones
+                    document.querySelectorAll('.view-order').forEach(btn => {
+                        btn.addEventListener('click', function() {
+                            const orderId = this.getAttribute('data-order-id');
+                            viewClosedOrder(orderId);
+                        });
+                    });
+                    
+                    document.querySelectorAll('.delete-order').forEach(btn => {
+                        btn.addEventListener('click', function() {
+                            const orderId = this.getAttribute('data-order-id');
+                            showConfirmModal(
+                                'Eliminar Orden', 
+                                '¿Estás seguro que deseas eliminar permanentemente esta orden?',
+                                () => deleteOrder(orderId)
+                            );
+                        });
+                    });
+                }
+                
+                if (totalOrders === 0) {
+                    salesList.innerHTML = '<tr><td colspan="5">No hay ventas registradas</td></tr>';
+                }
+                
+                // Actualizar resumen
+                document.getElementById('totalSales').textContent = `$${totalSales.toFixed(2)}`;
+                document.getElementById('totalOrders').textContent = totalOrders;
+            });
+        }
+
+        // Cargar secciones del menú
+        function loadMenuSections() {
+            if (!isAdmin) return;
+            
+            const menuSections = document.getElementById('menuSections');
+            menuSections.innerHTML = '<p>Cargando menú...</p>';
+            
+            database.ref('menuSections').on('value', snapshot => {
+                const sections = snapshot.val();
+                menuSections.innerHTML = '';
+                
+                if (sections) {
+                    Object.entries(sections).forEach(([id, section]) => {
+                        const sectionDiv = document.createElement('div');
+                        sectionDiv.className = 'menu-section';
+                        sectionDiv.setAttribute('data-section-id', id);
+                        
+                        let itemsHtml = '';
+                        
+                        if (section.items) {
+                            Object.entries(section.items).forEach(([itemId, item]) => {
+                                itemsHtml += `
+                                    <div class="menu-item" data-item-id="${itemId}">
+                                        <h4>${item.name}</h4>
+                                        <p>$${item.price.toFixed(2)}</p>
+                                        <div class="item-actions">
+                                            <button class="btn-secondary btn-sm edit-item">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn-secondary btn-sm delete-item">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                `;
+                            });
+                        }
+                        
+                        sectionDiv.innerHTML = `
+                            <div class="section-header">
+                                <h3>${section.name}</h3>
+                                <div class="section-actions">
+                                    <button class="btn-primary btn-sm add-item">
+                                        <i class="fas fa-plus"></i> Item
+                                    </button>
+                                    <button class="btn-secondary btn-sm edit-section">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn-secondary btn-sm delete-section">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="menu-items">
+                                ${itemsHtml || '<p>No hay items en esta sección</p>'}
+                            </div>
+                        `;
+                        
+                        // Agregar event listeners
+                        sectionDiv.querySelector('.add-item').addEventListener('click', () => {
+                            currentSectionId = id;
+                            currentItemId = null;
+                            document.getElementById('itemModalTitle').textContent = 'Nuevo Item';
+                            document.getElementById('itemName').value = '';
+                            document.getElementById('itemPrice').value = '';
+                            document.getElementById('itemModal').classList.add('show');
+                        });
+                        
+                        sectionDiv.querySelector('.edit-section').addEventListener('click', () => {
+                            currentSectionId = id;
+                            document.getElementById('sectionModalTitle').textContent = 'Editar Sección';
+                            document.getElementById('sectionName').value = section.name;
+                            document.getElementById('sectionModal').classList.add('show');
+                        });
+                        
+                        sectionDiv.querySelector('.delete-section').addEventListener('click', () => {
+                            showConfirmModal(
+                                'Eliminar Sección', 
+                                '¿Estás seguro que deseas eliminar esta sección y todos sus items?',
+                                () => deleteMenuSection(id)
+                            );
+                        });
+                        
+                        // Event listeners para items
+                        sectionDiv.querySelectorAll('.edit-item').forEach((btn, index) => {
+                            btn.addEventListener('click', () => {
+                                const itemId = sectionDiv.querySelectorAll('.menu-item')[index].getAttribute('data-item-id');
+                                const item = section.items[itemId];
+                                
+                                currentSectionId = id;
+                                currentItemId = itemId;
+                                
+                                document.getElementById('itemModalTitle').textContent = 'Editar Item';
+                                document.getElementById('itemName').value = item.name;
+                                document.getElementById('itemPrice').value = item.price;
+                                document.getElementById('itemModal').classList.add('show');
+                            });
+                        });
+                        
+                        sectionDiv.querySelectorAll('.delete-item').forEach((btn, index) => {
+                            btn.addEventListener('click', () => {
+                                const itemId = sectionDiv.querySelectorAll('.menu-item')[index].getAttribute('data-item-id');
+                                
+                                showConfirmModal(
+                                    'Eliminar Item', 
+                                    '¿Estás seguro que deseas eliminar este item del menú?',
+                                    () => deleteMenuItem(id, itemId)
+                                );
+                            });
+                        });
+                        
+                        menuSections.appendChild(sectionDiv);
+                    });
+                } else {
+                    menuSections.innerHTML = '<p>No hay secciones en el menú</p>';
+                }
+            });
+        }
+
+        // Abrir modal de nueva orden
+        function openNewOrderModal() {
+            document.getElementById('tableName').value = '';
+            document.getElementById('newOrderModal').classList.add('show');
+        }
+
+        // Crear nueva orden
+        function createNewOrder() {
+            const tableName = document.getElementById('tableName').value.trim();
+            
             if (!tableName) {
                 alert('Por favor ingresa un nombre para la mesa');
                 return;
             }
-
-            currentOrder = {
+            
+            const newOrder = {
                 tableName,
-                timestamp: firebase.database.ServerValue.TIMESTAMP,
-                status: 'open'
+                status: 'active',
+                createdAt: Date.now(),
+                items: {}
             };
-
-            currentOrderItems = [];
-            currentTableNameSpan.textContent = tableName;
-            orderComments.value = '';
-            currentOrderDiv.style.display = 'block';
-            renderOrderItems();
-        }
-
-        function cancelOrder() {
-            currentOrder = null;
-            currentOrderItems = [];
-            currentOrderDiv.style.display = 'none';
-            tableNameInput.value = '';
-        }
-
-        function completeOrder() {
-            if (currentOrderItems.length === 0) {
-                alert('No hay items en el pedido');
-                return;
-            }
-
-            const orderData = {
-                ...currentOrder,
-                items: currentOrderItems,
-                comments: orderComments.value.trim(),
-                status: 'completed',
-                total: calculateOrderTotal()
-            };
-
+            
             const newOrderRef = database.ref('orders').push();
-            newOrderRef.set(orderData)
+            newOrderRef.set(newOrder)
                 .then(() => {
-                    alert('Pedido completado con éxito');
-                    cancelOrder();
-                    loadSales();
+                    document.getElementById('newOrderModal').classList.remove('show');
+                    currentOrderId = newOrderRef.key;
+                    loadOrderDetails(currentOrderId);
+                    
+                    // Marcar como activa en la lista
+                    setTimeout(() => {
+                        const orderCard = document.querySelector(`.order-card[data-order-id="${currentOrderId}"]`);
+                        if (orderCard) {
+                            orderCard.click();
+                        }
+                    }, 500);
                 })
                 .catch(error => {
-                    console.error('Error al guardar el pedido:', error);
-                    alert('Error al guardar el pedido');
+                    console.error('Error al crear orden:', error);
+                    alert('Hubo un error al crear la orden');
                 });
         }
 
-        function calculateOrderTotal() {
-            return currentOrderItems.reduce((total, item) => total + (item.price * item.quantity), 0);
-        }
-
-        function addItemToOrder(item) {
-            const existingItem = currentOrderItems.find(i => i.id === item.id);
-            if (existingItem) {
-                existingItem.quantity += 1;
-            } else {
-                currentOrderItems.push({
-                    ...item,
-                    quantity: 1
-                });
-            }
-            renderOrderItems();
-        }
-
-        function removeItemFromOrder(itemId) {
-            const itemIndex = currentOrderItems.findIndex(i => i.id === itemId);
-            if (itemIndex !== -1) {
-                currentOrderItems.splice(itemIndex, 1);
-                renderOrderItems();
-            }
-        }
-
-        function updateItemQuantity(itemId, newQuantity) {
-            const item = currentOrderItems.find(i => i.id === itemId);
-            if (item) {
-                if (newQuantity <= 0) {
-                    removeItemFromOrder(itemId);
-                } else {
-                    item.quantity = newQuantity;
-                    renderOrderItems();
-                }
-            }
-        }
-
-        function renderOrderItems() {
-            orderItemsList.innerHTML = '';
+        // Abrir modal para agregar item
+        function openAddItemModal() {
+            if (!currentOrderId) return;
             
-            if (currentOrderItems.length === 0) {
-                orderItemsList.innerHTML = '<p>No hay items en el pedido</p>';
+            // Limpiar selects
+            const itemSectionSelect = document.getElementById('itemSection');
+            const itemSelect = document.getElementById('itemSelect');
+            itemSectionSelect.innerHTML = '<option value="">Cargando secciones...</option>';
+            itemSelect.innerHTML = '<option value="">Selecciona una sección primero</option>';
+            
+            // Cargar secciones
+            database.ref('menuSections').once('value').then(snapshot => {
+                const sections = snapshot.val();
+                itemSectionSelect.innerHTML = '<option value="">Selecciona una sección</option>';
+                
+                if (sections) {
+                    Object.entries(sections).forEach(([id, section]) => {
+                        const option = document.createElement('option');
+                        option.value = id;
+                        option.textContent = section.name;
+                        itemSectionSelect.appendChild(option);
+                    });
+                }
+            });
+            
+            // Resetear otros campos
+            document.getElementById('itemQuantity').value = '1';
+            document.getElementById('itemComments').value = '';
+            
+            // Mostrar modal
+            document.getElementById('addItemModal').classList.add('show');
+            
+            // Event listener para cambio de sección
+            itemSectionSelect.addEventListener('change', function() {
+                const sectionId = this.value;
+                itemSelect.innerHTML = '<option value="">Cargando items...</option>';
+                
+                if (sectionId) {
+                    database.ref(`menuSections/${sectionId}/items`).once('value').then(snapshot => {
+                        const items = snapshot.val();
+                        itemSelect.innerHTML = '<option value="">Selecciona un item</option>';
+                        
+                        if (items) {
+                            Object.entries(items).forEach(([id, item]) => {
+                                const option = document.createElement('option');
+                                option.value = id;
+                                option.textContent = `${item.name} - $${item.price.toFixed(2)}`;
+                                option.setAttribute('data-price', item.price);
+                                itemSelect.appendChild(option);
+                            });
+                        }
+                    });
+                } else {
+                    itemSelect.innerHTML = '<option value="">Selecciona una sección primero</option>';
+                }
+            });
+        }
+
+        // Agregar item a la orden
+        function addItemToOrder() {
+            if (!currentOrderId) return;
+            
+            const sectionId = document.getElementById('itemSection').value;
+            const itemId = document.getElementById('itemSelect').value;
+            const quantity = parseInt(document.getElementById('itemQuantity').value);
+            const comments = document.getElementById('itemComments').value.trim();
+            
+            if (!sectionId || !itemId || !quantity || quantity < 1) {
+                alert('Por favor completa todos los campos requeridos');
                 return;
             }
-
-            currentOrderItems.forEach(item => {
-                const itemDiv = document.createElement('div');
-                itemDiv.className = 'order-item';
-                
-                itemDiv.innerHTML = `
-                    <div>
-                        <span>${item.name}</span>
-                        <span>$${item.price.toFixed(2)}</span>
-                    </div>
-                    <div class="order-item-controls">
-                        <input type="number" value="${item.quantity}" min="1" 
-                            onchange="updateItemQuantity('${item.id}', this.value)">
-                        <button onclick="removeItemFromOrder('${item.id}')">✕</button>
-                    </div>
-                `;
-                
-                orderItemsList.appendChild(itemDiv);
-            });
-
-            const totalDiv = document.createElement('div');
-            totalDiv.className = 'order-item';
-            totalDiv.innerHTML = `
-                <div>
-                    <strong>Total</strong>
-                </div>
-                <div>
-                    <strong>$${calculateOrderTotal().toFixed(2)}</strong>
-                </div>
-            `;
-            orderItemsList.appendChild(totalDiv);
-        }
-
-        function loadMenuSections() {
-            database.ref('menuSections').once('value')
-                .then(snapshot => {
-                    const sections = snapshot.val() || {};
-                    renderMenuSectionsSelect(sections);
-                    
-                    if (isAdmin) {
-                        renderMenuSectionsAdmin(sections);
-                    } else {
-                        renderMenuItems(sections);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error al cargar secciones del menú:', error);
-                });
-        }
-
-        function renderMenuSectionsSelect(sections) {
-            menuSectionsSelect.innerHTML = '<option value="">Selecciona una sección</option>';
             
-            Object.entries(sections).forEach(([id, section]) => {
-                const option = document.createElement('option');
-                option.value = id;
-                option.textContent = section.name;
-                menuSectionsSelect.appendChild(option);
-            });
-
-            menuSectionsSelect.addEventListener('change', (e) => {
-                const sectionId = e.target.value;
-                if (sectionId) {
-                    database.ref(`menuSections/${sectionId}/items`).once('value')
-                        .then(snapshot => {
-                            const items = snapshot.val() || {};
-                            renderMenuItemsForSection(items);
+            // Obtener información del item
+            database.ref(`menuSections/${sectionId}/items/${itemId}`).once('value').then(snapshot => {
+                const item = snapshot.val();
+                
+                if (item) {
+                    const newItem = {
+                        sectionId,
+                        sectionName: document.getElementById('itemSection').options[document.getElementById('itemSection').selectedIndex].text,
+                        itemId,
+                        name: item.name,
+                        price: item.price,
+                        quantity,
+                        comments
+                    };
+                    
+                    // Agregar a la orden
+                    database.ref(`orders/${currentOrderId}/items`).push(newItem)
+                        .then(() => {
+                            document.getElementById('addItemModal').classList.remove('show');
+                            loadOrderDetails(currentOrderId);
+                        })
+                        .catch(error => {
+                            console.error('Error al agregar item:', error);
+                            alert('Hubo un error al agregar el item');
                         });
-                } else {
-                    menuItemsList.innerHTML = '';
                 }
             });
         }
 
-        function renderMenuItemsForSection(items) {
-            menuItemsList.innerHTML = '';
+        // Remover item de la orden
+        function removeItemFromOrder(orderId, itemId) {
+            database.ref(`orders/${orderId}/items/${itemId}`).remove()
+                .then(() => {
+                    loadOrderDetails(orderId);
+                })
+                .catch(error => {
+                    console.error('Error al eliminar item:', error);
+                    alert('Hubo un error al eliminar el item');
+                });
+        }
+
+        // Abrir modal para cerrar orden
+        function openCloseOrderModal() {
+            if (!currentOrderId) return;
             
-            Object.entries(items).forEach(([id, item]) => {
-                const itemDiv = document.createElement('div');
-                itemDiv.className = 'menu-item';
-                itemDiv.innerHTML = `
-                    <h3>${item.name}</h3>
-                    <p>$${item.price.toFixed(2)}</p>
-                    ${item.description ? `<p>${item.description}</p>` : ''}
-                `;
-                itemDiv.addEventListener('click', () => addItemToOrder({...item, id}));
-                menuItemsList.appendChild(itemDiv);
+            const orderSummary = document.getElementById('closeOrderSummary');
+            orderSummary.innerHTML = '<p>Cargando resumen...</p>';
+            
+            database.ref(`orders/${currentOrderId}`).once('value').then(snapshot => {
+                const order = snapshot.val();
+                
+                if (order) {
+                    let itemsHtml = '';
+                    let total = 0;
+                    
+                    if (order.items) {
+                        Object.entries(order.items).forEach(([id, item]) => {
+                            itemsHtml += `
+                                <div class="order-item">
+                                    <div class="order-item-info">
+                                        <h4>${item.name}</h4>
+                                        <p class="order-item-comments">${item.comments || ''}</p>
+                                    </div>
+                                    <div class="order-item-price">
+                                        $${item.price.toFixed(2)} x ${item.quantity} = $${(item.price * item.quantity).toFixed(2)}
+                                    </div>
+                                </div>
+                            `;
+                            total += item.price * item.quantity;
+                        });
+                    }
+                    
+                    orderSummary.innerHTML = `
+                        <h3>${order.tableName}</h3>
+                        <p>Fecha: ${formatDate(order.createdAt)}</p>
+                        <div class="order-items">
+                            ${itemsHtml || '<p>No hay items en esta orden</p>'}
+                        </div>
+                        <div class="order-total">
+                            Total: $${total.toFixed(2)}
+                        </div>
+                    `;
+                    
+                    document.getElementById('finalComments').value = '';
+                    document.getElementById('closeOrderModal').classList.add('show');
+                }
             });
         }
 
-        function renderMenuItems(sections) {
-            menuItemsList.innerHTML = '';
+        // Cerrar orden
+        function closeOrder() {
+            if (!currentOrderId) return;
             
-            Object.entries(sections).forEach(([sectionId, section]) => {
-                if (section.items) {
-                    Object.entries(section.items).forEach(([itemId, item]) => {
-                        const itemDiv = document.createElement('div');
-                        itemDiv.className = 'menu-item';
-                        itemDiv.innerHTML = `
-                            <h3>${item.name}</h3>
-                            <p>$${item.price.toFixed(2)}</p>
-                            ${item.description ? `<p>${item.description}</p>` : ''}
-                        `;
-                        itemDiv.addEventListener('click', () => addItemToOrder({...item, id: itemId}));
-                        menuItemsList.appendChild(itemDiv);
+            const finalComments = document.getElementById('finalComments').value.trim();
+            
+            database.ref(`orders/${currentOrderId}`).update({
+                status: 'closed',
+                closedAt: Date.now(),
+                finalComments
+            })
+            .then(() => {
+                document.getElementById('closeOrderModal').classList.remove('show');
+                currentOrderId = null;
+                loadActiveOrders();
+                loadSalesData();
+                
+                // Limpiar detalles de orden
+                document.getElementById('orderDetails').innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-clipboard-list"></i>
+                        <p>Selecciona una orden o crea una nueva</p>
+                    </div>
+                `;
+            })
+            .catch(error => {
+                console.error('Error al cerrar orden:', error);
+                alert('Hubo un error al cerrar la orden');
+            });
+        }
+
+        // Ver orden cerrada
+        function viewClosedOrder(orderId) {
+            const orderDetails = document.getElementById('orderDetails');
+            orderDetails.innerHTML = '<p>Cargando detalles...</p>';
+            
+            database.ref(`orders/${orderId}`).once('value').then(snapshot => {
+                const order = snapshot.val();
+                
+                if (order) {
+                    let itemsHtml = '';
+                    let total = 0;
+                    
+                    if (order.items) {
+                        Object.entries(order.items).forEach(([id, item]) => {
+                            itemsHtml += `
+                                <div class="order-item">
+                                    <div class="order-item-info">
+                                        <h4>${item.name}</h4>
+                                        <p class="order-item-comments">${item.comments || ''}</p>
+                                    </div>
+                                    <div class="order-item-price">
+                                        $${item.price.toFixed(2)} x ${item.quantity} = $${(item.price * item.quantity).toFixed(2)}
+                                    </div>
+                                </div>
+                            `;
+                            total += item.price * item.quantity;
+                        });
+                    }
+                    
+                    orderDetails.innerHTML = `
+                        <div class="order-header">
+                            <h3>${order.tableName}</h3>
+                            <p>Cerrada: ${formatDate(order.closedAt)}</p>
+                            ${order.finalComments ? `<p class="final-comments">Comentarios: ${order.finalComments}</p>` : ''}
+                        </div>
+                        
+                        <div class="order-items">
+                            ${itemsHtml || '<p>No hay items en esta orden</p>'}
+                        </div>
+                        
+                        <div class="order-total">
+                            Total: $${total.toFixed(2)}
+                        </div>
+                        
+                        <div class="order-actions">
+                            <button id="backToSalesBtn" class="btn-primary"><i class="fas fa-arrow-left"></i> Volver a Ventas</button>
+                        </div>
+                    `;
+                    
+                    document.getElementById('backToSalesBtn').addEventListener('click', () => {
+                        document.querySelector('nav ul li[data-section="sales"]').click();
                     });
                 }
             });
         }
 
-        function renderMenuSectionsAdmin(sections) {
-            menuSectionsList.innerHTML = '';
-            
-            Object.entries(sections).forEach(([id, section]) => {
-                const sectionDiv = document.createElement('div');
-                sectionDiv.className = 'menu-section';
-                sectionDiv.innerHTML = `
-                    <div class="section-header">
-                        <h3>${section.name}</h3>
-                        <div class="section-actions">
-                            <button onclick="editSection('${id}', '${section.name}')">✏️</button>
-                            <button onclick="deleteSection('${id}')">✕</button>
-                        </div>
-                    </div>
-                    <div class="section-items" id="section-items-${id}"></div>
-                    <div class="add-form">
-                        <input type="text" id="new-item-name-${id}" placeholder="Nombre del platillo">
-                        <input type="number" id="new-item-price-${id}" placeholder="Precio" step="0.01">
-                        <button onclick="addItem('${id}')">Agregar</button>
-                    </div>
-                `;
-                menuSectionsList.appendChild(sectionDiv);
-                
-                if (section.items) {
-                    renderSectionItems(id, section.items);
-                }
-            });
+        // Eliminar orden
+        function deleteOrder(orderId) {
+            database.ref(`orders/${orderId}`).remove()
+                .then(() => {
+                    loadSalesData();
+                })
+                .catch(error => {
+                    console.error('Error al eliminar orden:', error);
+                    alert('Hubo un error al eliminar la orden');
+                });
         }
 
-        function renderSectionItems(sectionId, items) {
-            const itemsContainer = document.getElementById(`section-items-${sectionId}`);
-            if (!itemsContainer) return;
-            
-            itemsContainer.innerHTML = '';
-            
-            Object.entries(items).forEach(([id, item]) => {
-                const itemDiv = document.createElement('div');
-                itemDiv.className = 'section-item';
-                itemDiv.innerHTML = `
-                    <div>
-                        <strong>${item.name}</strong> - $${item.price.toFixed(2)}
-                        ${item.description ? `<p>${item.description}</p>` : ''}
-                    </div>
-                    <div class="item-actions">
-                        <button onclick="editItem('${sectionId}', '${id}', '${item.name}', ${item.price}, '${item.description || ''}')">✏️</button>
-                        <button onclick="deleteItem('${sectionId}', '${id}')">✕</button>
-                    </div>
-                `;
-                itemsContainer.appendChild(itemDiv);
-            });
+        // Abrir modal de sección
+        function openSectionModal() {
+            currentSectionId = null;
+            document.getElementById('sectionModalTitle').textContent = 'Nueva Sección';
+            document.getElementById('sectionName').value = '';
+            document.getElementById('sectionModal').classList.add('show');
         }
 
-        function addSection() {
-            const name = newSectionNameInput.value.trim();
-            if (!name) {
+        // Guardar sección
+        function saveSection() {
+            const sectionName = document.getElementById('sectionName').value.trim();
+            
+            if (!sectionName) {
                 alert('Por favor ingresa un nombre para la sección');
                 return;
             }
-
-            const newSectionRef = database.ref('menuSections').push();
-            newSectionRef.set({
-                name,
-                items: {}
-            })
-            .then(() => {
-                newSectionNameInput.value = '';
-                loadMenuSections();
-            })
-            .catch(error => {
-                console.error('Error al agregar sección:', error);
-                alert('Error al agregar sección');
-            });
-        }
-
-        function addItem(sectionId) {
-            const nameInput = document.getElementById(`new-item-name-${sectionId}`);
-            const priceInput = document.getElementById(`new-item-price-${sectionId}`);
             
-            const name = nameInput.value.trim();
-            const price = parseFloat(priceInput.value);
-            
-            if (!name || isNaN(price) {
-                alert('Por favor ingresa un nombre y precio válidos');
-                return;
-            }
-
-            const newItemRef = database.ref(`menuSections/${sectionId}/items`).push();
-            newItemRef.set({
-                name,
-                price,
-                description: ''
-            })
-            .then(() => {
-                nameInput.value = '';
-                priceInput.value = '';
-                loadMenuSections();
-            })
-            .catch(error => {
-                console.error('Error al agregar item:', error);
-                alert('Error al agregar item');
-            });
-        }
-
-        function editSection(id, name) {
-            editingType = 'section';
-            editingId = id;
-            modalTitle.textContent = 'Editar Sección';
-            editNameInput.value = name;
-            editPriceInput.style.display = 'none';
-            editDescriptionInput.style.display = 'none';
-            openModal();
-        }
-
-        function editItem(sectionId, itemId, name, price, description) {
-            editingType = 'item';
-            editingId = { sectionId, itemId };
-            modalTitle.textContent = 'Editar Platillo';
-            editNameInput.value = name;
-            editPriceInput.value = price;
-            editDescriptionInput.value = description;
-            editPriceInput.style.display = 'block';
-            editDescriptionInput.style.display = 'block';
-            openModal();
-        }
-
-        function openModal() {
-            editModal.style.display = 'flex';
-        }
-
-        function closeModal() {
-            editModal.style.display = 'none';
-            editingItem = null;
-            editingType = null;
-            editingId = null;
-        }
-
-        function saveEdit() {
-            if (editingType === 'section') {
-                const newName = editNameInput.value.trim();
-                if (!newName) {
-                    alert('Por favor ingresa un nombre válido');
-                    return;
-                }
-
-                database.ref(`menuSections/${editingId}/name`).set(newName)
-                    .then(() => {
-                        closeModal();
-                        loadMenuSections();
-                    })
-                    .catch(error => {
-                        console.error('Error al editar sección:', error);
-                        alert('Error al editar sección');
-                    });
-            } else if (editingType === 'item') {
-                const newName = editNameInput.value.trim();
-                const newPrice = parseFloat(editPriceInput.value);
-                const newDescription = editDescriptionInput.value.trim();
-                
-                if (!newName || isNaN(newPrice)) {
-                    alert('Por favor ingresa un nombre y precio válidos');
-                    return;
-                }
-
-                database.ref(`menuSections/${editingId.sectionId}/items/${editingId.itemId}`).update({
-                    name: newName,
-                    price: newPrice,
-                    description: newDescription
+            if (currentSectionId) {
+                // Editar sección existente
+                database.ref(`menuSections/${currentSectionId}`).update({
+                    name: sectionName
                 })
                 .then(() => {
-                    closeModal();
+                    document.getElementById('sectionModal').classList.remove('show');
+                })
+                .catch(error => {
+                    console.error('Error al editar sección:', error);
+                    alert('Hubo un error al editar la sección');
+                });
+            } else {
+                // Crear nueva sección
+                const newSection = {
+                    name: sectionName,
+                    items: {}
+                };
+                
+                database.ref('menuSections').push(newSection)
+                    .then(() => {
+                        document.getElementById('sectionModal').classList.remove('show');
+                    })
+                    .catch(error => {
+                        console.error('Error al crear sección:', error);
+                        alert('Hubo un error al crear la sección');
+                    });
+            }
+        }
+
+        // Eliminar sección del menú
+        function deleteMenuSection(sectionId) {
+            database.ref(`menuSections/${sectionId}`).remove()
+                .then(() => {
                     loadMenuSections();
                 })
                 .catch(error => {
-                    console.error('Error al editar item:', error);
-                    alert('Error al editar item');
-                });
-            }
-        }
-
-        function deleteSection(id) {
-            if (confirm('¿Estás seguro de que quieres eliminar esta sección y todos sus platillos?')) {
-                database.ref(`menuSections/${id}`).remove()
-                    .then(() => {
-                        loadMenuSections();
-                    })
-                    .catch(error => {
-                        console.error('Error al eliminar sección:', error);
-                        alert('Error al eliminar sección');
-                    });
-            }
-        }
-
-        function deleteItem(sectionId, itemId) {
-            if (confirm('¿Estás seguro de que quieres eliminar este platillo?')) {
-                database.ref(`menuSections/${sectionId}/items/${itemId}`).remove()
-                    .then(() => {
-                        loadMenuSections();
-                    })
-                    .catch(error => {
-                        console.error('Error al eliminar platillo:', error);
-                        alert('Error al eliminar platillo');
-                    });
-            }
-        }
-
-        function loadSales() {
-            const filter = salesFilter.value;
-            let query = database.ref('orders').orderByChild('status').equalTo('completed');
-            
-            if (filter === 'today') {
-                const today = new Date();
-                today.setHours(0, 0, 0, 0);
-                query = database.ref('orders').orderByChild('timestamp').startAt(today.getTime());
-            } else if (filter === 'week') {
-                const weekAgo = new Date();
-                weekAgo.setDate(weekAgo.getDate() - 7);
-                query = database.ref('orders').orderByChild('timestamp').startAt(weekAgo.getTime());
-            } else if (filter === 'month') {
-                const monthAgo = new Date();
-                monthAgo.setMonth(monthAgo.getMonth() - 1);
-                query = database.ref('orders').orderByChild('timestamp').startAt(monthAgo.getTime());
-            }
-
-            query.once('value')
-                .then(snapshot => {
-                    const orders = snapshot.val() || {};
-                    renderSales(orders);
-                })
-                .catch(error => {
-                    console.error('Error al cargar ventas:', error);
-                    alert('Error al cargar ventas');
+                    console.error('Error al eliminar sección:', error);
+                    alert('Hubo un error al eliminar la sección');
                 });
         }
 
-        function renderSales(orders) {
-            salesList.innerHTML = '';
+        // Guardar item
+        function saveItem() {
+            const itemName = document.getElementById('itemName').value.trim();
+            const itemPrice = parseFloat(document.getElementById('itemPrice').value);
             
-            if (Object.keys(orders).length === 0) {
-                salesList.innerHTML = '<p>No hay ventas registradas</p>';
+            if (!itemName || isNaN(itemPrice)) {
+                alert('Por favor completa todos los campos requeridos');
                 return;
             }
-
-            // Ordenar por fecha (más reciente primero)
-            const sortedOrders = Object.entries(orders).sort((a, b) => b[1].timestamp - a[1].timestamp);
             
-            sortedOrders.forEach(([id, order]) => {
-                const saleDiv = document.createElement('div');
-                saleDiv.className = 'sale';
-                
-                const date = new Date(order.timestamp);
-                const dateStr = date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
-                
-                saleDiv.innerHTML = `
-                    <div class="sale-header">
-                        <span><strong>Mesa:</strong> ${order.tableName}</span>
-                        <span>${dateStr}</span>
-                    </div>
-                    <div class="sale-items" id="sale-items-${id}"></div>
-                    <div class="sale-total">
-                        Total: $${order.total.toFixed(2)}
-                    </div>
-                    <div class="sale-actions">
-                        <button onclick="deleteSale('${id}')">Eliminar</button>
-                    </div>
-                `;
-                
-                salesList.appendChild(saleDiv);
-                
-                const itemsContainer = document.getElementById(`sale-items-${id}`);
-                order.items.forEach(item => {
-                    const itemDiv = document.createElement('div');
-                    itemDiv.className = 'sale-item';
-                    itemDiv.innerHTML = `
-                        <span>${item.quantity} x ${item.name}</span>
-                        <span>$${(item.price * item.quantity).toFixed(2)}</span>
-                    `;
-                    itemsContainer.appendChild(itemDiv);
+            if (!currentSectionId) {
+                alert('No se ha seleccionado una sección');
+                return;
+            }
+            
+            const newItem = {
+                name: itemName,
+                price: itemPrice
+            };
+            
+            if (currentItemId) {
+                // Editar item existente
+                database.ref(`menuSections/${currentSectionId}/items/${currentItemId}`).update(newItem)
+                    .then(() => {
+                        document.getElementById('itemModal').classList.remove('show');
+                    })
+                    .catch(error => {
+                        console.error('Error al editar item:', error);
+                        alert('Hubo un error al editar el item');
+                    });
+            } else {
+                // Crear nuevo item
+                database.ref(`menuSections/${currentSectionId}/items`).push(newItem)
+                    .then(() => {
+                        document.getElementById('itemModal').classList.remove('show');
+                    })
+                    .catch(error => {
+                        console.error('Error al crear item:', error);
+                        alert('Hubo un error al crear el item');
+                    });
+            }
+        }
+
+        // Eliminar item del menú
+        function deleteMenuItem(sectionId, itemId) {
+            database.ref(`menuSections/${sectionId}/items/${itemId}`).remove()
+                .then(() => {
+                    loadMenuSections();
+                })
+                .catch(error => {
+                    console.error('Error al eliminar item:', error);
+                    alert('Hubo un error al eliminar el item');
                 });
-                
-                if (order.comments) {
-                    const commentsDiv = document.createElement('div');
-                    commentsDiv.className = 'sale-item';
-                    commentsDiv.innerHTML = `<em>Comentarios: ${order.comments}</em>`;
-                    itemsContainer.appendChild(commentsDiv);
-                }
+        }
+
+        // Mostrar modal de confirmación
+        function showConfirmModal(title, message, confirmCallback) {
+            document.getElementById('confirmModalTitle').textContent = title;
+            document.getElementById('confirmModalMessage').textContent = message;
+            document.getElementById('confirmModal').classList.add('show');
+            
+            // Limpiar event listeners anteriores
+            const confirmBtn = document.getElementById('confirmModalConfirm');
+            const cancelBtn = document.getElementById('confirmModalCancel');
+            
+            confirmBtn.replaceWith(confirmBtn.cloneNode(true));
+            cancelBtn.replaceWith(cancelBtn.cloneNode(true));
+            
+            // Asignar nuevos event listeners
+            document.getElementById('confirmModalConfirm').addEventListener('click', () => {
+                confirmCallback();
+                document.getElementById('confirmModal').classList.remove('show');
+            });
+            
+            document.getElementById('confirmModalCancel').addEventListener('click', () => {
+                document.getElementById('confirmModal').classList.remove('show');
             });
         }
 
-        function deleteSale(id) {
-            if (confirm('¿Estás seguro de que quieres eliminar esta venta?')) {
-                database.ref(`orders/${id}`).remove()
-                    .then(() => {
-                        loadSales();
-                    })
-                    .catch(error => {
-                        console.error('Error al eliminar venta:', error);
-                        alert('Error al eliminar venta');
-                    });
-            }
+        // Formatear fecha
+        function formatDate(timestamp) {
+            const date = new Date(timestamp);
+            return date.toLocaleDateString('es-MX', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
         }
-
-        // Hacer funciones accesibles globalmente para los eventos en línea
-        window.updateItemQuantity = updateItemQuantity;
-        window.removeItemFromOrder = removeItemFromOrder;
-        window.addItemToOrder = addItemToOrder;
-        window.editSection = editSection;
-        window.editItem = editItem;
-        window.deleteSection = deleteSection;
-        window.deleteItem = deleteItem;
-        window.addItem = addItem;
-        window.deleteSale = deleteSale;
     </script>
 </body>
 </html>
