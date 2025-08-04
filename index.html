@@ -287,6 +287,7 @@
             margin-top: 1.5rem;
             display: flex;
             gap: 1rem;
+            flex-wrap: wrap;
         }
 
         .order-total {
@@ -500,6 +501,94 @@
             margin-top: 1.5rem;
         }
 
+        /* Estilos para los botones de estado */
+        .btn-status {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            margin-right: 0.5rem;
+            transition: all 0.3s;
+        }
+
+        .btn-status.pending {
+            background-color: #ffc107;
+            color: #000;
+        }
+
+        .btn-status.preparation {
+            background-color: #fd7e14;
+            color: #fff;
+        }
+
+        .btn-status.ready {
+            background-color: #28a745;
+            color: #fff;
+        }
+
+        .btn-status:hover {
+            opacity: 0.9;
+        }
+
+        /* Estilos para pantalla de cocina */
+        .kitchen-orders {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .kitchen-card {
+            background-color: var(--white);
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            border-left: 4px solid #ffc107;
+        }
+
+        .kitchen-card.preparation {
+            border-left-color: #fd7e14;
+        }
+
+        .kitchen-card.ready {
+            border-left-color: #28a745;
+        }
+
+        .kitchen-card .order-header {
+            border-bottom: 1px solid #eee;
+            padding-bottom: 0.5rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .kitchen-item {
+            display: flex;
+            gap: 0.5rem;
+            padding: 0.5rem 0;
+            border-bottom: 1px dashed #eee;
+            align-items: center;
+        }
+
+        .item-quantity {
+            font-weight: bold;
+            min-width: 20px;
+        }
+
+        .item-comments {
+            font-size: 0.8rem;
+            color: var(--gray);
+            font-style: italic;
+            display: block;
+            margin-top: 0.2rem;
+        }
+
+        .time-ago {
+            font-size: 0.8rem;
+            color: var(--gray);
+        }
+
         @media (max-width: 768px) {
             .order-controls {
                 flex-direction: column;
@@ -521,6 +610,19 @@
                 align-items: flex-start;
                 gap: 1rem;
             }
+
+            .order-actions {
+                flex-direction: column;
+            }
+
+            .btn-status {
+                width: 100%;
+                margin-bottom: 0.5rem;
+            }
+
+            .kitchen-orders {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -533,6 +635,11 @@
         </div>
     </div>
 
+    <!-- Audio para notificación de nuevos pedidos -->
+    <audio id="newOrderSound" preload="auto">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-alarm-digital-clock-beep-989.mp3" type="audio/mpeg">
+    </audio>
+
     <header>
         <div class="logo">
             <h1>MURRITOS</h1>
@@ -540,6 +647,7 @@
         <nav>
             <ul>
                 <li class="active" data-section="orders"><i class="fas fa-clipboard-list"></i> Pedidos</li>
+                <li data-section="kitchen"><i class="fas fa-utensils"></i> Cocina</li>
                 <li data-section="sales"><i class="fas fa-chart-line"></i> Ventas</li>
                 <li data-section="menu" id="menuTab"><i class="fas fa-utensils"></i> Menú</li>
             </ul>
@@ -569,6 +677,22 @@
                         <p>Selecciona una orden o crea una nueva</p>
                     </div>
                 </div>
+            </div>
+        </section>
+
+        <!-- Sección de Cocina -->
+        <section id="kitchen" class="section">
+            <div class="section-header">
+                <h2>Pantalla de Cocina</h2>
+                <div class="time-filters">
+                    <button class="btn-filter active" data-kitchen-filter="pending">Pendientes</button>
+                    <button class="btn-filter" data-kitchen-filter="preparation">En Preparación</button>
+                    <button class="btn-filter" data-kitchen-filter="ready">Listos</button>
+                </div>
+            </div>
+            
+            <div class="kitchen-orders" id="kitchenOrders">
+                <!-- Las órdenes se cargarán aquí -->
             </div>
         </section>
 
@@ -742,6 +866,8 @@
         let currentSectionId = null;
         let currentItemId = null;
         let currentFilter = 'day';
+        let lastOrderCount = 0;
+        const newOrderSound = document.getElementById('newOrderSound');
 
         // Inicialización de la aplicación
         document.addEventListener('DOMContentLoaded', function() {
@@ -755,6 +881,7 @@
             loadActiveOrders();
             loadSalesData();
             loadMenuSections();
+            loadKitchenOrders('pending');
         });
 
         // Configurar event listeners
@@ -778,6 +905,11 @@
                     // Mostrar la sección correspondiente
                     const sectionId = this.getAttribute('data-section');
                     document.getElementById(sectionId).classList.add('active');
+                    
+                    // Si es la sección de cocina, cargar las órdenes pendientes
+                    if (sectionId === 'kitchen') {
+                        loadKitchenOrders('pending');
+                    }
                 });
             });
             
@@ -809,6 +941,16 @@
                     this.classList.add('active');
                     currentFilter = this.getAttribute('data-filter');
                     loadSalesData();
+                });
+            });
+            
+            // Filtros de cocina
+            document.querySelectorAll('[data-kitchen-filter]').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('[data-kitchen-filter]').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    const filter = this.getAttribute('data-kitchen-filter');
+                    loadKitchenOrders(filter);
                 });
             });
             
@@ -868,6 +1010,14 @@
                 const orders = snapshot.val();
                 activeOrdersList.innerHTML = '';
                 
+                const currentOrderCount = orders ? Object.keys(orders).length : 0;
+                
+                // Reproducir sonido si hay un nuevo pedido
+                if (currentOrderCount > lastOrderCount) {
+                    newOrderSound.play();
+                }
+                lastOrderCount = currentOrderCount;
+                
                 if (orders) {
                     Object.entries(orders).forEach(([id, order]) => {
                         const orderCard = document.createElement('div');
@@ -878,6 +1028,13 @@
                             <h4>${order.tableName}</h4>
                             <p>${order.items ? Object.keys(order.items).length : 0} items</p>
                             <p>${formatDate(order.createdAt)}</p>
+                            <small class="time-ago">${formatTimeAgo(order.createdAt)}</small>
+                            <div class="order-status">
+                                <span class="status-badge ${order.preparationStatus || 'pending'}">
+                                    ${order.preparationStatus === 'ready' ? 'Listo' : 
+                                     order.preparationStatus === 'preparation' ? 'En Preparación' : 'Pendiente'}
+                                </span>
+                            </div>
                         `;
                         
                         orderCard.addEventListener('click', function() {
@@ -930,6 +1087,12 @@
                         <div class="order-header">
                             <h3>${order.tableName}</h3>
                             <p>Creada: ${formatDate(order.createdAt)}</p>
+                            <p>Estado: 
+                                <span class="status-badge ${order.preparationStatus || 'pending'}">
+                                    ${order.preparationStatus === 'ready' ? 'Listo' : 
+                                     order.preparationStatus === 'preparation' ? 'En Preparación' : 'Pendiente'}
+                                </span>
+                            </p>
                         </div>
                         
                         <div class="order-items" id="orderItems">
@@ -942,6 +1105,11 @@
                         
                         <div class="order-actions">
                             <button id="addItemBtn" class="btn-primary"><i class="fas fa-plus"></i> Agregar Item</button>
+                            <button id="preparationBtn" class="btn-status ${order.preparationStatus === 'ready' ? 'ready' : 
+                                                                          order.preparationStatus === 'preparation' ? 'preparation' : 'pending'}">
+                                ${order.preparationStatus === 'ready' ? 'Listo' : 
+                                 order.preparationStatus === 'preparation' ? 'En Preparación' : 'Marcar como En Preparación'}
+                            </button>
                             <button id="closeOrderBtn" class="btn-primary"><i class="fas fa-check"></i> Cerrar Orden</button>
                         </div>
                     `;
@@ -949,6 +1117,18 @@
                     // Reasignar event listeners
                     document.getElementById('addItemBtn').addEventListener('click', openAddItemModal);
                     document.getElementById('closeOrderBtn').addEventListener('click', openCloseOrderModal);
+                    
+                    // Botón de estado de preparación
+                    document.getElementById('preparationBtn').addEventListener('click', function() {
+                        const currentStatus = order.preparationStatus || 'pending';
+                        let newStatus;
+                        
+                        if (currentStatus === 'pending') newStatus = 'preparation';
+                        else if (currentStatus === 'preparation') newStatus = 'ready';
+                        else return;
+                        
+                        updatePreparationStatus(orderId, newStatus);
+                    });
                     
                     // Agregar evento para eliminar items (doble clic)
                     document.querySelectorAll('.order-item').forEach(item => {
@@ -963,6 +1143,114 @@
                     });
                 }
             });
+        }
+
+        // Actualizar estado de preparación
+        function updatePreparationStatus(orderId, status) {
+            database.ref(`orders/${orderId}`).update({
+                preparationStatus: status
+            }).then(() => {
+                // Actualizar vista en todas las secciones
+                loadOrderDetails(orderId);
+                loadActiveOrders();
+                loadKitchenOrders();
+            }).catch(error => {
+                console.error('Error al actualizar estado:', error);
+                alert('Hubo un error al actualizar el estado');
+            });
+        }
+
+        // Cargar órdenes para cocina
+        function loadKitchenOrders(filter = 'pending') {
+            const kitchenOrders = document.getElementById('kitchenOrders');
+            kitchenOrders.innerHTML = '<p>Cargando órdenes...</p>';
+            
+            database.ref('orders').orderByChild('status').equalTo('active').once('value').then(snapshot => {
+                const orders = snapshot.val();
+                kitchenOrders.innerHTML = '';
+                
+                if (orders) {
+                    // Convertir a array y ordenar por fecha (más recientes primero)
+                    const ordersArray = Object.entries(orders).map(([id, order]) => ({ id, ...order }));
+                    ordersArray.sort((a, b) => b.createdAt - a.createdAt);
+                    
+                    let hasOrders = false;
+                    
+                    ordersArray.forEach(({ id, ...order }) => {
+                        if (filter === 'all' || order.preparationStatus === filter || 
+                            (filter === 'pending' && !order.preparationStatus)) {
+                            
+                            hasOrders = true;
+                            const orderCard = document.createElement('div');
+                            orderCard.className = `order-card kitchen-card ${order.preparationStatus || 'pending'}`;
+                            orderCard.innerHTML = `
+                                <div class="order-header">
+                                    <h3>${order.tableName}</h3>
+                                    <span class="time-ago">${formatTimeAgo(order.createdAt)}</span>
+                                </div>
+                                <div class="order-items">
+                                    ${renderKitchenItems(order.items)}
+                                </div>
+                                <div class="order-actions">
+                                    <button class="btn-status ${order.preparationStatus === 'ready' ? 'ready' : 
+                                                              order.preparationStatus === 'preparation' ? 'preparation' : 'pending'}" 
+                                        data-order-id="${id}">
+                                        ${order.preparationStatus === 'ready' ? 'Listo' : 
+                                         order.preparationStatus === 'preparation' ? 'En Preparación' : 'Marcar como En Preparación'}
+                                    </button>
+                                </div>
+                            `;
+                            
+                            kitchenOrders.appendChild(orderCard);
+                            
+                            // Event listener para el botón de estado
+                            orderCard.querySelector('.btn-status').addEventListener('click', function() {
+                                const currentStatus = order.preparationStatus || 'pending';
+                                let newStatus;
+                                
+                                if (currentStatus === 'pending') newStatus = 'preparation';
+                                else if (currentStatus === 'preparation') newStatus = 'ready';
+                                else return;
+                                
+                                updatePreparationStatus(id, newStatus);
+                            });
+                        }
+                    });
+                    
+                    if (!hasOrders) {
+                        kitchenOrders.innerHTML = `<p>No hay órdenes ${getFilterName(filter)}</p>`;
+                    }
+                } else {
+                    kitchenOrders.innerHTML = '<p>No hay órdenes activas</p>';
+                }
+            });
+        }
+
+        // Función auxiliar para nombre del filtro
+        function getFilterName(filter) {
+            switch(filter) {
+                case 'pending': return 'pendientes';
+                case 'preparation': return 'en preparación';
+                case 'ready': return 'listas';
+                default: return '';
+            }
+        }
+
+        // Renderizar items para cocina
+        function renderKitchenItems(items) {
+            if (!items) return '<p>No hay items en esta orden</p>';
+            
+            let html = '';
+            Object.values(items).forEach(item => {
+                html += `
+                    <div class="kitchen-item">
+                        <span class="item-quantity">${item.quantity}x</span>
+                        <span class="item-name">${item.name}</span>
+                        ${item.comments ? `<span class="item-comments">${item.comments}</span>` : ''}
+                    </div>
+                `;
+            });
+            return html;
         }
 
         // Cargar datos de ventas
@@ -997,7 +1285,11 @@
                 let totalOrders = 0;
                 
                 if (orders) {
-                    Object.entries(orders).forEach(([id, order]) => {
+                    // Convertir a array y ordenar por fecha (más recientes primero)
+                    const ordersArray = Object.entries(orders).map(([id, order]) => ({ id, ...order }));
+                    ordersArray.sort((a, b) => b.closedAt - a.closedAt);
+                    
+                    ordersArray.forEach(({ id, ...order }) => {
                         if (order.status === 'closed') {
                             totalOrders++;
                             let orderTotal = 0;
@@ -1020,9 +1312,11 @@
                                     <button class="btn-secondary btn-sm view-order" data-order-id="${id}">
                                         <i class="fas fa-eye"></i>
                                     </button>
+                                    ${isAdmin ? `
                                     <button class="btn-secondary btn-sm delete-order" data-order-id="${id}">
                                         <i class="fas fa-trash"></i>
                                     </button>
+                                    ` : ''}
                                 </td>
                             `;
                             
@@ -1038,16 +1332,18 @@
                         });
                     });
                     
-                    document.querySelectorAll('.delete-order').forEach(btn => {
-                        btn.addEventListener('click', function() {
-                            const orderId = this.getAttribute('data-order-id');
-                            showConfirmModal(
-                                'Eliminar Orden', 
-                                '¿Estás seguro que deseas eliminar permanentemente esta orden?',
-                                () => deleteOrder(orderId)
-                            );
+                    if (isAdmin) {
+                        document.querySelectorAll('.delete-order').forEach(btn => {
+                            btn.addEventListener('click', function() {
+                                const orderId = this.getAttribute('data-order-id');
+                                showConfirmModal(
+                                    'Eliminar Orden', 
+                                    '¿Estás seguro que deseas eliminar permanentemente esta orden?',
+                                    () => deleteOrder(orderId)
+                                );
+                            });
                         });
-                    });
+                    }
                 }
                 
                 if (totalOrders === 0) {
@@ -1197,6 +1493,7 @@
             const newOrder = {
                 tableName,
                 status: 'active',
+                preparationStatus: 'pending',
                 createdAt: Date.now(),
                 items: {}
             };
@@ -1207,6 +1504,7 @@
                     document.getElementById('newOrderModal').classList.remove('show');
                     currentOrderId = newOrderRef.key;
                     loadOrderDetails(currentOrderId);
+                    loadKitchenOrders();
                     
                     // Marcar como activa en la lista
                     setTimeout(() => {
@@ -1314,6 +1612,7 @@
                         .then(() => {
                             document.getElementById('addItemModal').classList.remove('show');
                             loadOrderDetails(currentOrderId);
+                            loadKitchenOrders();
                         })
                         .catch(error => {
                             console.error('Error al agregar item:', error);
@@ -1328,6 +1627,7 @@
             database.ref(`orders/${orderId}/items/${itemId}`).remove()
                 .then(() => {
                     loadOrderDetails(orderId);
+                    loadKitchenOrders();
                 })
                 .catch(error => {
                     console.error('Error al eliminar item:', error);
@@ -1352,7 +1652,7 @@
                     if (order.items) {
                         Object.entries(order.items).forEach(([id, item]) => {
                             itemsHtml += `
-                                <div class="order-item">
+                                <div class="order-item" data-item-id="${id}">
                                     <div class="order-item-info">
                                         <h4>${item.name}</h4>
                                         <p class="order-item-comments">${item.comments || ''}</p>
@@ -1369,6 +1669,12 @@
                     orderSummary.innerHTML = `
                         <h3>${order.tableName}</h3>
                         <p>Fecha: ${formatDate(order.createdAt)}</p>
+                        <p>Estado: 
+                            <span class="status-badge ${order.preparationStatus || 'pending'}">
+                                ${order.preparationStatus === 'ready' ? 'Listo' : 
+                                 order.preparationStatus === 'preparation' ? 'En Preparación' : 'Pendiente'}
+                            </span>
+                        </p>
                         <div class="order-items">
                             ${itemsHtml || '<p>No hay items en esta orden</p>'}
                         </div>
@@ -1399,6 +1705,7 @@
                 currentOrderId = null;
                 loadActiveOrders();
                 loadSalesData();
+                loadKitchenOrders();
                 
                 // Limpiar detalles de orden
                 document.getElementById('orderDetails').innerHTML = `
@@ -1630,6 +1937,20 @@
                 hour: '2-digit',
                 minute: '2-digit'
             });
+        }
+
+        // Formatear tiempo transcurrido
+        function formatTimeAgo(timestamp) {
+            const seconds = Math.floor((Date.now() - timestamp) / 1000);
+            
+            if (seconds < 60) return 'Hace unos segundos';
+            if (seconds < 120) return 'Hace 1 minuto';
+            if (seconds < 3600) return `Hace ${Math.floor(seconds/60)} minutos`;
+            if (seconds < 7200) return 'Hace 1 hora';
+            if (seconds < 86400) return `Hace ${Math.floor(seconds/3600)} horas`;
+            if (seconds < 172800) return 'Ayer';
+            
+            return formatDate(timestamp);
         }
     </script>
 </body>
