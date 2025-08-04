@@ -122,10 +122,33 @@
 
         .user-info {
             font-weight: 500;
+            display: flex;
+            align-items: center;
         }
 
         .user-info.admin {
             color: var(--primary-color);
+        }
+
+        .user-role {
+            padding: 0.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            margin-left: 1rem;
+            border: 1px solid var(--gray);
+        }
+
+        .user-role.waiter {
+            background-color: #1e88e5;
+            color: white;
+            border-color: #1e88e5;
+        }
+
+        .user-role.kitchen {
+            background-color: #43a047;
+            color: white;
+            border-color: #43a047;
         }
 
         main {
@@ -589,6 +612,33 @@
             color: var(--gray);
         }
 
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .status-badge.pending {
+            background-color: #ffc107;
+            color: #000;
+        }
+
+        .status-badge.preparation {
+            background-color: #fd7e14;
+            color: #fff;
+        }
+
+        .status-badge.ready {
+            background-color: #28a745;
+            color: #fff;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
         @media (max-width: 768px) {
             .order-controls {
                 flex-direction: column;
@@ -638,6 +688,7 @@
     <!-- Audio para notificación de nuevos pedidos -->
     <audio id="newOrderSound" preload="auto">
         <source src="https://assets.mixkit.co/sfx/preview/mixkit-alarm-digital-clock-beep-989.mp3" type="audio/mpeg">
+        Tu navegador no soporta el elemento de audio.
     </audio>
 
     <header>
@@ -654,6 +705,10 @@
         </nav>
         <div class="user-info">
             <span id="userType">Mesero</span>
+            <select id="userRole" class="user-role waiter">
+                <option value="waiter">Mesero</option>
+                <option value="kitchen">Cocina</option>
+            </select>
         </div>
     </header>
 
@@ -867,6 +922,7 @@
         let currentItemId = null;
         let currentFilter = 'day';
         let lastOrderCount = 0;
+        let currentUserRole = 'waiter'; // 'waiter' o 'kitchen'
         const newOrderSound = document.getElementById('newOrderSound');
 
         // Inicialización de la aplicación
@@ -877,11 +933,11 @@
             // Configurar event listeners
             setupEventListeners();
             
-            // Cargar datos iniciales
-            loadActiveOrders();
-            loadSalesData();
-            loadMenuSections();
-            loadKitchenOrders('pending');
+            // Cargar datos iniciales según el rol del usuario
+            loadInitialData();
+            
+            // Configurar el selector de rol
+            setupRoleSelector();
         });
 
         // Configurar event listeners
@@ -971,6 +1027,48 @@
             });
         }
 
+        // Configurar el selector de rol
+        function setupRoleSelector() {
+            const roleSelector = document.getElementById('userRole');
+            
+            roleSelector.addEventListener('change', function() {
+                currentUserRole = this.value;
+                this.className = `user-role ${currentUserRole}`;
+                
+                // Actualizar la interfaz según el rol
+                updateUIForRole();
+                
+                // Cargar datos según el rol
+                loadInitialData();
+            });
+        }
+
+        // Actualizar la interfaz según el rol
+        function updateUIForRole() {
+            // Ocultar/mostrar elementos según el rol
+            if (currentUserRole === 'kitchen') {
+                document.querySelector('nav ul li[data-section="kitchen"]').click();
+                document.getElementById('newOrderBtn').classList.add('hidden');
+            } else {
+                document.querySelector('nav ul li[data-section="orders"]').click();
+                document.getElementById('newOrderBtn').classList.remove('hidden');
+            }
+        }
+
+        // Cargar datos iniciales según el rol
+        function loadInitialData() {
+            if (currentUserRole === 'kitchen') {
+                loadKitchenOrders('pending');
+            } else {
+                loadActiveOrders();
+                loadSalesData();
+            }
+            
+            if (isAdmin) {
+                loadMenuSections();
+            }
+        }
+
         // Verificar sesión de admin
         function checkAdminSession() {
             const adminSession = localStorage.getItem('murritos_admin');
@@ -1012,9 +1110,9 @@
                 
                 const currentOrderCount = orders ? Object.keys(orders).length : 0;
                 
-                // Reproducir sonido si hay un nuevo pedido
-                if (currentOrderCount > lastOrderCount) {
-                    newOrderSound.play();
+                // Reproducir sonido si hay un nuevo pedido (solo para cocina)
+                if (currentUserRole === 'kitchen' && currentOrderCount > lastOrderCount) {
+                    playNotificationSound();
                 }
                 lastOrderCount = currentOrderCount;
                 
@@ -1050,6 +1148,22 @@
                     });
                 } else {
                     activeOrdersList.innerHTML = '<p>No hay órdenes activas</p>';
+                }
+            });
+        }
+
+        // Reproducir sonido de notificación
+        function playNotificationSound() {
+            // Reiniciar el audio para permitir múltiples reproducciones
+            newOrderSound.pause();
+            newOrderSound.currentTime = 0;
+            
+            // Intentar reproducir (puede fallar sin interacción del usuario)
+            newOrderSound.play().catch(e => {
+                console.log("No se pudo reproducir el sonido automáticamente:", e);
+                // Mostrar un botón para permitir al usuario activar el sonido
+                if (confirm('¿Deseas activar las notificaciones de sonido?')) {
+                    newOrderSound.play().catch(e => console.log("El usuario aún no ha permitido el sonido"));
                 }
             });
         }
@@ -1105,11 +1219,13 @@
                         
                         <div class="order-actions">
                             <button id="addItemBtn" class="btn-primary"><i class="fas fa-plus"></i> Agregar Item</button>
+                            ${currentUserRole === 'kitchen' ? `
                             <button id="preparationBtn" class="btn-status ${order.preparationStatus === 'ready' ? 'ready' : 
                                                                           order.preparationStatus === 'preparation' ? 'preparation' : 'pending'}">
                                 ${order.preparationStatus === 'ready' ? 'Listo' : 
                                  order.preparationStatus === 'preparation' ? 'En Preparación' : 'Marcar como En Preparación'}
                             </button>
+                            ` : ''}
                             <button id="closeOrderBtn" class="btn-primary"><i class="fas fa-check"></i> Cerrar Orden</button>
                         </div>
                     `;
@@ -1118,17 +1234,19 @@
                     document.getElementById('addItemBtn').addEventListener('click', openAddItemModal);
                     document.getElementById('closeOrderBtn').addEventListener('click', openCloseOrderModal);
                     
-                    // Botón de estado de preparación
-                    document.getElementById('preparationBtn').addEventListener('click', function() {
-                        const currentStatus = order.preparationStatus || 'pending';
-                        let newStatus;
-                        
-                        if (currentStatus === 'pending') newStatus = 'preparation';
-                        else if (currentStatus === 'preparation') newStatus = 'ready';
-                        else return;
-                        
-                        updatePreparationStatus(orderId, newStatus);
-                    });
+                    // Botón de estado de preparación (solo para cocina)
+                    if (currentUserRole === 'kitchen') {
+                        document.getElementById('preparationBtn').addEventListener('click', function() {
+                            const currentStatus = order.preparationStatus || 'pending';
+                            let newStatus;
+                            
+                            if (currentStatus === 'pending') newStatus = 'preparation';
+                            else if (currentStatus === 'preparation') newStatus = 'ready';
+                            else return;
+                            
+                            updatePreparationStatus(orderId, newStatus);
+                        });
+                    }
                     
                     // Agregar evento para eliminar items (doble clic)
                     document.querySelectorAll('.order-item').forEach(item => {
