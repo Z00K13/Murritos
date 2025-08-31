@@ -615,7 +615,7 @@
         .status-badge {
             display: inline-block;
             padding: 0.25rem 0.5rem;
-            borderRadius: 4px;
+            border-radius: 4px;
             font-size: 0.8rem;
             font-weight: 500;
         }
@@ -1828,12 +1828,16 @@
                         // Preparar datos para el ticket
                         const ticketData = {
                             numero_orden: currentOrderId,
+                            mesa: order.tableName,
+                            mesero: "Mesero Principal", // Puedes ajustar esto según tu sistema
                             items: [],
+                            subtotal: 0,
+                            iva: 0,
                             total: 0,
                             fecha: formatDate(order.closedAt)
                         };
                         
-                        // Calcular total
+                        // Calcular totales
                         if (order.items) {
                             Object.values(order.items).forEach(item => {
                                 ticketData.items.push({
@@ -1841,9 +1845,13 @@
                                     cantidad: item.quantity,
                                     precio: item.price
                                 });
-                                ticketData.total += item.price * item.quantity;
+                                ticketData.subtotal += item.price * item.quantity;
                             });
                         }
+                        
+                        // Calcular IVA (16%)
+                        ticketData.iva = ticketData.subtotal * 0.16;
+                        ticketData.total = ticketData.subtotal + ticketData.iva;
                         
                         // Imprimir ticket
                         imprimirTicket(ticketData);
@@ -1959,6 +1967,14 @@
                             <span>Fecha:</span>
                             <span>${orden_data.fecha}</span>
                         </div>
+                        <div class="info-line">
+                            <span>Mesa:</span>
+                            <span>${orden_data.mesa}</span>
+                        </div>
+                        <div class="info-line">
+                            <span>Mesero:</span>
+                            <span>${orden_data.mesero}</span>
+                        </div>
                         
                         <div class="separator"></div>
                         
@@ -1983,13 +1999,21 @@
                     </tr>`;
             });
             
-            // Agregar total
+            // Agregar totales
             ticketContent += `
                             </tbody>
                         </table>
                         
                         <div class="separator"></div>
                         
+                        <div class="info-line">
+                            <span>Subtotal:</span>
+                            <span>$${orden_data.subtotal.toFixed(2)}</span>
+                        </div>
+                        <div class="info-line">
+                            <span>IVA (16%):</span>
+                            <span>$${orden_data.iva.toFixed(2)}</span>
+                        </div>
                         <div class="total">
                             TOTAL: $${orden_data.total.toFixed(2)}
                         </div>
@@ -2120,7 +2144,7 @@
                     document.getElementById('sectionModal').classList.remove('show');
                 })
                 .catch(error => {
-                    console.error('Error al editar sección:", error);
+                    console.error('Error al editar sección:', error);
                     alert('Hubo un error al editar la sección');
                 });
             } else {
