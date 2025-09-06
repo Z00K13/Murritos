@@ -774,12 +774,11 @@
             </div>
             
             <div class="sales-list">
-                <h3>Historial de Ventas</h3>
+                <h3>Historial de Ventas</3>
                 <table id="salesTable">
                     <thead>
                         <tr>
                             <th>Fecha</th>
-                            <th>Mesa</th>
                             <th>Items</th>
                             <th>Total</th>
                             <th>Acciones</th>
@@ -1374,7 +1373,7 @@
         // Cargar datos de ventas
         function loadSalesData() {
             const salesList = document.getElementById('salesList');
-            salesList.innerHTML = '<tr><td colspan="5">Cargando ventas...</td></tr>';
+            salesList.innerHTML = '<tr><td colspan="4">Cargando ventas...</td></tr>';
             
             let startDate, endDate = new Date();
             endDate.setHours(23, 59, 59, 999);
@@ -1423,7 +1422,6 @@
                             const saleRow = document.createElement('tr');
                             saleRow.innerHTML = `
                                 <td>${formatDate(order.closedAt)}</td>
-                                <td>${order.tableName}</td>
                                 <td>${order.items ? Object.keys(order.items).length : 0}</td>
                                 <td>$${orderTotal.toFixed(2)}</td>
                                 <td>
@@ -1465,7 +1463,7 @@
                 }
                 
                 if (totalOrders === 0) {
-                    salesList.innerHTML = '<tr><td colspan="5">No hay ventas registradas</td></tr>';
+                    salesList.innerHTML = '<tr><td colspan="4">No hay ventas registradas</td></tr>';
                 }
                 
                 // Actualizar resumen
@@ -1828,12 +1826,8 @@
                         // Preparar datos para el ticket
                         const ticketData = {
                             numero_orden: currentOrderId,
-                            mesa: order.tableName,
-                            mesero: "Mesero Principal", // Puedes ajustar esto según tu sistema
                             items: [],
                             subtotal: 0,
-                            iva: 0,
-                            total: 0,
                             fecha: formatDate(order.closedAt)
                         };
                         
@@ -1848,10 +1842,6 @@
                                 ticketData.subtotal += item.price * item.quantity;
                             });
                         }
-                        
-                        // Calcular IVA (16%)
-                        ticketData.iva = ticketData.subtotal * 0.16;
-                        ticketData.total = ticketData.subtotal + ticketData.iva;
                         
                         // Imprimir ticket
                         imprimirTicket(ticketData);
@@ -1967,14 +1957,6 @@
                             <span>Fecha:</span>
                             <span>${orden_data.fecha}</span>
                         </div>
-                        <div class="info-line">
-                            <span>Mesa:</span>
-                            <span>${orden_data.mesa}</span>
-                        </div>
-                        <div class="info-line">
-                            <span>Mesero:</span>
-                            <span>${orden_data.mesero}</span>
-                        </div>
                         
                         <div class="separator"></div>
                         
@@ -2006,16 +1988,8 @@
                         
                         <div class="separator"></div>
                         
-                        <div class="info-line">
-                            <span>Subtotal:</span>
-                            <span>$${orden_data.subtotal.toFixed(2)}</span>
-                        </div>
-                        <div class="info-line">
-                            <span>IVA (16%):</span>
-                            <span>$${orden_data.iva.toFixed(2)}</span>
-                        </div>
                         <div class="total">
-                            TOTAL: $${orden_data.total.toFixed(2)}
+                            TOTAL: $${orden_data.subtotal.toFixed(2)}
                         </div>
                         
                         <div class="separator"></div>
