@@ -3,1629 +3,2284 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ATR TaskFlow - Gestor de Tareas</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Murritos - Sistema de Pedidos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         :root {
-            --primary: #2563eb;
-            --primary-light: #3b82f6;
-            --secondary: #1d4ed8;
-            --success: #4cc9f0;
-            --danger: #f72585;
-            --warning: #f8961e;
-            --light: #f8f9fa;
-            --dark: #212529;
+            --primary-color: #e63946;
+            --dark-color: #1d3557;
+            --light-color: #f1faee;
+            --white: #ffffff;
+            --black: #000000;
             --gray: #6c757d;
-            --light-gray: #e9ecef;
-            
-            --shadow-sm: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
-            --shadow-md: 0 4px 6px rgba(0,0,0,0.1), 0 1px 3px rgba(0,0,0,0.08);
-            --shadow-lg: 0 10px 25px rgba(0,0,0,0.1), 0 5px 10px rgba(0,0,0,0.05);
-            
-            --radius-sm: 8px;
-            --radius-md: 12px;
-            --radius-lg: 16px;
-            
-            --transition: all 0.3s ease;
+            --light-gray: #f8f9fa;
+            --dark-gray: #343a40;
         }
-        
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            font-family: 'Roboto', sans-serif;
         }
-        
+
         body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #f5f7fa;
-            color: var(--dark);
-            line-height: 1.6;
+            background-color: var(--light-color);
+            color: var(--dark-color);
         }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        
-        .login-screen {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background-color: rgba(0,0,0,0.05);
-        }
-        
-        .login-card {
-            background-color: white;
-            border-radius: var(--radius-lg);
-            box-shadow: var(--shadow-lg);
-            padding: 40px;
-            width: 100%;
-            max-width: 500px;
-            text-align: center;
-            animation: fadeInUp 0.5s ease;
-        }
-        
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .login-logo {
-            margin-bottom: 30px;
-        }
-        
-        .login-logo i {
-            font-size: 50px;
-            color: var(--primary);
-            margin-bottom: 15px;
-        }
-        
-        .login-logo h1 {
-            font-size: 28px;
-            font-weight: 700;
-            background: linear-gradient(to right, var(--primary), var(--primary-light));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        
-        .user-list {
-            margin-top: 20px;
-        }
-        
-        .user-option {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            padding: 15px;
-            margin-bottom: 15px;
-            background-color: var(--light);
-            border-radius: var(--radius-sm);
-            cursor: pointer;
-            transition: var(--transition);
-        }
-        
-        .user-option:hover {
-            background-color: var(--primary-light);
-            color: white;
-        }
-        
-        .user-option:hover .user-avatar {
-            background-color: white;
-            color: var(--primary);
-        }
-        
-        .user-option:hover .user-info p {
-            color: rgba(255,255,255,0.8);
-        }
-        
-        .user-avatar {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background-color: var(--primary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 600;
-            font-size: 20px;
-            transition: var(--transition);
-        }
-        
-        .user-info h3 {
-            font-size: 16px;
-            font-weight: 600;
-            text-align: left;
-        }
-        
-        .user-info p {
-            font-size: 14px;
-            color: var(--gray);
-            text-align: left;
-            transition: var(--transition);
-        }
-        
-        .admin-access {
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid var(--light-gray);
-        }
-        
-        .admin-access-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 10px 15px;
-            background-color: transparent;
-            border: 1px solid var(--primary);
-            border-radius: var(--radius-sm);
-            color: var(--primary);
-            cursor: pointer;
-            transition: var(--transition);
-        }
-        
-        .admin-access-btn:hover {
-            background-color: var(--primary);
-            color: white;
-        }
-        
-        .password-modal {
+
+        .admin-login {
             display: none;
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0,0,0,0.5);
+            background-color: rgba(0, 0, 0, 0.8);
             z-index: 1000;
             justify-content: center;
             align-items: center;
         }
-        
-        .password-modal-content {
-            background-color: white;
-            padding: 30px;
-            border-radius: var(--radius-md);
-            box-shadow: var(--shadow-lg);
-            width: 90%;
-            max-width: 400px;
-            animation: fadeInUp 0.3s ease;
-        }
-        
-        .password-modal h3 {
-            margin-bottom: 20px;
-            color: var(--dark);
-        }
-        
-        .password-modal input {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 20px;
-            border: 1px solid var(--light-gray);
-            border-radius: var(--radius-sm);
-        }
-        
-        .password-modal-buttons {
+
+        .admin-login.show {
             display: flex;
-            gap: 10px;
-            justify-content: flex-end;
         }
-        
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid var(--light-gray);
-        }
-        
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .logo i {
-            color: var(--primary);
-            font-size: 28px;
-        }
-        
-        .logo h1 {
-            font-size: 24px;
-            font-weight: 700;
-            background: linear-gradient(to right, var(--primary), var(--primary-light));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        
-        .user-badge {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background-color: white;
-            padding: 8px 15px;
-            border-radius: 50px;
-            box-shadow: var(--shadow-sm);
-            cursor: pointer;
-        }
-        
-        .user-badge i {
-            color: var(--primary);
-        }
-        
-        .tabs-container {
-            position: relative;
-            margin-bottom: 30px;
-            background-color: white;
-            border-radius: var(--radius-lg);
-            box-shadow: var(--shadow-md);
-            overflow: hidden;
-        }
-        
-        .tabs {
-            display: flex;
-            position: relative;
-            z-index: 1;
-        }
-        
-        .tab {
-            padding: 18px 25px;
-            cursor: pointer;
-            flex: 1;
+
+        .login-box {
+            background-color: var(--white);
+            padding: 2rem;
+            border-radius: 8px;
+            width: 300px;
             text-align: center;
-            transition: var(--transition);
+        }
+
+        .login-box h2 {
+            margin-bottom: 1.5rem;
+            color: var(--dark-color);
+        }
+
+        .login-box input {
+            width: 100%;
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+            border: 1px solid var(--gray);
+            border-radius: 4px;
+        }
+
+        .login-box button {
+            width: 100%;
+            padding: 0.75rem;
+            background-color: var(--primary-color);
+            color: var(--white);
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
             font-weight: 500;
-            color: var(--gray);
-            position: relative;
         }
-        
-        .tab:hover {
-            color: var(--primary);
+
+        .login-box button:hover {
+            background-color: #c1121f;
         }
-        
-        .tab.active {
-            color: var(--primary);
-            font-weight: 600;
-        }
-        
-        .tab-indicator {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            height: 3px;
-            background-color: var(--primary);
-            transition: var(--transition);
-        }
-        
-        .tab-content {
-            display: none;
-            padding: 30px;
-            animation: fadeIn 0.5s ease;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .tab-content.active {
-            display: block;
-        }
-        
-        .section-title {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 20px;
-            color: var(--dark);
-        }
-        
-        .section-title i {
-            font-size: 20px;
-            color: var(--primary);
-        }
-        
-        .section-title h2 {
-            font-size: 20px;
-            font-weight: 600;
-        }
-        
-        .card {
-            background-color: white;
-            border-radius: var(--radius-md);
-            box-shadow: var(--shadow-sm);
-            padding: 25px;
-            margin-bottom: 25px;
-            transition: var(--transition);
-        }
-        
-        .card:hover {
-            box-shadow: var(--shadow-md);
-            transform: translateY(-2px);
-        }
-        
-        .card-header {
+
+        header {
+            background-color: var(--white);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 1rem 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid var(--light-gray);
         }
-        
-        .card-title {
-            font-size: 18px;
-            font-weight: 600;
-            color: var(--dark);
+
+        .logo h1 {
+            color: var(--primary-color);
+            font-weight: 700;
         }
-        
-        .form-group {
-            margin-bottom: 20px;
+
+        nav ul {
+            display: flex;
+            list-style: none;
         }
-        
-        .form-label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-            color: var(--dark);
-        }
-        
-        .form-control {
-            width: 100%;
-            padding: 12px 15px;
-            border: 1px solid var(--light-gray);
-            border-radius: var(--radius-sm);
-            font-family: 'Poppins', sans-serif;
-            transition: var(--transition);
-            background-color: #f8f9fa;
-        }
-        
-        .form-control:focus {
-            outline: none;
-            border-color: var(--primary-light);
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-            background-color: white;
-        }
-        
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 12px 20px;
-            border: none;
-            border-radius: var(--radius-sm);
-            font-family: 'Poppins', sans-serif;
-            font-weight: 500;
+
+        nav ul li {
+            margin: 0 1rem;
+            padding: 0.5rem 1rem;
             cursor: pointer;
-            transition: var(--transition);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
         }
-        
+
+        nav ul li i {
+            margin-right: 0.5rem;
+        }
+
+        nav ul li.active {
+            background-color: var(--primary-color);
+            color: var(--white);
+        }
+
+        .user-info {
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+        }
+
+        .user-info.admin {
+            color: var(--primary-color);
+        }
+
+        .user-role {
+            padding: 0.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            margin-left: 1rem;
+            border: 1px solid var(--gray);
+        }
+
+        .user-role.waiter {
+            background-color: #1e88e5;
+            color: white;
+            border-color: #1e88e5;
+        }
+
+        .user-role.kitchen {
+            background-color: #43a047;
+            color: white;
+            border-color: #43a047;
+        }
+
+        main {
+            padding: 2rem;
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-header h2 {
+            color: var(--dark-color);
+        }
+
         .btn-primary {
-            background-color: var(--primary);
-            color: white;
+            background-color: var(--primary-color);
+            color: var(--white);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
         }
-        
+
+        .btn-primary i {
+            margin-right: 0.5rem;
+        }
+
         .btn-primary:hover {
-            background-color: var(--secondary);
-            box-shadow: var(--shadow-md);
+            background-color: #c1121f;
         }
-        
-        .btn-success {
-            background-color: var(--success);
-            color: white;
+
+        .btn-secondary {
+            background-color: var(--gray);
+            color: var(--white);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
         }
-        
-        .btn-success:hover {
-            opacity: 0.9;
-            box-shadow: var(--shadow-md);
+
+        .btn-secondary:hover {
+            background-color: var(--dark-gray);
         }
-        
-        .btn-sm {
-            padding: 8px 15px;
-            font-size: 14px;
+
+        .order-controls {
+            display: flex;
+            gap: 2rem;
         }
-        
-        .user-grid {
+
+        .active-orders {
+            flex: 1;
+            background-color: var(--white);
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .order-details {
+            flex: 2;
+            background-color: var(--white);
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            min-height: 500px;
+        }
+
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            color: var(--gray);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .orders-list {
+            margin-top: 1rem;
+        }
+
+        .order-card {
+            background-color: var(--light-gray);
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .order-card:hover {
+            background-color: #e9ecef;
+        }
+
+        .order-card.active {
+            border-left: 4px solid var(--primary-color);
+            background-color: #e9ecef;
+        }
+
+        .order-card h4 {
+            margin-bottom: 0.5rem;
+        }
+
+        .order-card p {
+            font-size: 0.875rem;
+            color: var(--gray);
+        }
+
+        .order-items {
+            margin-top: 1.5rem;
+        }
+
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .order-item:last-child {
+            border-bottom: none;
+        }
+
+        .order-item-info {
+            flex: 2;
+        }
+
+        .order-item-price {
+            flex: 1;
+            text-align: right;
+        }
+
+        .order-item-comments {
+            font-size: 0.75rem;
+            color: var(--gray);
+            margin-top: 0.25rem;
+            font-style: italic;
+        }
+
+        .order-actions {
+            margin-top: 1.5rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .order-total {
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            border-top: 2px solid var(--dark-color);
+            text-align: right;
+            font-weight: 700;
+            font-size: 1.25rem;
+        }
+
+        .sales-summary {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .summary-card {
+            flex: 1;
+            background-color: var(--white);
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            text-align: center;
+        }
+
+        .summary-card h3 {
+            margin-bottom: 1rem;
+            color: var(--gray);
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        .summary-card p {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .summary-card.total p {
+            color: var(--primary-color);
+        }
+
+        .time-filters {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-filter {
+            background-color: var(--light-gray);
+            color: var(--dark-color);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .btn-filter.active {
+            background-color: var(--primary-color);
+            color: var(--white);
+        }
+
+        .sales-list {
+            background-color: var(--white);
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        th {
+            background-color: var(--light-gray);
+            font-weight: 500;
+        }
+
+        tr:hover {
+            background-color: var(--light-gray);
+        }
+
+        .menu-sections {
+            background-color: var(--white);
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .menu-section {
+            margin-bottom: 2rem;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .section-header h3 {
+            color: var(--dark-color);
+        }
+
+        .section-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .menu-items {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 20px;
-            margin-top: 20px;
+            gap: 1rem;
         }
-        
-        .user-card {
-            background-color: white;
-            border-radius: var(--radius-md);
-            padding: 20px;
-            box-shadow: var(--shadow-sm);
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            gap: 15px;
+
+        .menu-item {
+            background-color: var(--light-gray);
+            padding: 1rem;
+            border-radius: 4px;
         }
-        
-        .user-card:hover {
-            transform: translateY(-3px);
-            box-shadow: var(--shadow-md);
+
+        .menu-item h4 {
+            margin-bottom: 0.5rem;
         }
-        
-        .user-avatar {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background-color: var(--primary-light);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 600;
-            font-size: 20px;
-        }
-        
-        .user-info h3 {
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 3px;
-        }
-        
-        .user-info p {
-            font-size: 14px;
-            color: var(--gray);
-        }
-        
-        .role-badge {
-            display: inline-block;
-            padding: 4px 10px;
-            border-radius: 50px;
-            font-size: 12px;
+
+        .menu-item p {
+            color: var(--primary-color);
             font-weight: 500;
         }
-        
-        .role-maintenance {
-            background-color: #e3f2fd;
-            color: #1976d2;
+
+        .item-actions {
+            margin-top: 0.5rem;
+            display: flex;
+            gap: 0.5rem;
         }
-        
-        .role-housekeeping {
-            background-color: #e8f5e9;
-            color: #388e3c;
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
         }
-        
-        .task-list {
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background-color: var(--white);
+            padding: 2rem;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 500px;
+            position: relative;
+        }
+
+        .modal-content.small {
+            max-width: 400px;
+        }
+
+        .close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .modal-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        /* Estilos para los botones de estado */
+        .btn-status {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            margin-right: 0.5rem;
+            transition: all 0.3s;
+        }
+
+        .btn-status.pending {
+            background-color: #ffc107;
+            color: #000;
+        }
+
+        .btn-status.preparation {
+            background-color: #fd7e14;
+            color: #fff;
+        }
+
+        .btn-status.ready {
+            background-color: #28a745;
+            color: #fff;
+        }
+
+        .btn-status:hover {
+            opacity: 0.9;
+        }
+
+        /* Estilos para pantalla de cocina */
+        .kitchen-orders {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
-            margin-top: 20px;
+            gap: 1rem;
+            margin-top: 1rem;
         }
-        
-        .task-card {
-            background-color: white;
-            border-radius: var(--radius-md);
-            padding: 20px;
-            box-shadow: var(--shadow-sm);
-            transition: var(--transition);
-            position: relative;
-            border-left: 4px solid var(--primary);
+
+        .kitchen-card {
+            background-color: var(--white);
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            border-left: 4px solid #ffc107;
         }
-        
-        .task-card:hover {
-            transform: translateY(-3px);
-            box-shadow: var(--shadow-md);
+
+        .kitchen-card.preparation {
+            border-left-color: #fd7e14;
         }
-        
-        .task-card.completed {
-            border-left-color: var(--success);
-            opacity: 0.8;
+
+        .kitchen-card.ready {
+            border-left-color: #28a745;
         }
-        
-        .task-card.completed::after {
-            content: '✓ Completada';
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background-color: var(--success);
-            color: white;
-            padding: 3px 8px;
-            border-radius: 50px;
-            font-size: 12px;
+
+        .kitchen-card .order-header {
+            border-bottom: 1px solid #eee;
+            padding-bottom: 0.5rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .kitchen-item {
+            display: flex;
+            gap: 0.5rem;
+            padding: 0.5rem 0;
+            border-bottom: 1px dashed #eee;
+            align-items: center;
+        }
+
+        .item-quantity {
+            font-weight: bold;
+            min-width: 20px;
+        }
+
+        .item-comments {
+            font-size: 0.8rem;
+            color: var(--gray);
+            font-style: italic;
+            display: block;
+            margin-top: 0.2rem;
+        }
+
+        .time-ago {
+            font-size: 0.8rem;
+            color: var(--gray);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
             font-weight: 500;
         }
-        
-        .task-title {
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 10px;
-            color: var(--dark);
+
+        .status-badge.pending {
+            background-color: #ffc107;
+            color: #000;
         }
-        
-        .task-desc {
-            font-size: 14px;
-            color: var(--gray);
-            margin-bottom: 15px;
+
+        .status-badge.preparation {
+            background-color: #fd7e14;
+            color: #fff;
         }
-        
-        .task-meta {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 1px solid var(--light-gray);
-            font-size: 13px;
+
+        .status-badge.ready {
+            background-color: #28a745;
+            color: #fff;
         }
-        
-        .task-assignee {
-            display: flex;
-            align-items: center;
-            gap: 8px;
+
+        .hidden {
+            display: none !important;
         }
-        
-        .task-assignee-avatar {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            background-color: var(--light-gray);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            font-weight: 600;
-        }
-        
-        .task-date {
-            color: var(--gray);
-        }
-        
-        .task-actions {
-            margin-top: 15px;
-            display: flex;
-            gap: 10px;
-        }
-        
-        .task-observations {
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 1px dashed var(--light-gray);
-            font-size: 14px;
-        }
-        
-        .task-observations strong {
-            color: var(--dark);
-        }
-        
-        .empty-state {
-            text-align: center;
-            padding: 40px 20px;
-            color: var(--gray);
-        }
-        
-        .empty-state i {
-            font-size: 50px;
-            margin-bottom: 15px;
-            color: var(--light-gray);
-        }
-        
-        .empty-state p {
-            font-size: 16px;
-        }
-        
-        .filter-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            background-color: white;
-            padding: 15px 20px;
-            border-radius: var(--radius-md);
-            box-shadow: var(--shadow-sm);
-        }
-        
-        .filter-group {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-        
-        .stats-cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-        
-        .stat-card {
-            background-color: white;
-            border-radius: var(--radius-md);
-            padding: 20px;
-            box-shadow: var(--shadow-sm);
-            transition: var(--transition);
-        }
-        
-        .stat-card:hover {
-            transform: translateY(-3px);
-            box-shadow: var(--shadow-md);
-        }
-        
-        .stat-value {
-            font-size: 28px;
-            font-weight: 700;
-            margin-bottom: 5px;
-            background: linear-gradient(to right, var(--primary), var(--primary-light));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        
-        .stat-label {
-            font-size: 14px;
-            color: var(--gray);
-        }
-        
-        .password-display {
-            background-color: #f8f9fa;
-            padding: 8px 12px;
-            border-radius: var(--radius-sm);
-            font-family: monospace;
-            margin-top: 5px;
-            display: inline-block;
-        }
-        
-        .notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 15px 20px;
-            border-radius: var(--radius-sm);
-            background-color: white;
-            box-shadow: var(--shadow-lg);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            transform: translateX(150%);
-            transition: transform 0.3s ease;
-            z-index: 1000;
-        }
-        
-        .notification.show {
-            transform: translateX(0);
-        }
-        
-        .notification.success {
-            border-left: 4px solid var(--success);
-        }
-        
-        .notification.error {
-            border-left: 4px solid var(--danger);
-        }
-        
-        .notification i {
-            font-size: 20px;
-        }
-        
-        .notification.success i {
-            color: var(--success);
-        }
-        
-        .notification.error i {
-            color: var(--danger);
-        }
-        
+
         @media (max-width: 768px) {
-            .user-grid, .task-list, .stats-cards {
-                grid-template-columns: 1fr;
-            }
-            
-            .tabs {
+            .order-controls {
                 flex-direction: column;
             }
             
-            .tab-indicator {
-                display: none;
+            header {
+                flex-direction: column;
+                padding: 1rem;
             }
             
-            .filter-bar {
+            nav ul {
+                margin-top: 1rem;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        
+            .section-header {
                 flex-direction: column;
                 align-items: flex-start;
-                gap: 15px;
+                gap: 1rem;
             }
-            
-            .login-card {
-                padding: 30px 20px;
+
+            .order-actions {
+                flex-direction: column;
+            }
+
+            .btn-status {
+                width: 100%;
+                margin-bottom: 0.5rem;
+            }
+
+            .kitchen-orders {
+                grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
 <body>
-    <div id="loginScreen" class="login-screen">
-        <div class="login-card">
-            <div class="login-logo">
-                <i class="fas fa-tasks"></i>
-                <h1>ATR TaskFlow</h1>
-                <p>Selecciona tu usuario para comenzar</p>
-            </div>
-            
-            <div class="user-list" id="userLoginList">
-            </div>
-            
-            <div class="admin-access">
-                <button class="admin-access-btn" onclick="showAdminPasswordModal()">
-                    <i class="fas fa-user-shield"></i> Acceso Administrador
-                </button>
-            </div>
+    <div class="admin-login" id="adminLogin">
+        <div class="login-box">
+            <h2>Acceso Administrador</h2>
+            <input type="password" id="adminPassword" placeholder="Contraseña">
+            <button onclick="checkAdminPassword()">Ingresar</button>
         </div>
     </div>
-    
-    <div id="adminPasswordModal" class="password-modal">
-        <div class="password-modal-content">
-            <h3>Ingresa la contraseña de administrador</h3>
-            <input type="password" id="adminPasswordInput" placeholder="Contraseña">
-            <div class="password-modal-buttons">
-                <button class="btn" onclick="hideAdminPasswordModal()">Cancelar</button>
-                <button class="btn btn-primary" onclick="verifyAdminPassword()">Acceder</button>
+
+    <!-- Audio para notificación de nuevos pedidos -->
+    <audio id="newOrderSound" preload="auto">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-alarm-digital-clock-beep-989.mp3" type="audio/mpeg">
+        Tu navegador no soporta el elemento de audio.
+    </audio>
+
+    <header>
+        <div class="logo">
+            <h1>MURRITOS</h1>
+        </div>
+        <nav>
+            <ul>
+                <li class="active" data-section="orders"><i class="fas fa-clipboard-list"></i> Pedidos</li>
+                <li data-section="kitchen"><i class="fas fa-utensils"></i> Cocina</li>
+                <li data-section="sales"><i class="fas fa-chart-line"></i> Ventas</li>
+                <li data-section="menu" id="menuTab"><i class="fas fa-utensils"></i> Menú</li>
+            </ul>
+        </nav>
+        <div class="user-info">
+            <span id="userType">Mesero</span>
+            <select id="userRole" class="user-role waiter">
+                <option value="waiter">Mesero</option>
+                <option value="kitchen">Cocina</option>
+            </select>
+        </div>
+    </header>
+
+    <main>
+        <!-- Sección de Pedidos -->
+        <section id="orders" class="section active">
+            <div class="section-header">
+                <h2>Pedidos</h2>
+                <button id="newOrderBtn" class="btn-primary"><i class="fas fa-plus"></i> Nueva Orden</button>
             </div>
+            
+            <div class="order-controls">
+                <div class="active-orders" id="activeOrders">
+                    <h3>Órdenes Activas</h3>
+                    <div class="orders-list" id="activeOrdersList"></div>
+                </div>
+                
+                <div class="order-details" id="orderDetails">
+                    <div class="empty-state">
+                        <i class="fas fa-clipboard-list"></i>
+                        <p>Selecciona una orden o crea una nueva</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección de Cocina -->
+        <section id="kitchen" class="section">
+            <div class="section-header">
+                <h2>Pantalla de Cocina</h2>
+                <div class="time-filters">
+                    <button class="btn-filter active" data-kitchen-filter="pending">Pendientes</button>
+                    <button class="btn-filter" data-kitchen-filter="preparation">En Preparación</button>
+                    <button class="btn-filter" data-kitchen-filter="ready">Listos</button>
+                </div>
+            </div>
+            
+            <div class="kitchen-orders" id="kitchenOrders">
+                <!-- Las órdenes se cargarán aquí -->
+            </div>
+        </section>
+
+        <!-- Sección de Ventas -->
+        <section id="sales" class="section">
+            <div class="section-header">
+                <h2>Ventas</h2>
+                <div class="time-filters">
+                    <button class="btn-filter active" data-filter="day">Hoy</button>
+                    <button class="btn-filter" data-filter="week">Esta Semana</button>
+                    <button class="btn-filter" data-filter="month">Este Mes</button>
+                </div>
+            </div>
+            
+            <div class="sales-summary">
+                <div class="summary-card total">
+                    <h3>Total Vendido</h3>
+                    <p id="totalSales">$0.00</p>
+                </div>
+                <div class="summary-card orders">
+                    <h3>Órdenes</h3>
+                    <p id="totalOrders">0</p>
+                </div>
+            </div>
+            
+            <div class="sales-list">
+                <h3>Historial de Ventas</h3>
+                <table id="salesTable">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Mesa</th>
+                            <th>Items</th>
+                            <th>Total</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="salesList">
+                        <!-- Las ventas se cargarán aquí -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Sección de Menú -->
+        <section id="menu" class="section">
+            <div class="section-header">
+                <h2>Administrar Menú</h2>
+                <div class="admin-controls">
+                    <button id="addSectionBtn" class="btn-primary"><i class="fas fa-plus"></i> Agregar Sección</button>
+                </div>
+            </div>
+            
+            <div class="menu-sections" id="menuSections">
+                <!-- Las secciones del menú se cargarán aquí -->
+            </div>
+        </section>
+    </main>
+
+    <!-- Modales -->
+    <div class="modal" id="newOrderModal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Nueva Orden</h2>
+            <div class="form-group">
+                <label for="tableName">Nombre de la Mesa:</label>
+                <input type="text" id="tableName" placeholder="Ej. Mesa 1, Barra 2, etc.">
+            </div>
+            <button id="createOrderBtn" class="btn-primary">Crear Orden</button>
         </div>
     </div>
-    
-    <div id="appContainer" class="container" style="display: none;">
-        <header>
-            <div class="logo">
-                <i class="fas fa-tasks"></i>
-                <h1>ATR TaskFlow</h1>
+
+    <div class="modal" id="addItemModal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Agregar Item</h2>
+            <div class="form-group">
+                <label for="itemSection">Sección:</label>
+                <select id="itemSection"></select>
             </div>
-            <div class="user-badge" onclick="showLoginScreen()">
-                <i class="fas fa-user" id="currentUserIcon"></i>
-                <span id="currentUserName">Usuario</span>
+            <div class="form-group">
+                <label for="itemSelect">Item:</label>
+                <select id="itemSelect"></select>
             </div>
-        </header>
-        
-        <div class="tabs-container">
-            <div class="tabs">
-                <div class="tab active" onclick="openTab('admin')">
-                    <i class="fas fa-cog"></i> Administrador
-                </div>
-                <div class="tab" onclick="openTab('maintenance')">
-                    <i class="fas fa-tools"></i> Mantenimiento
-                </div>
-                <div class="tab" onclick="openTab('housekeeping')">
-                    <i class="fas fa-broom"></i> Intendencia
-                </div>
-                <div class="tab-indicator" style="width: 33.33%; left: 0;"></div>
+            <div class="form-group">
+                <label for="itemQuantity">Cantidad:</label>
+                <input type="number" id="itemQuantity" min="1" value="1">
             </div>
-            
-            <div id="admin" class="tab-content active">
-                <div class="stats-cards">
-                    <div class="stat-card">
-                        <div class="stat-value" id="totalUsers">0</div>
-                        <div class="stat-label">Usuarios Registrados</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="totalTasks">0</div>
-                        <div class="stat-label">Tareas Totales</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="completedTasks">0</div>
-                        <div class="stat-label">Tareas Completadas</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="pendingTasks">0</div>
-                        <div class="stat-label">Tareas Pendientes</div>
-                    </div>
-                </div>
-                
-                <div class="card">
-                    <div class="card-header">
-                        <div class="section-title">
-                            <i class="fas fa-user-plus"></i>
-                            <h2>Crear Nuevo Usuario</h2>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="userName" class="form-label">Nombre del Usuario</label>
-                        <input type="text" id="userName" class="form-control" placeholder="Ej: Juan Pérez">
-                    </div>
-                    <div class="form-group">
-                        <label for="userRole" class="form-label">Rol del Usuario</label>
-                        <select id="userRole" class="form-control">
-                            <option value="maintenance">Mantenimiento</option>
-                            <option value="housekeeping">Intendencia</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Contraseña generada</label>
-                        <div class="password-display" id="generatedPassword">Se generará al crear el usuario</div>
-                    </div>
-                    <button class="btn btn-primary" onclick="createUser()">
-                        <i class="fas fa-plus"></i> Crear Usuario
-                    </button>
-                </div>
-                
-                <div class="card">
-                    <div class="card-header">
-                        <div class="section-title">
-                            <i class="fas fa-tasks"></i>
-                            <h2>Asignar Nueva Tarea</h2>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="taskTitle" class="form-label">Título de la Tarea</label>
-                        <input type="text" id="taskTitle" class="form-control" placeholder="Ej: Reparar luminaria">
-                    </div>
-                    <div class="form-group">
-                        <label for="taskDescription" class="form-label">Descripción</label>
-                        <textarea id="taskDescription" class="form-control" rows="3" placeholder="Descripción detallada de la tarea..."></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="taskAssignee" class="form-label">Asignar a</label>
-                        <select id="taskAssignee" class="form-control">
-                            <option value="">Seleccionar usuario o rol</option>
-                            <optgroup label="Usuarios">
-                            </optgroup>
-                            <optgroup label="Roles">
-                                <option value="role_maintenance">Todo el equipo de Mantenimiento</option>
-                                <option value="role_housekeeping">Todo el equipo de Intendencia</option>
-                            </optgroup>
-                        </select>
-                    </div>
-                    <button class="btn btn-primary" onclick="createTask()">
-                        <i class="fas fa-paper-plane"></i> Asignar Tarea
-                    </button>
-                </div>
-                
-                <div class="card">
-                    <div class="card-header">
-                        <div class="section-title">
-                            <i class="fas fa-users"></i>
-                            <h2>Usuarios Registrados</h2>
-                        </div>
-                    </div>
-                    <div id="usersList" class="user-grid">
-                    </div>
-                </div>
-                
-                <div class="card">
-                    <div class="card-header">
-                        <div class="section-title">
-                            <i class="fas fa-clipboard-list"></i>
-                            <h2>Todas las Tareas</h2>
-                        </div>
-                    </div>
-                    <div id="allTasksList" class="task-list">
-                    </div>
-                </div>
+            <div class="form-group">
+                <label for="itemComments">Comentarios:</label>
+                <textarea id="itemComments" rows="2"></textarea>
             </div>
-            
-            <div id="maintenance" class="tab-content">
-                <div class="filter-bar">
-                    <div class="section-title">
-                        <i class="fas fa-tools"></i>
-                        <h2>Tareas de Mantenimiento</h2>
-                    </div>
-                    <div class="filter-group">
-                        <select id="maintenanceUserSelect" class="form-control" onchange="filterMaintenanceTasks()" style="width: auto;">
-                            <option value="">Todos los usuarios</option>
-                        </select>
-                    </div>
-                </div>
-                
-                <div id="maintenanceTasks" class="task-list">
-                </div>
+            <button id="addItemToOrderBtn" class="btn-primary">Agregar a Orden</button>
+        </div>
+    </div>
+
+    <div class="modal" id="closeOrderModal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Cerrar Orden</h2>
+            <div class="order-summary" id="closeOrderSummary"></div>
+            <div class="form-group">
+                <label for="finalComments">Comentarios Finales:</label>
+                <textarea id="finalComments" rows="3"></textarea>
             </div>
-            
-            <div id="housekeeping" class="tab-content">
-                <div class="filter-bar">
-                    <div class="section-title">
-                        <i class="fas fa-broom"></i>
-                        <h2>Tareas de Intendencia</h2>
-                    </div>
-                    <div class="filter-group">
-                        <select id="housekeepingUserSelect" class="form-control" onchange="filterHousekeepingTasks()" style="width: auto;">
-                            <option value="">Todos los usuarios</option>
-                        </select>
-                    </div>
-                </div>
-                
-                <div id="housekeepingTasks" class="task-list">
-                </div>
+            <button id="confirmCloseOrderBtn" class="btn-primary">Confirmar Cierre</button>
+        </div>
+    </div>
+
+    <div class="modal" id="sectionModal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="sectionModalTitle">Nueva Sección</h2>
+            <div class="form-group">
+                <label for="sectionName">Nombre de la Sección:</label>
+                <input type="text" id="sectionName" placeholder="Ej. Entradas, Platos Fuertes, etc.">
+            </div>
+            <button id="saveSectionBtn" class="btn-primary">Guardar</button>
+        </div>
+    </div>
+
+    <div class="modal" id="itemModal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="itemModalTitle">Nuevo Item</h2>
+            <div class="form-group">
+                <label for="itemName">Nombre del Item:</label>
+                <input type="text" id="itemName" placeholder="Ej. Burrito de Carnitas, etc.">
+            </div>
+            <div class="form-group">
+                <label for="itemPrice">Precio:</label>
+                <input type="number" id="itemPrice" min="0" step="0.01" placeholder="0.00">
+            </div>
+            <button id="saveItemBtn" class="btn-primary">Guardar</button>
+        </div>
+    </div>
+
+    <div class="modal" id="confirmModal">
+        <div class="modal-content small">
+            <h2 id="confirmModalTitle">Confirmar</h2>
+            <p id="confirmModalMessage">¿Estás seguro que deseas realizar esta acción?</p>
+            <div class="modal-buttons">
+                <button id="confirmModalCancel" class="btn-secondary">Cancelar</button>
+                <button id="confirmModalConfirm" class="btn-primary">Confirmar</button>
             </div>
         </div>
     </div>
 
-    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
-
+    <!-- Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <script>
-        // Configuración de Firebase - REEMPLAZA CON TUS PROPIAS CREDENCIALES
+        // Configuración de Firebase
         const firebaseConfig = {
-            apiKey: "AIzaSyABC123XYZ456DEF789GHI",
-            authDomain: "atr-taskflow.firebaseapp.com",
-            projectId: "atr-taskflow",
-            storageBucket: "atr-taskflow.appspot.com",
-            messagingSenderId: "123456789012",
-            appId: "1:123456789012:web:abc123def456ghi789jkl"
+            apiKey: "AIzaSyC70WGYyyvUVyK_d_haRQKQSXyoroNrx2w",
+            authDomain: "murritos-3640e.firebaseapp.com",
+            databaseURL: "https://murritos-3640e-default-rtdb.firebaseio.com",
+            projectId: "murritos-3640e",
+            storageBucket: "murritos-3640e.appspot.com",
+            messagingSenderId: "286299522702",
+            appId: "1:286299522702:web:9eacfa403ff6bcf78aabdf"
         };
 
-        // Inicializa Firebase
-        const app = firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore(app);
+        // Inicializar Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
 
         // Variables globales
-        let users = [];
-        let tasks = [];
-        let currentUser = null;
+        let isAdmin = false;
+        let currentOrderId = null;
+        let currentSectionId = null;
+        let currentItemId = null;
+        let currentFilter = 'day';
+        let lastOrderCount = 0;
+        let currentUserRole = 'waiter'; // 'waiter' o 'kitchen'
+        const newOrderSound = document.getElementById('newOrderSound');
 
-        // Función para generar contraseñas aleatorias
-        function generatePassword() {
-            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-            let password = '';
-            for (let i = 0; i < 8; i++) {
-                password += chars.charAt(Math.floor(Math.random() * chars.length));
-            }
-            return password;
-        }
+        // Inicialización de la aplicación
+        document.addEventListener('DOMContentLoaded', function() {
+            // Verificar si hay un admin logueado
+            checkAdminSession();
+            
+            // Configurar event listeners
+            setupEventListeners();
+            
+            // Cargar datos iniciales según el rol del usuario
+            loadInitialData();
+            
+            // Configurar el selector de rol
+            setupRoleSelector();
+        });
 
-        // Cargar usuarios desde Firestore
-        async function loadUsers() {
-            try {
-                const snapshot = await db.collection("users").get();
-                users = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                
-                // Crear usuario admin si no existe
-                if(!users.some(u => u.role === 'admin')) {
-                    const adminPass = "AcuaticaTriRacing";
-                    const docRef = await db.collection("users").add({
-                        name: "Admin",
-                        role: "admin",
-                        password: adminPass
+        // Configurar event listeners
+        function setupEventListeners() {
+            // Navegación entre secciones
+            document.querySelectorAll('nav ul li').forEach(item => {
+                item.addEventListener('click', function() {
+                    // Remover clase active de todos los items
+                    document.querySelectorAll('nav ul li').forEach(li => {
+                        li.classList.remove('active');
                     });
-                    users.push({ id: docRef.id, name: "Admin", role: "admin", password: adminPass });
-                }
-                
-                renderLoginUsers();
-                updateUserSelects();
-                renderUsersList();
-                updateStats();
-            } catch (error) {
-                console.error("Error cargando usuarios:", error);
-                showNotification("Error al cargar usuarios", "error");
-            }
-        }
-
-        // Cargar tareas desde Firestore
-        async function loadTasks() {
-            try {
-                const snapshot = await db.collection("tasks").get();
-                tasks = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                renderAllTasks();
-                renderRoleTasks();
-                updateStats();
-            } catch (error) {
-                console.error("Error cargando tareas:", error);
-                showNotification("Error al cargar tareas", "error");
-            }
-        }
-
-        // Crear un nuevo usuario
-        async function createUser() {
-            const name = document.getElementById('userName').value.trim();
-            const role = document.getElementById('userRole').value;
-            
-            if (!name) {
-                showNotification("Por favor ingresa un nombre", "error");
-                return;
-            }
-            
-            const password = generatePassword();
-            
-            try {
-                const docRef = await db.collection("users").add({
-                    name: name,
-                    role: role,
-                    password: password
+                    
+                    // Agregar clase active al item clickeado
+                    this.classList.add('active');
+                    
+                    // Ocultar todas las secciones
+                    document.querySelectorAll('.section').forEach(section => {
+                        section.classList.remove('active');
+                    });
+                    
+                    // Mostrar la sección correspondiente
+                    const sectionId = this.getAttribute('data-section');
+                    document.getElementById(sectionId).classList.add('active');
+                    
+                    // Si es la sección de cocina, cargar las órdenes pendientes
+                    if (sectionId === 'kitchen') {
+                        loadKitchenOrders('pending');
+                    }
                 });
-                
-                document.getElementById('userName').value = '';
-                document.getElementById('generatedPassword').textContent = password;
-                showNotification(`Usuario ${name} creado correctamente`);
-                
-                // Agregar el nuevo usuario a la lista local
-                users.push({ id: docRef.id, name: name, role: role, password: password });
-                
-                // Actualizar las vistas
-                renderLoginUsers();
-                updateUserSelects();
-                renderUsersList();
-                updateStats();
-            } catch (error) {
-                console.error("Error creando usuario:", error);
-                showNotification("Error al crear usuario", "error");
-            }
+            });
+            
+            // Botón nueva orden
+            document.getElementById('newOrderBtn').addEventListener('click', openNewOrderModal);
+            
+            // Botón crear orden
+            document.getElementById('createOrderBtn').addEventListener('click', createNewOrder);
+            
+            // Botón agregar item a orden
+            document.getElementById('addItemToOrderBtn').addEventListener('click', addItemToOrder);
+            
+            // Botón confirmar cierre de orden
+            document.getElementById('confirmCloseOrderBtn').addEventListener('click', closeOrder);
+            
+            // Botón agregar sección
+            document.getElementById('addSectionBtn').addEventListener('click', openSectionModal);
+            
+            // Botón guardar sección
+            document.getElementById('saveSectionBtn').addEventListener('click', saveSection);
+            
+            // Botón guardar item
+            document.getElementById('saveItemBtn').addEventListener('click', saveItem);
+            
+            // Filtros de ventas
+            document.querySelectorAll('.btn-filter').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.btn-filter').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    currentFilter = this.getAttribute('data-filter');
+                    loadSalesData();
+                });
+            });
+            
+            // Filtros de cocina
+            document.querySelectorAll('[data-kitchen-filter]').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('[data-kitchen-filter]').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    const filter = this.getAttribute('data-kitchen-filter');
+                    loadKitchenOrders(filter);
+                });
+            });
+            
+            // Cerrar modales
+            document.querySelectorAll('.close').forEach(closeBtn => {
+                closeBtn.addEventListener('click', function() {
+                    this.closest('.modal').classList.remove('show');
+                });
+            });
+            
+            // Cerrar modales al hacer clic fuera
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.addEventListener('click', function(e) {
+                    if (e.target === this) {
+                        this.classList.remove('show');
+                    }
+                });
+            });
         }
 
-        // Crear una nueva tarea
-        async function createTask() {
-            const title = document.getElementById('taskTitle').value.trim();
-            const description = document.getElementById('taskDescription').value.trim();
-            const assignee = document.getElementById('taskAssignee').value;
+        // Configurar el selector de rol
+        function setupRoleSelector() {
+            const roleSelector = document.getElementById('userRole');
             
-            if (!title || !assignee) {
-                showNotification('Por favor completa título y asignación', 'error');
-                return;
-            }
-            
-            let assignedTo = [];
-            if (assignee.startsWith('role_')) {
-                const role = assignee.replace('role_', '');
-                assignedTo = users.filter(u => u.role === role).map(u => u.id);
+            roleSelector.addEventListener('change', function() {
+                currentUserRole = this.value;
+                this.className = `user-role ${currentUserRole}`;
+                
+                // Actualizar la interfaz según el rol
+                updateUIForRole();
+                
+                // Cargar datos según el rol
+                loadInitialData();
+            });
+        }
+
+        // Actualizar la interfaz según el rol
+        function updateUIForRole() {
+            // Ocultar/mostrar elementos según el rol
+            if (currentUserRole === 'kitchen') {
+                document.querySelector('nav ul li[data-section="kitchen"]').click();
+                document.getElementById('newOrderBtn').classList.add('hidden');
             } else {
-                assignedTo = [assignee];
-            }
-            
-            try {
-                for (const userId of assignedTo) {
-                    await db.collection("tasks").add({
-                        title: title,
-                        description: description,
-                        assignedTo: userId,
-                        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                        completed: false,
-                        observations: '',
-                        createdBy: currentUser.id
-                    });
-                }
-                
-                document.getElementById('taskTitle').value = '';
-                document.getElementById('taskDescription').value = '';
-                document.getElementById('taskAssignee').value = '';
-                
-                showNotification(`Tarea asignada a ${assignedTo.length} ${assignedTo.length > 1 ? 'personas' : 'persona'}`);
-                await loadTasks();
-            } catch (error) {
-                console.error("Error creando tarea:", error);
-                showNotification("Error al crear tarea", "error");
+                document.querySelector('nav ul li[data-section="orders"]').click();
+                document.getElementById('newOrderBtn').classList.remove('hidden');
             }
         }
 
-        // Mostrar campo para completar tarea
-        function completeTask(taskId) {
-            const obsElement = document.getElementById(`obs-${taskId}`);
-            if (obsElement) {
-                obsElement.style.display = 'block';
-                obsElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        // Cargar datos iniciales según el rol
+        function loadInitialData() {
+            if (currentUserRole === 'kitchen') {
+                loadKitchenOrders('pending');
+            } else {
+                loadActiveOrders();
+                loadSalesData();
+            }
+            
+            if (isAdmin) {
+                loadMenuSections();
             }
         }
 
-        // Guardar observaciones y marcar tarea como completada
-        async function saveObservation(taskId) {
-            const observation = document.getElementById(`obs-text-${taskId}`).value.trim();
-            
-            if (!observation) {
-                showNotification("Por favor ingresa observaciones", "error");
-                return;
+        // Verificar sesión de admin
+        function checkAdminSession() {
+            const adminSession = localStorage.getItem('murritos_admin');
+            if (adminSession === 'true') {
+                isAdmin = true;
+                document.getElementById('userType').textContent = 'Administrador';
+                document.getElementById('userType').classList.add('admin');
+                document.getElementById('menuTab').style.display = 'flex';
+            } else {
+                document.getElementById('adminLogin').classList.add('show');
+                document.getElementById('menuTab').style.display = 'none';
             }
-            
-            try {
-                await db.collection("tasks").doc(taskId).update({
-                    observations: observation,
-                    completed: true,
-                    completedAt: firebase.firestore.FieldValue.serverTimestamp()
-                });
-                
-                showNotification('Tarea marcada como completada');
-                await loadTasks();
-            } catch (error) {
-                console.error("Error actualizando tarea:", error);
-                showNotification("Error al completar tarea", "error");
-            }
-        }
-
-        // Renderizar lista de usuarios para login
-        function renderLoginUsers() {
-            const container = document.getElementById('userLoginList');
-            container.innerHTML = '';
-            
-            const roleUsers = users.filter(u => u.role !== 'admin');
-            
-            if (roleUsers.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <i class="fas fa-user-slash"></i>
-                        <p>No hay usuarios registrados</p>
-                    </div>
-                `;
-                return;
-            }
-            
-            roleUsers.forEach(user => {
-                const userOption = document.createElement('div');
-                userOption.className = 'user-option';
-                userOption.onclick = () => loginUser(user.id);
-                userOption.innerHTML = `
-                    <div class="user-avatar">${user.name.charAt(0)}</div>
-                    <div class="user-info">
-                        <h3>${user.name}</h3>
-                        <p>${user.role === 'maintenance' ? 'Mantenimiento' : 'Intendencia'}</p>
-                    </div>
-                `;
-                container.appendChild(userOption);
-            });
-        }
-
-        // Actualizar selects de usuarios
-        function updateUserSelects() {
-            const userSelects = [
-                document.getElementById('taskAssignee'),
-                document.getElementById('maintenanceUserSelect'),
-                document.getElementById('housekeepingUserSelect')
-            ];
-            
-            userSelects.forEach(select => {
-                // Limpiar solo las opciones de usuarios, no los grupos
-                const userOptions = select.querySelectorAll('optgroup[label="Usuarios"] > option');
-                userOptions.forEach(option => {
-                    if (option.value !== '') {
-                        option.remove();
-                    }
-                });
-            });
-            
-            users.forEach(user => {
-                if (user.role === 'maintenance' || user.role === 'housekeeping') {
-                    const option = document.createElement('option');
-                    option.value = user.id;
-                    option.textContent = `${user.name}`;
-                    
-                    const assignOptgroup = document.querySelector('#taskAssignee optgroup[label="Usuarios"]');
-                    if (assignOptgroup) assignOptgroup.appendChild(option.cloneNode(true));
-                    
-                    if (user.role === 'maintenance') {
-                        const maintenanceSelect = document.querySelector('#maintenanceUserSelect');
-                        if (maintenanceSelect) maintenanceSelect.appendChild(option.cloneNode(true));
-                    } else {
-                        const housekeepingSelect = document.querySelector('#housekeepingUserSelect');
-                        if (housekeepingSelect) housekeepingSelect.appendChild(option.cloneNode(true));
-                    }
-                }
-            });
-        }
-
-        // Renderizar lista de usuarios en panel admin
-        function renderUsersList() {
-            const container = document.getElementById('usersList');
-            container.innerHTML = '';
-            
-            const roleUsers = users.filter(u => u.role !== 'admin');
-            
-            if (roleUsers.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <i class="fas fa-user-slash"></i>
-                        <p>No hay usuarios registrados</p>
-                    </div>
-                `;
-                return;
-            }
-            
-            roleUsers.forEach(user => {
-                const userCard = document.createElement('div');
-                userCard.className = 'user-card';
-                userCard.innerHTML = `
-                    <div class="user-avatar">${user.name.charAt(0)}</div>
-                    <div class="user-info">
-                        <h3>${user.name}</h3>
-                        <p>
-                            <span class="role-badge ${user.role === 'maintenance' ? 'role-maintenance' : 'role-housekeeping'}">
-                                ${user.role === 'maintenance' ? 'Mantenimiento' : 'Intendencia'}
-                            </span>
-                        </p>
-                        <small>Contraseña: ${user.password}</small>
-                    </div>
-                `;
-                container.appendChild(userCard);
-            });
-        }
-
-        // Renderizar todas las tareas en panel admin
-        function renderAllTasks() {
-            const container = document.getElementById('allTasksList');
-            container.innerHTML = '';
-            
-            if (tasks.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <i class="fas fa-clipboard"></i>
-                        <p>No hay tareas creadas aún</p>
-                    </div>
-                `;
-                return;
-            }
-            
-            const sortedTasks = [...tasks].sort((a, b) => {
-                if (a.completed && !b.completed) return 1;
-                if (!a.completed && b.completed) return -1;
-                return new Date(b.createdAt?.toDate?.() || b.createdAt) - new Date(a.createdAt?.toDate?.() || a.createdAt);
-            });
-            
-            sortedTasks.forEach(task => {
-                const user = users.find(u => u.id === task.assignedTo);
-                const creator = users.find(u => u.id === task.createdBy);
-                
-                const taskElement = document.createElement('div');
-                taskElement.className = `task-card ${task.completed ? 'completed' : ''}`;
-                taskElement.innerHTML = `
-                    <h3 class="task-title">${task.title}</h3>
-                    <p class="task-desc">${task.description}</p>
-                    
-                    ${task.completed && task.observations ? `
-                        <div class="task-observations">
-                            <strong>Observaciones:</strong> ${task.observations}
-                        </div>
-                    ` : ''}
-                    
-                    <div class="task-meta">
-                        <div class="task-assignee">
-                            <div class="task-assignee-avatar">${user ? user.name.charAt(0) : '?'}</div>
-                            <span>${user ? user.name : 'Desconocido'}</span>
-                        </div>
-                        <div class="task-date">
-                            ${task.createdAt?.toDate?.()?.toLocaleDateString() || new Date(task.createdAt).toLocaleDateString()}
-                        </div>
-                    </div>
-                `;
-                container.appendChild(taskElement);
-            });
-        }
-
-        // Renderizar tareas por rol
-        function renderRoleTasks() {
-            renderTasksForRole('maintenance');
-            renderTasksForRole('housekeeping');
-        }
-
-        // Renderizar tareas para un rol específico
-        function renderTasksForRole(role) {
-            const container = document.getElementById(`${role}Tasks`);
-            if (!container) return;
-            
-            container.innerHTML = '';
-            
-            const roleTasks = tasks.filter(task => {
-                const user = users.find(u => u.id === task.assignedTo);
-                return user && user.role === role;
-            });
-            
-            if (roleTasks.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <i class="fas fa-clipboard"></i>
-                        <p>No hay tareas de ${role === 'maintenance' ? 'Mantenimiento' : 'Intendencia'}</p>
-                    </div>
-                `;
-                return;
-            }
-            
-            const sortedTasks = [...roleTasks].sort((a, b) => {
-                if (a.completed && !b.completed) return 1;
-                if (!a.completed && b.completed) return -1;
-                return new Date(b.createdAt?.toDate?.() || b.createdAt) - new Date(a.createdAt?.toDate?.() || a.createdAt);
-            });
-            
-            sortedTasks.forEach(task => {
-                const user = users.find(u => u.id === task.assignedTo);
-                
-                const taskElement = document.createElement('div');
-                taskElement.className = `task-card ${task.completed ? 'completed' : ''}`;
-                
-                if (!task.completed) {
-                    taskElement.innerHTML = `
-                        <h3 class="task-title">${task.title}</h3>
-                        <p class="task-desc">${task.description}</p>
-                        
-                        <div class="task-meta">
-                            <div class="task-assignee">
-                                <div class="task-assignee-avatar">${user?.name?.charAt(0) || '?'}</div>
-                                <span>${user?.name || 'Desconocido'}</span>
-                            </div>
-                            <div class="task-date">
-                                ${task.createdAt?.toDate?.()?.toLocaleDateString() || new Date(task.createdAt).toLocaleDateString()}
-                            </div>
-                        </div>
-                        
-                        <div class="task-actions">
-                            <button class="btn btn-success btn-sm" onclick="completeTask('${task.id}')">
-                                <i class="fas fa-check"></i> Completar
-                            </button>
-                        </div>
-                        
-                        <div id="obs-${task.id}" style="margin-top: 15px; display: none;">
-                            <textarea id="obs-text-${task.id}" class="form-control" rows="2" placeholder="Agregar observaciones..."></textarea>
-                            <button class="btn btn-primary btn-sm" onclick="saveObservation('${task.id}')" style="margin-top: 8px;">
-                                <i class="fas fa-save"></i> Guardar
-                            </button>
-                        </div>
-                    `;
-                } else {
-                    taskElement.innerHTML = `
-                        <h3 class="task-title">${task.title}</h3>
-                        <p class="task-desc">${task.description}</p>
-                        
-                        ${task.observations ? `
-                            <div class="task-observations">
-                                <strong>Observaciones:</strong> ${task.observations}
-                            </div>
-                        ` : ''}
-                        
-                        <div class="task-meta">
-                            <div class="task-assignee">
-                                <div class="task-assignee-avatar">${user?.name?.charAt(0) || '?'}</div>
-                                <span>${user?.name || 'Desconocido'}</span>
-                            </div>
-                            <div class="task-date">
-                                Completada: ${task.completedAt?.toDate?.()?.toLocaleDateString() || new Date(task.completedAt).toLocaleDateString()}
-                            </div>
-                        </div>
-                    `;
-                }
-                
-                container.appendChild(taskElement);
-            });
-        }
-
-        // Filtrar tareas de mantenimiento por usuario
-        function filterMaintenanceTasks() {
-            const userId = document.getElementById('maintenanceUserSelect').value;
-            filterTasksByUser('maintenance', userId);
-        }
-
-        // Filtrar tareas de intendencia por usuario
-        function filterHousekeepingTasks() {
-            const userId = document.getElementById('housekeepingUserSelect').value;
-            filterTasksByUser('housekeeping', userId);
-        }
-
-        // Filtrar tareas por usuario
-        function filterTasksByUser(role, userId) {
-            const container = document.getElementById(`${role}Tasks`);
-            if (!container) return;
-            
-            const tasksToShow = tasks.filter(task => {
-                const user = users.find(u => u.id === task.assignedTo);
-                if (!user || user.role !== role) return false;
-                if (userId && task.assignedTo !== userId) return false;
-                return true;
-            });
-            
-            container.innerHTML = '';
-            
-            if (tasksToShow.length === 0) {
-                const filterText = userId ? `para este usuario` : `de ${role === 'maintenance' ? 'Mantenimiento' : 'Intendencia'}`;
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <i class="fas fa-clipboard"></i>
-                        <p>No hay tareas ${filterText}</p>
-                    </div>
-                `;
-                return;
-            }
-            
-            tasksToShow.forEach(task => {
-                const user = users.find(u => u.id === task.assignedTo);
-                const taskElement = document.createElement('div');
-                taskElement.className = `task-card ${task.completed ? 'completed' : ''}`;
-                
-                if (!task.completed) {
-                    taskElement.innerHTML = `
-                        <h3 class="task-title">${task.title}</h3>
-                        <p class="task-desc">${task.description}</p>
-                        
-                        <div class="task-meta">
-                            <div class="task-assignee">
-                                <div class="task-assignee-avatar">${user?.name?.charAt(0) || '?'}</div>
-                                <span>${user?.name || 'Desconocido'}</span>
-                            </div>
-                            <div class="task-date">
-                                ${task.createdAt?.toDate?.()?.toLocaleDateString() || new Date(task.createdAt).toLocaleDateString()}
-                            </div>
-                        </div>
-                        
-                        <div class="task-actions">
-                            <button class="btn btn-success btn-sm" onclick="completeTask('${task.id}')">
-                                <i class="fas fa-check"></i> Completar
-                            </button>
-                        </div>
-                        
-                        <div id="obs-${task.id}" style="margin-top: 15px; display: none;">
-                            <textarea id="obs-text-${task.id}" class="form-control" rows="2" placeholder="Agregar observaciones..."></textarea>
-                            <button class="btn btn-primary btn-sm" onclick="saveObservation('${task.id}')" style="margin-top: 8px;">
-                                <i class="fas fa-save"></i> Guardar
-                            </button>
-                        </div>
-                    `;
-                } else {
-                    taskElement.innerHTML = `
-                        <h3 class="task-title">${task.title}</h3>
-                        <p class="task-desc">${task.description}</p>
-                        
-                        ${task.observations ? `
-                            <div class="task-observations">
-                                <strong>Observaciones:</strong> ${task.observations}
-                            </div>
-                        ` : ''}
-                        
-                        <div class="task-meta">
-                            <div class="task-assignee">
-                                <div class="task-assignee-avatar">${user?.name?.charAt(0) || '?'}</div>
-                                <span>${user?.name || 'Desconocido'}</span>
-                            </div>
-                            <div class="task-date">
-                                Completada: ${task.completedAt?.toDate?.()?.toLocaleDateString() || new Date(task.completedAt).toLocaleDateString()}
-                            </div>
-                        </div>
-                    `;
-                }
-                
-                container.appendChild(taskElement);
-            });
-        }
-
-        // Iniciar sesión como usuario
-        function loginUser(userId) {
-            currentUser = users.find(u => u.id === userId);
-            
-            if (!currentUser) {
-                showNotification("Usuario no encontrado", "error");
-                return;
-            }
-            
-            document.getElementById('currentUserName').textContent = currentUser.name;
-            document.getElementById('currentUserIcon').className = 
-                currentUser.role === 'admin' ? 'fas fa-user-shield' : 
-                currentUser.role === 'maintenance' ? 'fas fa-tools' : 'fas fa-broom';
-            
-            document.getElementById('loginScreen').style.display = 'none';
-            document.getElementById('appContainer').style.display = 'block';
-            
-            if (currentUser.role === 'maintenance') {
-                openTab('maintenance');
-            } else if (currentUser.role === 'housekeeping') {
-                openTab('housekeeping');
-            } else if (currentUser.role === 'admin') {
-                openTab('admin');
-            }
-        }
-
-        // Mostrar pantalla de login
-        function showLoginScreen() {
-            document.getElementById('loginScreen').style.display = 'flex';
-            document.getElementById('appContainer').style.display = 'none';
-            currentUser = null;
-        }
-
-        // Mostrar modal de contraseña de admin
-        function showAdminPasswordModal() {
-            document.getElementById('adminPasswordModal').style.display = 'flex';
-            document.getElementById('adminPasswordInput').value = '';
-            document.getElementById('adminPasswordInput').focus();
-        }
-
-        // Ocultar modal de contraseña de admin
-        function hideAdminPasswordModal() {
-            document.getElementById('adminPasswordModal').style.display = 'none';
         }
 
         // Verificar contraseña de admin
-        function verifyAdminPassword() {
-            const password = document.getElementById('adminPasswordInput').value;
-            const admin = users.find(u => u.role === 'admin');
-            
-            if (admin && password === admin.password) {
-                hideAdminPasswordModal();
-                loginUser(admin.id);
+        function checkAdminPassword() {
+            const password = document.getElementById('adminPassword').value;
+            if (password === 'Tonrry13') {
+                isAdmin = true;
+                localStorage.setItem('murritos_admin', 'true');
+                document.getElementById('adminLogin').classList.remove('show');
+                document.getElementById('userType').textContent = 'Administrador';
+                document.getElementById('userType').classList.add('admin');
+                document.getElementById('menuTab').style.display = 'flex';
+                loadMenuSections();
             } else {
-                showNotification('Contraseña incorrecta', 'error');
-                document.getElementById('adminPasswordInput').focus();
+                alert('Contraseña incorrecta');
             }
         }
 
-        // Cambiar entre pestañas
-        function openTab(tabName) {
-            if (!currentUser) {
-                showLoginScreen();
-                return;
-            }
+        // Cargar órdenes activas
+        function loadActiveOrders() {
+            const activeOrdersList = document.getElementById('activeOrdersList');
+            activeOrdersList.innerHTML = '<p>Cargando órdenes...</p>';
             
-            if (tabName === 'admin' && currentUser.role !== 'admin') {
-                showAdminPasswordModal();
-                return;
-            }
-            
-            const tabs = document.querySelectorAll('.tab-content');
-            tabs.forEach(tab => tab.classList.remove('active'));
-            
-            const tabButtons = document.querySelectorAll('.tab');
-            tabButtons.forEach(button => button.classList.remove('active'));
-            
-            const tabElement = document.getElementById(tabName);
-            if (tabElement) tabElement.classList.add('active');
-            
-            const tabButton = document.querySelector(`.tab[onclick*="${tabName}"]`);
-            if (tabButton) tabButton.classList.add('active');
-            
-            const tabIndex = Array.from(tabButtons).findIndex(btn => 
-                btn.getAttribute('onclick')?.includes(tabName));
-            const tabWidth = 100 / tabButtons.length;
-            const indicator = document.querySelector('.tab-indicator');
-            if (indicator && tabIndex >= 0) {
-                indicator.style.width = `${tabWidth}%`;
-                indicator.style.left = `${tabIndex * tabWidth}%`;
-            }
-        }
-
-        // Actualizar estadísticas
-        function updateStats() {
-            document.getElementById('totalUsers').textContent = users.filter(u => u.role !== 'admin').length;
-            document.getElementById('totalTasks').textContent = tasks.length;
-            document.getElementById('completedTasks').textContent = tasks.filter(t => t.completed).length;
-            document.getElementById('pendingTasks').textContent = tasks.filter(t => !t.completed).length;
-        }
-
-        // Mostrar notificaciones
-        function showNotification(message, type = 'success') {
-            const notification = document.createElement('div');
-            notification.className = `notification ${type}`;
-            notification.innerHTML = `
-                <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
-                ${message}
-            `;
-            
-            document.body.appendChild(notification);
-            
-            setTimeout(() => {
-                notification.classList.add('show');
-            }, 10);
-            
-            setTimeout(() => {
-                notification.classList.remove('show');
-                setTimeout(() => {
-                    document.body.removeChild(notification);
-                }, 300);
-            }, 3000);
-        }
-
-        // Configurar indicador de pestañas
-        function setupTabIndicator() {
-            const tabs = document.querySelectorAll('.tab');
-            const indicator = document.querySelector('.tab-indicator');
-            
-            if (!indicator) return;
-            
-            tabs.forEach(tab => {
-                tab.addEventListener('click', function() {
-                    const tabWidth = 100 / tabs.length;
-                    const index = Array.from(tabs).indexOf(this);
-                    indicator.style.width = `${tabWidth}%`;
-                    indicator.style.left = `${index * tabWidth}%`;
-                });
+            database.ref('orders').orderByChild('status').equalTo('active').on('value', snapshot => {
+                const orders = snapshot.val();
+                activeOrdersList.innerHTML = '';
+                
+                const currentOrderCount = orders ? Object.keys(orders).length : 0;
+                
+                // Reproducir sonido si hay un nuevo pedido (solo para cocina)
+                if (currentUserRole === 'kitchen' && currentOrderCount > lastOrderCount) {
+                    playNotificationSound();
+                }
+                lastOrderCount = currentOrderCount;
+                
+                if (orders) {
+                    Object.entries(orders).forEach(([id, order]) => {
+                        const orderCard = document.createElement('div');
+                        orderCard.className = 'order-card';
+                        orderCard.setAttribute('data-order-id', id);
+                        
+                        orderCard.innerHTML = `
+                            <h4>${order.tableName}</h4>
+                            <p>${order.items ? Object.keys(order.items).length : 0} items</p>
+                            <p>${formatDate(order.createdAt)}</p>
+                            <small class="time-ago">${formatTimeAgo(order.createdAt)}</small>
+                            <div class="order-status">
+                                <span class="status-badge ${order.preparationStatus || 'pending'}">
+                                    ${order.preparationStatus === 'ready' ? 'Listo' : 
+                                     order.preparationStatus === 'preparation' ? 'En Preparación' : 'Pendiente'}
+                                </span>
+                            </div>
+                        `;
+                        
+                        orderCard.addEventListener('click', function() {
+                            document.querySelectorAll('.order-card').forEach(card => {
+                                card.classList.remove('active');
+                            });
+                            this.classList.add('active');
+                            currentOrderId = id;
+                            loadOrderDetails(id);
+                        });
+                        
+                        activeOrdersList.appendChild(orderCard);
+                    });
+                } else {
+                    activeOrdersList.innerHTML = '<p>No hay órdenes activas</p>';
+                }
             });
         }
 
-        // Inicializar la aplicación
-        document.addEventListener('DOMContentLoaded', async () => {
-            try {
-                await loadUsers();
-                await loadTasks();
-                setupTabIndicator();
-                
-                // Verificar si hay un error en la conexión con Firebase
-                if (!firebase.apps.length) {
-                    showNotification("Error de conexión con Firebase", "error");
+        // Reproducir sonido de notificación
+        function playNotificationSound() {
+            // Reiniciar el audio para permitir múltiples reproducciones
+            newOrderSound.pause();
+            newOrderSound.currentTime = 0;
+            
+            // Intentar reproducir (puede fallar sin interacción del usuario)
+            newOrderSound.play().catch(e => {
+                console.log("No se pudo reproducir el sonido automáticamente:", e);
+                // Mostrar un botón para permitir al usuario activar el sonido
+                if (confirm('¿Deseas activar las notificaciones de sonido?')) {
+                    newOrderSound.play().catch(e => console.log("El usuario aún no ha permitido el sonido"));
                 }
-            } catch (error) {
-                console.error("Error inicializando la aplicación:", error);
-                showNotification("Error al cargar los datos iniciales", "error");
+            });
+        }
+
+        // Cargar detalles de una orden
+        function loadOrderDetails(orderId) {
+            const orderDetails = document.getElementById('orderDetails');
+            orderDetails.innerHTML = '<p>Cargando detalles...</p>';
+            
+            database.ref(`orders/${orderId}`).once('value').then(snapshot => {
+                const order = snapshot.val();
+                
+                if (order) {
+                    let itemsHtml = '';
+                    let total = 0;
+                    
+                    if (order.items) {
+                        Object.entries(order.items).forEach(([id, item]) => {
+                            itemsHtml += `
+                                <div class="order-item" data-item-id="${id}">
+                                    <div class="order-item-info">
+                                        <h4>${item.name}</h4>
+                                        <p class="order-item-comments">${item.comments || ''}</p>
+                                    </div>
+                                    <div class="order-item-price">
+                                        $${item.price.toFixed(2)} x ${item.quantity} = $${(item.price * item.quantity).toFixed(2)}
+                                    </div>
+                                </div>
+                            `;
+                            total += item.price * item.quantity;
+                        });
+                    }
+                    
+                    orderDetails.innerHTML = `
+                        <div class="order-header">
+                            <h3>${order.tableName}</h3>
+                            <p>Creada: ${formatDate(order.createdAt)}</p>
+                            <p>Estado: 
+                                <span class="status-badge ${order.preparationStatus || 'pending'}">
+                                    ${order.preparationStatus === 'ready' ? 'Listo' : 
+                                     order.preparationStatus === 'preparation' ? 'En Preparación' : 'Pendiente'}
+                                </span>
+                            </p>
+                        </div>
+                        
+                        <div class="order-items" id="orderItems">
+                            ${itemsHtml || '<p>No hay items en esta orden</p>'}
+                        </div>
+                        
+                        <div class="order-total">
+                            Total: $${total.toFixed(2)}
+                        </div>
+                        
+                        <div class="order-actions">
+                            <button id="addItemBtn" class="btn-primary"><i class="fas fa-plus"></i> Agregar Item</button>
+                            ${currentUserRole === 'kitchen' ? `
+                            <button id="preparationBtn" class="btn-status ${order.preparationStatus === 'ready' ? 'ready' : 
+                                                                          order.preparationStatus === 'preparation' ? 'preparation' : 'pending'}">
+                                ${order.preparationStatus === 'ready' ? 'Listo' : 
+                                 order.preparationStatus === 'preparation' ? 'En Preparación' : 'Marcar como En Preparación'}
+                            </button>
+                            ` : ''}
+                            <button id="closeOrderBtn" class="btn-primary"><i class="fas fa-check"></i> Cerrar Orden</button>
+                        </div>
+                    `;
+                    
+                    // Reasignar event listeners
+                    document.getElementById('addItemBtn').addEventListener('click', openAddItemModal);
+                    document.getElementById('closeOrderBtn').addEventListener('click', openCloseOrderModal);
+                    
+                    // Botón de estado de preparación (solo para cocina)
+                    if (currentUserRole === 'kitchen') {
+                        document.getElementById('preparationBtn').addEventListener('click', function() {
+                            const currentStatus = order.preparationStatus || 'pending';
+                            let newStatus;
+                            
+                            if (currentStatus === 'pending') newStatus = 'preparation';
+                            else if (currentStatus === 'preparation') newStatus = 'ready';
+                            else return;
+                            
+                            updatePreparationStatus(orderId, newStatus);
+                        });
+                    }
+                    
+                    // Agregar evento para eliminar items (doble clic)
+                    document.querySelectorAll('.order-item').forEach(item => {
+                        item.addEventListener('dblclick', function() {
+                            const itemId = this.getAttribute('data-item-id');
+                            showConfirmModal(
+                                'Eliminar Item', 
+                                '¿Estás seguro que deseas eliminar este item de la orden?',
+                                () => removeItemFromOrder(orderId, itemId)
+                            );
+                        });
+                    });
+                }
+            });
+        }
+
+        // Actualizar estado de preparación
+        function updatePreparationStatus(orderId, status) {
+            database.ref(`orders/${orderId}`).update({
+                preparationStatus: status
+            }).then(() => {
+                // Actualizar vista en todas las secciones
+                loadOrderDetails(orderId);
+                loadActiveOrders();
+                loadKitchenOrders();
+            }).catch(error => {
+                console.error('Error al actualizar estado:', error);
+                alert('Hubo un error al actualizar el estado');
+            });
+        }
+
+        // Cargar órdenes para cocina
+        function loadKitchenOrders(filter = 'pending') {
+            const kitchenOrders = document.getElementById('kitchenOrders');
+            kitchenOrders.innerHTML = '<p>Cargando órdenes...</p>';
+            
+            database.ref('orders').orderByChild('status').equalTo('active').once('value').then(snapshot => {
+                const orders = snapshot.val();
+                kitchenOrders.innerHTML = '';
+                
+                if (orders) {
+                    // Convertir a array y ordenar por fecha (más recientes primero)
+                    const ordersArray = Object.entries(orders).map(([id, order]) => ({ id, ...order }));
+                    ordersArray.sort((a, b) => b.createdAt - a.createdAt);
+                    
+                    let hasOrders = false;
+                    
+                    ordersArray.forEach(({ id, ...order }) => {
+                        if (filter === 'all' || order.preparationStatus === filter || 
+                            (filter === 'pending' && !order.preparationStatus)) {
+                            
+                            hasOrders = true;
+                            const orderCard = document.createElement('div');
+                            orderCard.className = `order-card kitchen-card ${order.preparationStatus || 'pending'}`;
+                            orderCard.innerHTML = `
+                                <div class="order-header">
+                                    <h3>${order.tableName}</h3>
+                                    <span class="time-ago">${formatTimeAgo(order.createdAt)}</span>
+                                </div>
+                                <div class="order-items">
+                                    ${renderKitchenItems(order.items)}
+                                </div>
+                                <div class="order-actions">
+                                    <button class="btn-status ${order.preparationStatus === 'ready' ? 'ready' : 
+                                                              order.preparationStatus === 'preparation' ? 'preparation' : 'pending'}" 
+                                        data-order-id="${id}">
+                                        ${order.preparationStatus === 'ready' ? 'Listo' : 
+                                         order.preparationStatus === 'preparation' ? 'En Preparación' : 'Marcar como En Preparación'}
+                                    </button>
+                                </div>
+                            `;
+                            
+                            kitchenOrders.appendChild(orderCard);
+                            
+                            // Event listener para el botón de estado
+                            orderCard.querySelector('.btn-status').addEventListener('click', function() {
+                                const currentStatus = order.preparationStatus || 'pending';
+                                let newStatus;
+                                
+                                if (currentStatus === 'pending') newStatus = 'preparation';
+                                else if (currentStatus === 'preparation') newStatus = 'ready';
+                                else return;
+                                
+                                updatePreparationStatus(id, newStatus);
+                            });
+                        }
+                    });
+                    
+                    if (!hasOrders) {
+                        kitchenOrders.innerHTML = `<p>No hay órdenes ${getFilterName(filter)}</p>`;
+                    }
+                } else {
+                    kitchenOrders.innerHTML = '<p>No hay órdenes activas</p>';
+                }
+            });
+        }
+
+        // Función auxiliar para nombre del filtro
+        function getFilterName(filter) {
+            switch(filter) {
+                case 'pending': return 'pendientes';
+                case 'preparation': return 'en preparación';
+                case 'ready': return 'listas';
+                default: return '';
             }
-        });
+        }
+
+        // Renderizar items para cocina
+        function renderKitchenItems(items) {
+            if (!items) return '<p>No hay items en esta orden</p>';
+            
+            let html = '';
+            Object.values(items).forEach(item => {
+                html += `
+                    <div class="kitchen-item">
+                        <span class="item-quantity">${item.quantity}x</span>
+                        <span class="item-name">${item.name}</span>
+                        ${item.comments ? `<span class="item-comments">${item.comments}</span>` : ''}
+                    </div>
+                `;
+            });
+            return html;
+        }
+
+        // Cargar datos de ventas
+        function loadSalesData() {
+            const salesList = document.getElementById('salesList');
+            salesList.innerHTML = '<tr><td colspan="5">Cargando ventas...</td></tr>';
+            
+            let startDate, endDate = new Date();
+            endDate.setHours(23, 59, 59, 999);
+            
+            switch (currentFilter) {
+                case 'day':
+                    startDate = new Date();
+                    startDate.setHours(0, 0, 0, 0);
+                    break;
+                case 'week':
+                    startDate = new Date();
+                    startDate.setDate(startDate.getDate() - startDate.getDay());
+                    startDate.setHours(0, 0, 0, 0);
+                    break;
+                case 'month':
+                    startDate = new Date();
+                    startDate.setDate(1);
+                    startDate.setHours(0, 0, 0, 0);
+                    break;
+            }
+            
+            database.ref('orders').orderByChild('closedAt').startAt(startDate.getTime()).endAt(endDate.getTime()).once('value').then(snapshot => {
+                const orders = snapshot.val();
+                salesList.innerHTML = '';
+                let totalSales = 0;
+                let totalOrders = 0;
+                
+                if (orders) {
+                    // Convertir a array y ordenar por fecha (más recientes primero)
+                    const ordersArray = Object.entries(orders).map(([id, order]) => ({ id, ...order }));
+                    ordersArray.sort((a, b) => b.closedAt - a.closedAt);
+                    
+                    ordersArray.forEach(({ id, ...order }) => {
+                        if (order.status === 'closed') {
+                            totalOrders++;
+                            let orderTotal = 0;
+                            
+                            if (order.items) {
+                                Object.values(order.items).forEach(item => {
+                                    orderTotal += item.price * item.quantity;
+                                });
+                            }
+                            
+                            totalSales += orderTotal;
+                            
+                            const saleRow = document.createElement('tr');
+                            saleRow.innerHTML = `
+                                <td>${formatDate(order.closedAt)}</td>
+                                <td>${order.tableName}</td>
+                                <td>${order.items ? Object.keys(order.items).length : 0}</td>
+                                <td>$${orderTotal.toFixed(2)}</td>
+                                <td>
+                                    <button class="btn-secondary btn-sm view-order" data-order-id="${id}">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    ${isAdmin ? `
+                                    <button class="btn-secondary btn-sm delete-order" data-order-id="${id}">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                    ` : ''}
+                                </td>
+                            `;
+                            
+                            salesList.appendChild(saleRow);
+                        }
+                    });
+                    
+                    // Agregar event listeners a los botones
+                    document.querySelectorAll('.view-order').forEach(btn => {
+                        btn.addEventListener('click', function() {
+                            const orderId = this.getAttribute('data-order-id');
+                            viewClosedOrder(orderId);
+                        });
+                    });
+                    
+                    if (isAdmin) {
+                        document.querySelectorAll('.delete-order').forEach(btn => {
+                            btn.addEventListener('click', function() {
+                                const orderId = this.getAttribute('data-order-id');
+                                showConfirmModal(
+                                    'Eliminar Orden', 
+                                    '¿Estás seguro que deseas eliminar permanentemente esta orden?',
+                                    () => deleteOrder(orderId)
+                                );
+                            });
+                        });
+                    }
+                }
+                
+                if (totalOrders === 0) {
+                    salesList.innerHTML = '<tr><td colspan="5">No hay ventas registradas</td></tr>';
+                }
+                
+                // Actualizar resumen
+                document.getElementById('totalSales').textContent = `$${totalSales.toFixed(2)}`;
+                document.getElementById('totalOrders').textContent = totalOrders;
+            });
+        }
+
+        // Cargar secciones del menú
+        function loadMenuSections() {
+            if (!isAdmin) return;
+            
+            const menuSections = document.getElementById('menuSections');
+            menuSections.innerHTML = '<p>Cargando menú...</p>';
+            
+            database.ref('menuSections').on('value', snapshot => {
+                const sections = snapshot.val();
+                menuSections.innerHTML = '';
+                
+                if (sections) {
+                    Object.entries(sections).forEach(([id, section]) => {
+                        const sectionDiv = document.createElement('div');
+                        sectionDiv.className = 'menu-section';
+                        sectionDiv.setAttribute('data-section-id', id);
+                        
+                        let itemsHtml = '';
+                        
+                        if (section.items) {
+                            Object.entries(section.items).forEach(([itemId, item]) => {
+                                itemsHtml += `
+                                    <div class="menu-item" data-item-id="${itemId}">
+                                        <h4>${item.name}</h4>
+                                        <p>$${item.price.toFixed(2)}</p>
+                                        <div class="item-actions">
+                                            <button class="btn-secondary btn-sm edit-item">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn-secondary btn-sm delete-item">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                `;
+                            });
+                        }
+                        
+                        sectionDiv.innerHTML = `
+                            <div class="section-header">
+                                <h3>${section.name}</h3>
+                                <div class="section-actions">
+                                    <button class="btn-primary btn-sm add-item">
+                                        <i class="fas fa-plus"></i> Item
+                                    </button>
+                                    <button class="btn-secondary btn-sm edit-section">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn-secondary btn-sm delete-section">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="menu-items">
+                                ${itemsHtml || '<p>No hay items en esta sección</p>'}
+                            </div>
+                        `;
+                        
+                        // Agregar event listeners
+                        sectionDiv.querySelector('.add-item').addEventListener('click', () => {
+                            currentSectionId = id;
+                            currentItemId = null;
+                            document.getElementById('itemModalTitle').textContent = 'Nuevo Item';
+                            document.getElementById('itemName').value = '';
+                            document.getElementById('itemPrice').value = '';
+                            document.getElementById('itemModal').classList.add('show');
+                        });
+                        
+                        sectionDiv.querySelector('.edit-section').addEventListener('click', () => {
+                            currentSectionId = id;
+                            document.getElementById('sectionModalTitle').textContent = 'Editar Sección';
+                            document.getElementById('sectionName').value = section.name;
+                            document.getElementById('sectionModal').classList.add('show');
+                        });
+                        
+                        sectionDiv.querySelector('.delete-section').addEventListener('click', () => {
+                            showConfirmModal(
+                                'Eliminar Sección', 
+                                '¿Estás seguro que deseas eliminar esta sección y todos sus items?',
+                                () => deleteMenuSection(id)
+                            );
+                        });
+                        
+                        // Event listeners para items
+                        sectionDiv.querySelectorAll('.edit-item').forEach((btn, index) => {
+                            btn.addEventListener('click', () => {
+                                const itemId = sectionDiv.querySelectorAll('.menu-item')[index].getAttribute('data-item-id');
+                                const item = section.items[itemId];
+                                
+                                currentSectionId = id;
+                                currentItemId = itemId;
+                                
+                                document.getElementById('itemModalTitle').textContent = 'Editar Item';
+                                document.getElementById('itemName').value = item.name;
+                                document.getElementById('itemPrice').value = item.price;
+                                document.getElementById('itemModal').classList.add('show');
+                            });
+                        });
+                        
+                        sectionDiv.querySelectorAll('.delete-item').forEach((btn, index) => {
+                            btn.addEventListener('click', () => {
+                                const itemId = sectionDiv.querySelectorAll('.menu-item')[index].getAttribute('data-item-id');
+                                
+                                showConfirmModal(
+                                    'Eliminar Item', 
+                                    '¿Estás seguro que deseas eliminar este item del menú?',
+                                    () => deleteMenuItem(id, itemId)
+                                );
+                            });
+                        });
+                        
+                        menuSections.appendChild(sectionDiv);
+                    });
+                } else {
+                    menuSections.innerHTML = '<p>No hay secciones en el menú</p>';
+                }
+            });
+        }
+
+        // Abrir modal de nueva orden
+        function openNewOrderModal() {
+            document.getElementById('tableName').value = '';
+            document.getElementById('newOrderModal').classList.add('show');
+        }
+
+        // Crear nueva orden
+        function createNewOrder() {
+            const tableName = document.getElementById('tableName').value.trim();
+            
+            if (!tableName) {
+                alert('Por favor ingresa un nombre para la mesa');
+                return;
+            }
+            
+            const newOrder = {
+                tableName,
+                status: 'active',
+                preparationStatus: 'pending',
+                createdAt: Date.now(),
+                items: {}
+            };
+            
+            const newOrderRef = database.ref('orders').push();
+            newOrderRef.set(newOrder)
+                .then(() => {
+                    document.getElementById('newOrderModal').classList.remove('show');
+                    currentOrderId = newOrderRef.key;
+                    loadOrderDetails(currentOrderId);
+                    loadKitchenOrders();
+                    
+                    // Marcar como activa en la lista
+                    setTimeout(() => {
+                        const orderCard = document.querySelector(`.order-card[data-order-id="${currentOrderId}"]`);
+                        if (orderCard) {
+                            orderCard.click();
+                        }
+                    }, 500);
+                })
+                .catch(error => {
+                    console.error('Error al crear orden:', error);
+                    alert('Hubo un error al crear la orden');
+                });
+        }
+
+        // Abrir modal para agregar item
+        function openAddItemModal() {
+            if (!currentOrderId) return;
+            
+            // Limpiar selects
+            const itemSectionSelect = document.getElementById('itemSection');
+            const itemSelect = document.getElementById('itemSelect');
+            itemSectionSelect.innerHTML = '<option value="">Cargando secciones...</option>';
+            itemSelect.innerHTML = '<option value="">Selecciona una sección primero</option>';
+            
+            // Cargar secciones
+            database.ref('menuSections').once('value').then(snapshot => {
+                const sections = snapshot.val();
+                itemSectionSelect.innerHTML = '<option value="">Selecciona una sección</option>';
+                
+                if (sections) {
+                    Object.entries(sections).forEach(([id, section]) => {
+                        const option = document.createElement('option');
+                        option.value = id;
+                        option.textContent = section.name;
+                        itemSectionSelect.appendChild(option);
+                    });
+                }
+            });
+            
+            // Resetear otros campos
+            document.getElementById('itemQuantity').value = '1';
+            document.getElementById('itemComments').value = '';
+            
+            // Mostrar modal
+            document.getElementById('addItemModal').classList.add('show');
+            
+            // Event listener para cambio de sección
+            itemSectionSelect.addEventListener('change', function() {
+                const sectionId = this.value;
+                itemSelect.innerHTML = '<option value="">Cargando items...</option>';
+                
+                if (sectionId) {
+                    database.ref(`menuSections/${sectionId}/items`).once('value').then(snapshot => {
+                        const items = snapshot.val();
+                        itemSelect.innerHTML = '<option value="">Selecciona un item</option>';
+                        
+                        if (items) {
+                            Object.entries(items).forEach(([id, item]) => {
+                                const option = document.createElement('option');
+                                option.value = id;
+                                option.textContent = `${item.name} - $${item.price.toFixed(2)}`;
+                                option.setAttribute('data-price', item.price);
+                                itemSelect.appendChild(option);
+                            });
+                        }
+                    });
+                } else {
+                    itemSelect.innerHTML = '<option value="">Selecciona una sección primero</option>';
+                }
+            });
+        }
+
+        // Agregar item a la orden
+        function addItemToOrder() {
+            if (!currentOrderId) return;
+            
+            const sectionId = document.getElementById('itemSection').value;
+            const itemId = document.getElementById('itemSelect').value;
+            const quantity = parseInt(document.getElementById('itemQuantity').value);
+            const comments = document.getElementById('itemComments').value.trim();
+            
+            if (!sectionId || !itemId || !quantity || quantity < 1) {
+                alert('Por favor completa todos los campos requeridos');
+                return;
+            }
+            
+            // Obtener información del item
+            database.ref(`menuSections/${sectionId}/items/${itemId}`).once('value').then(snapshot => {
+                const item = snapshot.val();
+                
+                if (item) {
+                    const newItem = {
+                        sectionId,
+                        sectionName: document.getElementById('itemSection').options[document.getElementById('itemSection').selectedIndex].text,
+                        itemId,
+                        name: item.name,
+                        price: item.price,
+                        quantity,
+                        comments
+                    };
+                    
+                    // Agregar a la orden
+                    database.ref(`orders/${currentOrderId}/items`).push(newItem)
+                        .then(() => {
+                            document.getElementById('addItemModal').classList.remove('show');
+                            loadOrderDetails(currentOrderId);
+                            loadKitchenOrders();
+                        })
+                        .catch(error => {
+                            console.error('Error al agregar item:', error);
+                            alert('Hubo un error al agregar el item');
+                        });
+                }
+            });
+        }
+
+        // Remover item de la orden
+        function removeItemFromOrder(orderId, itemId) {
+            database.ref(`orders/${orderId}/items/${itemId}`).remove()
+                .then(() => {
+                    loadOrderDetails(orderId);
+                    loadKitchenOrders();
+                })
+                .catch(error => {
+                    console.error('Error al eliminar item:', error);
+                    alert('Hubo un error al eliminar el item');
+                });
+        }
+
+        // Abrir modal para cerrar orden
+        function openCloseOrderModal() {
+            if (!currentOrderId) return;
+            
+            const orderSummary = document.getElementById('closeOrderSummary');
+            orderSummary.innerHTML = '<p>Cargando resumen...</p>';
+            
+            database.ref(`orders/${currentOrderId}`).once('value').then(snapshot => {
+                const order = snapshot.val();
+                
+                if (order) {
+                    let itemsHtml = '';
+                    let total = 0;
+                    
+                    if (order.items) {
+                        Object.entries(order.items).forEach(([id, item]) => {
+                            itemsHtml += `
+                                <div class="order-item" data-item-id="${id}">
+                                    <div class="order-item-info">
+                                        <h4>${item.name}</h4>
+                                        <p class="order-item-comments">${item.comments || ''}</p>
+                                    </div>
+                                    <div class="order-item-price">
+                                        $${item.price.toFixed(2)} x ${item.quantity} = $${(item.price * item.quantity).toFixed(2)}
+                                    </div>
+                                </div>
+                            `;
+                            total += item.price * item.quantity;
+                        });
+                    }
+                    
+                    orderSummary.innerHTML = `
+                        <h3>${order.tableName}</h3>
+                        <p>Fecha: ${formatDate(order.createdAt)}</p>
+                        <p>Estado: 
+                            <span class="status-badge ${order.preparationStatus || 'pending'}">
+                                ${order.preparationStatus === 'ready' ? 'Listo' : 
+                                 order.preparationStatus === 'preparation' ? 'En Preparación' : 'Pendiente'}
+                            </span>
+                        </p>
+                        <div class="order-items">
+                            ${itemsHtml || '<p>No hay items en esta orden</p>'}
+                        </div>
+                        <div class="order-total">
+                            Total: $${total.toFixed(2)}
+                        </div>
+                    `;
+                    
+                    document.getElementById('finalComments').value = '';
+                    document.getElementById('closeOrderModal').classList.add('show');
+                }
+            });
+        }
+
+        // Cerrar orden
+        function closeOrder() {
+            if (!currentOrderId) return;
+            
+            const finalComments = document.getElementById('finalComments').value.trim();
+            
+            database.ref(`orders/${currentOrderId}`).update({
+                status: 'closed',
+                closedAt: Date.now(),
+                finalComments
+            })
+            .then(() => {
+                document.getElementById('closeOrderModal').classList.remove('show');
+                
+                // Obtener datos completos de la orden para imprimir
+                database.ref(`orders/${currentOrderId}`).once('value').then(snapshot => {
+                    const order = snapshot.val();
+                    if (order) {
+                        // Preparar datos para el ticket
+                        const ticketData = {
+                            numero_orden: currentOrderId,
+                            mesa: order.tableName,
+                            mesero: "Mesero Principal", // Puedes ajustar esto según tu sistema
+                            items: [],
+                            subtotal: 0,
+                            iva: 0,
+                            total: 0,
+                            fecha: formatDate(order.closedAt)
+                        };
+                        
+                        // Calcular totales
+                        if (order.items) {
+                            Object.values(order.items).forEach(item => {
+                                ticketData.items.push({
+                                    nombre: item.name,
+                                    cantidad: item.quantity,
+                                    precio: item.price
+                                });
+                                ticketData.subtotal += item.price * item.quantity;
+                            });
+                        }
+                        
+                        // Calcular IVA (16%)
+                        ticketData.iva = ticketData.subtotal * 0.16;
+                        ticketData.total = ticketData.subtotal + ticketData.iva;
+                        
+                        // Imprimir ticket
+                        imprimirTicket(ticketData);
+                    }
+                });
+                
+                currentOrderId = null;
+                loadActiveOrders();
+                loadSalesData();
+                loadKitchenOrders();
+                
+                // Limpiar detalles de orden
+                document.getElementById('orderDetails').innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-clipboard-list"></i>
+                        <p>Selecciona una orden o crea una nueva</p>
+                    </div>
+                `;
+            })
+            .catch(error => {
+                console.error('Error al cerrar orden:', error);
+                alert('Hubo un error al cerrar la orden');
+            });
+        }
+
+        // Función para imprimir ticket
+        function imprimirTicket(orden_data) {
+            console.log("Iniciando impresión del ticket...");
+            
+            // Crear contenido del ticket
+            let ticketContent = `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <meta charset="utf-8">
+                    <title>Ticket de Venta</title>
+                    <style>
+                        body {
+                            font-family: 'Courier New', monospace;
+                            width: 48mm;
+                            margin: 0;
+                            padding: 5px;
+                            font-size: 12px;
+                        }
+                        .ticket {
+                            width: 100%;
+                            max-width: 48mm;
+                        }
+                        .header {
+                            text-align: center;
+                            margin-bottom: 10px;
+                        }
+                        .restaurant-name {
+                            font-weight: bold;
+                            font-size: 16px;
+                            margin-bottom: 5px;
+                        }
+                        .separator {
+                            border-top: 1px dashed #000;
+                            margin: 8px 0;
+                        }
+                        .info-line {
+                            display: flex;
+                            justify-content: space-between;
+                            margin: 3px 0;
+                        }
+                        .items-table {
+                            width: 100%;
+                            border-collapse: collapse;
+                            margin: 8px 0;
+                        }
+                        .items-table th {
+                            text-align: left;
+                            border-bottom: 1px solid #000;
+                            padding: 3px 0;
+                        }
+                        .items-table td {
+                            padding: 2px 0;
+                        }
+                        .total {
+                            font-weight: bold;
+                            font-size: 14px;
+                            text-align: right;
+                            margin-top: 8px;
+                        }
+                        .footer {
+                            text-align: center;
+                            margin-top: 15px;
+                            font-size: 10px;
+                        }
+                        .text-center {
+                            text-align: center;
+                        }
+                        .text-right {
+                            text-align: right;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="ticket">
+                        <div class="header">
+                            <div class="restaurant-name">MURRITOS</div>
+                            <div>Ticket de Venta</div>
+                        </div>
+                        
+                        <div class="separator"></div>
+                        
+                        <div class="info-line">
+                            <span>Orden:</span>
+                            <span>#${orden_data.numero_orden}</span>
+                        </div>
+                        <div class="info-line">
+                            <span>Fecha:</span>
+                            <span>${orden_data.fecha}</span>
+                        </div>
+                        <div class="info-line">
+                            <span>Mesa:</span>
+                            <span>${orden_data.mesa}</span>
+                        </div>
+                        <div class="info-line">
+                            <span>Mesero:</span>
+                            <span>${orden_data.mesero}</span>
+                        </div>
+                        
+                        <div class="separator"></div>
+                        
+                        <table class="items-table">
+                            <thead>
+                                <tr>
+                                    <th>CANT</th>
+                                    <th>DESCRIPCIÓN</th>
+                                    <th class="text-right">PRECIO</th>
+                                </tr>
+                            </thead>
+                            <tbody>`;
+            
+            // Agregar items
+            orden_data.items.forEach(item => {
+                const nombre = item.nombre.length > 16 ? item.nombre.substring(0, 16) + "..." : item.nombre;
+                ticketContent += `
+                    <tr>
+                        <td>${item.cantidad}</td>
+                        <td>${nombre}</td>
+                        <td class="text-right">$${(item.precio * item.cantidad).toFixed(2)}</td>
+                    </tr>`;
+            });
+            
+            // Agregar totales
+            ticketContent += `
+                            </tbody>
+                        </table>
+                        
+                        <div class="separator"></div>
+                        
+                        <div class="info-line">
+                            <span>Subtotal:</span>
+                            <span>$${orden_data.subtotal.toFixed(2)}</span>
+                        </div>
+                        <div class="info-line">
+                            <span>IVA (16%):</span>
+                            <span>$${orden_data.iva.toFixed(2)}</span>
+                        </div>
+                        <div class="total">
+                            TOTAL: $${orden_data.total.toFixed(2)}
+                        </div>
+                        
+                        <div class="separator"></div>
+                        
+                        <div class="footer">
+                            <div>¡Gracias por su visita!</div>
+                            <div>${new Date().getFullYear()} © Murritos</div>
+                        </div>
+                    </div>
+                </body>
+                </html>
+            `;
+            
+            // Intentar imprimir
+            try {
+                const ventana = window.open('', '_blank', 'width=200,height=500');
+                ventana.document.write(ticketContent);
+                ventana.document.close();
+                
+                // Esperar a que se cargue el contenido antes de imprimir
+                setTimeout(() => {
+                    ventana.print();
+                    setTimeout(() => {
+                        ventana.close();
+                    }, 500);
+                }, 500);
+                
+                console.log("Ticket enviado a impresión");
+            } catch (error) {
+                console.error("Error al imprimir:", error);
+                alert("No se pudo imprimir el ticket. Error: " + error.message);
+            }
+        }
+
+        // Ver orden cerrada
+        function viewClosedOrder(orderId) {
+            const orderDetails = document.getElementById('orderDetails');
+            orderDetails.innerHTML = '<p>Cargando detalles...</p>';
+            
+            database.ref(`orders/${orderId}`).once('value').then(snapshot => {
+                const order = snapshot.val();
+                
+                if (order) {
+                    let itemsHtml = '';
+                    let total = 0;
+                    
+                    if (order.items) {
+                        Object.entries(order.items).forEach(([id, item]) => {
+                            itemsHtml += `
+                                <div class="order-item">
+                                    <div class="order-item-info">
+                                        <h4>${item.name}</h4>
+                                        <p class="order-item-comments">${item.comments || ''}</p>
+                                    </div>
+                                    <div class="order-item-price">
+                                        $${item.price.toFixed(2)} x ${item.quantity} = $${(item.price * item.quantity).toFixed(2)}
+                                    </div>
+                                </div>
+                            `;
+                            total += item.price * item.quantity;
+                        });
+                    }
+                    
+                    orderDetails.innerHTML = `
+                        <div class="order-header">
+                            <h3>${order.tableName}</h3>
+                            <p>Cerrada: ${formatDate(order.closedAt)}</p>
+                            ${order.finalComments ? `<p class="final-comments">Comentarios: ${order.finalComments}</p>` : ''}
+                        </div>
+                        
+                        <div class="order-items">
+                            ${itemsHtml || '<p>No hay items en esta orden</p>'}
+                        </div>
+                        
+                        <div class="order-total">
+                            Total: $${total.toFixed(2)}
+                        </div>
+                        
+                        <div class="order-actions">
+                            <button id="backToSalesBtn" class="btn-primary"><i class="fas fa-arrow-left"></i> Volver a Ventas</button>
+                        </div>
+                    `;
+                    
+                    document.getElementById('backToSalesBtn').addEventListener('click', () => {
+                        document.querySelector('nav ul li[data-section="sales"]').click();
+                    });
+                }
+            });
+        }
+
+        // Eliminar orden
+        function deleteOrder(orderId) {
+            database.ref(`orders/${orderId}`).remove()
+                .then(() => {
+                    loadSalesData();
+                })
+                .catch(error => {
+                    console.error('Error al eliminar orden:', error);
+                    alert('Hubo un error al eliminar la orden');
+                });
+        }
+
+        // Abrir modal de sección
+        function openSectionModal() {
+            currentSectionId = null;
+            document.getElementById('sectionModalTitle').textContent = 'Nueva Sección';
+            document.getElementById('sectionName').value = '';
+            document.getElementById('sectionModal').classList.add('show');
+        }
+
+        // Guardar sección
+        function saveSection() {
+            const sectionName = document.getElementById('sectionName').value.trim();
+            
+            if (!sectionName) {
+                alert('Por favor ingresa un nombre para la sección');
+                return;
+            }
+            
+            if (currentSectionId) {
+                // Editar sección existente
+                database.ref(`menuSections/${currentSectionId}`).update({
+                    name: sectionName
+                })
+                .then(() => {
+                    document.getElementById('sectionModal').classList.remove('show');
+                })
+                .catch(error => {
+                    console.error('Error al editar sección:', error);
+                    alert('Hubo un error al editar la sección');
+                });
+            } else {
+                // Crear nueva sección
+                const newSection = {
+                    name: sectionName,
+                    items: {}
+                };
+                
+                database.ref('menuSections').push(newSection)
+                    .then(() => {
+                        document.getElementById('sectionModal').classList.remove('show');
+                    })
+                    .catch(error => {
+                        console.error('Error al crear sección:', error);
+                        alert('Hubo un error al crear la sección');
+                    });
+            }
+        }
+
+        // Eliminar sección del menú
+        function deleteMenuSection(sectionId) {
+            database.ref(`menuSections/${sectionId}`).remove()
+                .then(() => {
+                    loadMenuSections();
+                })
+                .catch(error => {
+                    console.error('Error al eliminar sección:', error);
+                    alert('Hubo un error al eliminar la sección');
+                });
+        }
+
+        // Guardar item
+        function saveItem() {
+            const itemName = document.getElementById('itemName').value.trim();
+            const itemPrice = parseFloat(document.getElementById('itemPrice').value);
+            
+            if (!itemName || isNaN(itemPrice)) {
+                alert('Por favor completa todos los campos requeridos');
+                return;
+            }
+            
+            if (!currentSectionId) {
+                alert('No se ha seleccionado una sección');
+                return;
+            }
+            
+            const newItem = {
+                name: itemName,
+                price: itemPrice
+            };
+            
+            if (currentItemId) {
+                // Editar item existente
+                database.ref(`menuSections/${currentSectionId}/items/${currentItemId}`).update(newItem)
+                    .then(() => {
+                        document.getElementById('itemModal').classList.remove('show');
+                    })
+                    .catch(error => {
+                        console.error('Error al editar item:', error);
+                        alert('Hubo un error al editar el item');
+                    });
+            } else {
+                // Crear nuevo item
+                database.ref(`menuSections/${currentSectionId}/items`).push(newItem)
+                    .then(() => {
+                        document.getElementById('itemModal').classList.remove('show');
+                    })
+                    .catch(error => {
+                        console.error('Error al crear item:', error);
+                        alert('Hubo un error al crear el item');
+                    });
+            }
+        }
+
+        // Eliminar item del menú
+        function deleteMenuItem(sectionId, itemId) {
+            database.ref(`menuSections/${sectionId}/items/${itemId}`).remove()
+                .then(() => {
+                    loadMenuSections();
+                })
+                .catch(error => {
+                    console.error('Error al eliminar item:', error);
+                    alert('Hubo un error al eliminar el item');
+                });
+        }
+
+        // Mostrar modal de confirmación
+        function showConfirmModal(title, message, confirmCallback) {
+            document.getElementById('confirmModalTitle').textContent = title;
+            document.getElementById('confirmModalMessage').textContent = message;
+            document.getElementById('confirmModal').classList.add('show');
+            
+            // Limpiar event listeners anteriores
+            const confirmBtn = document.getElementById('confirmModalConfirm');
+            const cancelBtn = document.getElementById('confirmModalCancel');
+            
+            confirmBtn.replaceWith(confirmBtn.cloneNode(true));
+            cancelBtn.replaceWith(cancelBtn.cloneNode(true));
+            
+            // Asignar nuevos event listeners
+            document.getElementById('confirmModalConfirm').addEventListener('click', () => {
+                confirmCallback();
+                document.getElementById('confirmModal').classList.remove('show');
+            });
+            
+            document.getElementById('confirmModalCancel').addEventListener('click', () => {
+                document.getElementById('confirmModal').classList.remove('show');
+            });
+        }
+
+        // Formatear fecha
+        function formatDate(timestamp) {
+            const date = new Date(timestamp);
+            return date.toLocaleDateString('es-MX', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        // Formatear tiempo transcurrido
+        function formatTimeAgo(timestamp) {
+            const seconds = Math.floor((Date.now() - timestamp) / 1000);
+            
+            if (seconds < 60) return 'Hace unos segundos';
+            if (seconds < 120) return 'Hace 1 minuto';
+            if (seconds < 3600) return `Hace ${Math.floor(seconds/60)} minutos`;
+            if (seconds < 7200) return 'Hace 1 hora';
+            if (seconds < 86400) return `Hace ${Math.floor(seconds/3600)} horas`;
+            if (seconds < 172800) return 'Ayer';
+            
+            return formatDate(timestamp);
+        }
     </script>
 </body>
 </html>
