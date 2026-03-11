@@ -2,197 +2,147 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
-    <title>Murritos Pro - Sistema de Pedidos</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Murritos - Sistema de Pedidos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Roboto', sans-serif;
-            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
         }
 
         :root {
             --primary: #e63946;
             --primary-dark: #c1121f;
             --secondary: #1d3557;
-            --success: #28a745;
-            --warning: #ffc107;
-            --danger: #dc3545;
-            --light: #f8f9fa;
-            --dark: #343a40;
-            --gray: #6c757d;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-400: #9ca3af;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
             --white: #ffffff;
-            --black: #000000;
-            --bg: #f1faee;
-            --card-bg: #ffffff;
-            --text: #1d3557;
-            --border: #dee2e6;
-        }
-
-        body.dark-mode {
-            --primary: #ff6b7b;
-            --primary-dark: #e63946;
-            --secondary: #4a6fa5;
-            --light: #2d2d2d;
-            --dark: #f8f9fa;
-            --gray: #adb5bd;
-            --white: #2d2d2d;
-            --black: #ffffff;
-            --bg: #1a1a1a;
-            --card-bg: #2d2d2d;
-            --text: #ffffff;
-            --border: #404040;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
         }
 
         body {
-            background-color: var(--bg);
-            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            background-color: var(--gray-50);
+            color: var(--gray-900);
         }
 
-        /* Toast Notifications */
-        .toast-container {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 9999;
-        }
-
-        .toast {
-            background-color: var(--card-bg);
-            color: var(--text);
-            padding: 1rem 1.5rem;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        /* Header */
+        header {
+            background-color: var(--white);
+            box-shadow: var(--shadow-sm);
+            padding: 1rem 2rem;
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            gap: 12px;
-            animation: slideIn 0.3s ease;
-            border-left: 4px solid;
-            max-width: 350px;
-        }
-
-        .toast.success { border-left-color: var(--success); }
-        .toast.error { border-left-color: var(--danger); }
-        .toast.warning { border-left-color: var(--warning); }
-        .toast.info { border-left-color: var(--primary); }
-
-        .toast i {
-            font-size: 1.2rem;
-        }
-
-        .toast.success i { color: var(--success); }
-        .toast.error i { color: var(--danger); }
-        .toast.warning i { color: var(--warning); }
-        .toast.info i { color: var(--primary); }
-
-        .toast-content {
-            flex: 1;
-        }
-
-        .toast-title {
-            font-weight: 600;
-            margin-bottom: 4px;
-        }
-
-        .toast-message {
-            font-size: 0.9rem;
-            opacity: 0.9;
-        }
-
-        .toast-close {
-            cursor: pointer;
-            opacity: 0.5;
-        }
-
-        .toast-close:hover {
-            opacity: 1;
-        }
-
-        @keyframes slideIn {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
-
-        @keyframes fadeOut {
-            from {
-                transform: translateX(0);
-                opacity: 1;
-            }
-            to {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-        }
-
-        /* Modales mejorados */
-        .modal {
-            display: none;
-            position: fixed;
+            position: sticky;
             top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.5);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-            backdrop-filter: blur(4px);
+            z-index: 10;
         }
 
-        .modal.show {
-            display: flex;
-            animation: fadeIn 0.3s;
-        }
-
-        .modal-content {
-            background-color: var(--card-bg);
-            padding: 2rem;
-            border-radius: 12px;
-            width: 100%;
-            max-width: 500px;
-            max-height: 90vh;
-            overflow-y: auto;
-            position: relative;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-        }
-
-        .modal-content.large {
-            max-width: 800px;
-        }
-
-        .close {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
+        .logo h1 {
+            color: var(--primary);
             font-size: 1.5rem;
-            cursor: pointer;
-            color: var(--gray);
+            font-weight: 700;
         }
 
-        .close:hover {
-            color: var(--text);
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 0.25rem;
         }
 
-        /* Botones mejorados */
-        .btn {
-            padding: 0.75rem 1.5rem;
-            border: none;
-            border-radius: 6px;
+        nav ul li {
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
             cursor: pointer;
             font-weight: 500;
+            color: var(--gray-600);
+            transition: all 0.2s;
+        }
+
+        nav ul li i {
+            margin-right: 0.5rem;
+        }
+
+        nav ul li:hover {
+            background-color: var(--gray-100);
+            color: var(--gray-900);
+        }
+
+        nav ul li.active {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .user-controls {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .role-select {
+            padding: 0.5rem;
+            border: 1px solid var(--gray-200);
+            border-radius: 0.375rem;
+            background-color: var(--white);
+            color: var(--gray-700);
+            font-size: 0.875rem;
+            cursor: pointer;
+        }
+
+        /* Main */
+        main {
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .section-header h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--gray-800);
+        }
+
+        /* Botones */
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 0.375rem;
+            font-weight: 500;
+            font-size: 0.875rem;
+            cursor: pointer;
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
@@ -206,17 +156,15 @@
 
         .btn-primary:hover {
             background-color: var(--primary-dark);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
         }
 
         .btn-secondary {
-            background-color: var(--gray);
-            color: white;
+            background-color: var(--gray-100);
+            color: var(--gray-700);
         }
 
         .btn-secondary:hover {
-            background-color: var(--dark);
+            background-color: var(--gray-200);
         }
 
         .btn-success {
@@ -226,149 +174,212 @@
 
         .btn-warning {
             background-color: var(--warning);
-            color: black;
-        }
-
-        .btn-icon {
-            padding: 0.5rem;
-            border-radius: 50%;
-        }
-
-        /* Header mejorado */
-        header {
-            background-color: var(--card-bg);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        .logo h1 {
-            color: var(--primary);
-            font-weight: 700;
-            font-size: 1.8rem;
-        }
-
-        nav ul {
-            display: flex;
-            list-style: none;
-            gap: 0.5rem;
-        }
-
-        nav ul li {
-            padding: 0.75rem 1.25rem;
-            cursor: pointer;
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            transition: all 0.2s;
-        }
-
-        nav ul li:hover {
-            background-color: rgba(230, 57, 70, 0.1);
-        }
-
-        nav ul li.active {
-            background-color: var(--primary);
             color: white;
         }
 
-        .header-actions {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .theme-toggle {
-            padding: 0.5rem;
-            border-radius: 50%;
-            cursor: pointer;
-            background-color: var(--light);
-            color: var(--text);
-            border: 1px solid var(--border);
-        }
-
-        /* Mapa de mesas */
+        /* Grid de Mesas */
         .tables-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             gap: 1rem;
-            padding: 1rem;
-            background-color: var(--card-bg);
-            border-radius: 8px;
-            margin-bottom: 1rem;
+            margin-bottom: 2rem;
         }
 
         .table-card {
-            background-color: var(--card-bg);
-            border: 2px solid var(--border);
-            border-radius: 8px;
-            padding: 1rem;
-            text-align: center;
+            background-color: var(--white);
+            border: 2px solid var(--gray-200);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
             cursor: pointer;
             transition: all 0.2s;
-            user-select: none;
+            position: relative;
         }
 
         .table-card:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            box-shadow: var(--shadow-md);
         }
 
         .table-card.free {
             border-color: var(--success);
-            background-color: rgba(40, 167, 69, 0.1);
         }
 
         .table-card.occupied {
             border-color: var(--warning);
-            background-color: rgba(255, 193, 7, 0.1);
         }
 
         .table-card.bill {
             border-color: var(--danger);
-            background-color: rgba(220, 53, 69, 0.1);
         }
 
         .table-card.reserved {
             border-color: var(--primary);
-            background-color: rgba(230, 57, 70, 0.1);
-        }
-
-        .table-card.dragging {
-            opacity: 0.5;
-            transform: scale(0.95);
         }
 
         .table-number {
-            font-size: 1.5rem;
-            font-weight: 700;
+            font-size: 1.25rem;
+            font-weight: 600;
             margin-bottom: 0.5rem;
         }
 
         .table-status {
-            font-size: 0.8rem;
-            padding: 0.25rem 0.5rem;
-            border-radius: 4px;
-            background-color: var(--card-bg);
-            display: inline-block;
+            font-size: 0.875rem;
+            color: var(--gray-500);
+            margin-bottom: 0.5rem;
         }
 
-        /* Menú táctil */
-        .touch-menu {
+        .table-capacity {
+            font-size: 0.875rem;
+            color: var(--gray-500);
+        }
+
+        /* Órdenes Activas */
+        .active-orders {
+            background-color: var(--white);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .orders-list {
+            margin-top: 1rem;
+        }
+
+        .order-card {
+            background-color: var(--gray-50);
+            border: 1px solid var(--gray-200);
+            border-radius: 0.375rem;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .order-card:hover {
+            background-color: var(--gray-100);
+        }
+
+        .order-card.active {
+            border-left: 4px solid var(--primary);
+            background-color: var(--gray-100);
+        }
+
+        .order-card h4 {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .order-card p {
+            font-size: 0.875rem;
+            color: var(--gray-500);
+        }
+
+        .order-card .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin-top: 0.5rem;
+        }
+
+        .status-badge.pending {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-badge.preparation {
+            background-color: #ffe4e6;
+            color: #b91c1c;
+        }
+
+        .status-badge.ready {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+
+        /* Detalles de Orden */
+        .order-details {
+            background-color: var(--white);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .order-details-header {
+            border-bottom: 1px solid var(--gray-200);
+            padding-bottom: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .order-details-header h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .order-details-header p {
+            color: var(--gray-500);
+            font-size: 0.875rem;
+        }
+
+        .order-items-list {
+            margin-bottom: 1.5rem;
+        }
+
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--gray-100);
+        }
+
+        .order-item:last-child {
+            border-bottom: none;
+        }
+
+        .order-item-info h4 {
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+
+        .order-item-info p {
+            font-size: 0.75rem;
+            color: var(--gray-500);
+        }
+
+        .order-item-price {
+            font-weight: 600;
+            color: var(--gray-800);
+        }
+
+        .order-total {
+            border-top: 2px solid var(--gray-200);
+            padding-top: 1rem;
+            margin-top: 1rem;
+            text-align: right;
+            font-size: 1.125rem;
+            font-weight: 700;
+        }
+
+        .order-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1.5rem;
+        }
+
+        /* Menú Táctil */
+        .menu-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
             gap: 1rem;
             margin-top: 1rem;
         }
 
         .menu-item-card {
-            background-color: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 8px;
+            background-color: var(--white);
+            border: 2px solid var(--gray-200);
+            border-radius: 0.5rem;
             padding: 1rem;
             cursor: pointer;
             transition: all 0.2s;
@@ -376,14 +387,14 @@
         }
 
         .menu-item-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
             border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
         }
 
         .menu-item-card.selected {
             border-color: var(--primary);
-            background-color: rgba(230, 57, 70, 0.1);
+            background-color: #fef2f2;
         }
 
         .menu-item-name {
@@ -396,94 +407,239 @@
             font-weight: 700;
         }
 
-        /* Modificadores */
-        .modifiers-grid {
+        /* Cocina */
+        .kitchen-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 0.5rem;
-            margin-top: 0.5rem;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
         }
 
-        .modifier-chip {
-            padding: 0.5rem;
-            border: 1px solid var(--border);
-            border-radius: 4px;
-            cursor: pointer;
-            text-align: center;
-            transition: all 0.2s;
+        .kitchen-card {
+            background-color: var(--white);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            box-shadow: var(--shadow-sm);
+            border-left: 4px solid var(--gray-300);
         }
 
-        .modifier-chip:hover {
-            background-color: rgba(230, 57, 70, 0.1);
+        .kitchen-card.pending {
+            border-left-color: var(--warning);
         }
 
-        .modifier-chip.selected {
-            background-color: var(--primary);
-            color: white;
-            border-color: var(--primary);
+        .kitchen-card.preparation {
+            border-left-color: var(--primary);
         }
 
-        .modifier-price {
-            font-size: 0.8rem;
-            color: var(--gray);
+        .kitchen-card.ready {
+            border-left-color: var(--success);
         }
 
-        .modifier-chip.selected .modifier-price {
-            color: rgba(255,255,255,0.8);
+        .kitchen-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--gray-200);
+            padding-bottom: 0.5rem;
+            margin-bottom: 0.5rem;
         }
 
-        /* Dashboard */
-        .dashboard-grid {
+        .kitchen-header h3 {
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .kitchen-time {
+            font-size: 0.75rem;
+            color: var(--gray-500);
+        }
+
+        .kitchen-item {
+            padding: 0.25rem 0;
+            font-size: 0.875rem;
+        }
+
+        .kitchen-item-quantity {
+            font-weight: 600;
+            margin-right: 0.5rem;
+        }
+
+        /* Ventas */
+        .sales-summary {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 1rem;
             margin-bottom: 2rem;
         }
 
-        .chart-card {
-            background-color: var(--card-bg);
+        .summary-card {
+            background-color: var(--white);
             padding: 1.5rem;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-radius: 0.5rem;
+            box-shadow: var(--shadow-sm);
         }
 
-        .chart-card h3 {
+        .summary-card h3 {
+            font-size: 0.875rem;
+            color: var(--gray-500);
+            margin-bottom: 0.5rem;
+        }
+
+        .summary-card p {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--gray-800);
+        }
+
+        .filters-bar {
+            display: flex;
+            gap: 1rem;
             margin-bottom: 1rem;
-            color: var(--text);
+            flex-wrap: wrap;
         }
 
-        canvas {
-            max-height: 300px;
-            width: 100% !important;
+        .filters-bar select,
+        .filters-bar input {
+            padding: 0.5rem;
+            border: 1px solid var(--gray-200);
+            border-radius: 0.375rem;
+            background-color: var(--white);
         }
 
-        /* Split bill */
-        .split-bill-item {
+        table {
+            width: 100%;
+            background-color: var(--white);
+            border-radius: 0.5rem;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+        }
+
+        th {
+            background-color: var(--gray-50);
+            padding: 0.75rem 1rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.875rem;
+            color: var(--gray-600);
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--gray-100);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background-color: var(--white);
+            border-radius: 0.5rem;
+            padding: 2rem;
+            width: 100%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .modal-content.large {
+            max-width: 800px;
+        }
+
+        .close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 1.25rem;
+            cursor: pointer;
+            color: var(--gray-400);
+        }
+
+        .close:hover {
+            color: var(--gray-600);
+        }
+
+        /* Formularios */
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            font-size: 0.875rem;
+            color: var(--gray-700);
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid var(--gray-200);
+            border-radius: 0.375rem;
+            font-family: inherit;
+        }
+
+        /* Toast */
+        .toast-container {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 9999;
+        }
+
+        .toast {
+            background-color: var(--white);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-top: 0.5rem;
+            box-shadow: var(--shadow-lg);
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            padding: 0.5rem;
-            border-bottom: 1px solid var(--border);
+            gap: 0.75rem;
+            min-width: 300px;
+            border-left: 4px solid;
         }
 
-        .split-bill-item input[type="number"] {
-            width: 80px;
-            padding: 0.25rem;
-            border: 1px solid var(--border);
-            border-radius: 4px;
-            background-color: var(--card-bg);
-            color: var(--text);
+        .toast.success {
+            border-left-color: var(--success);
         }
 
-        .person-total {
-            margin-top: 0.5rem;
-            padding: 0.5rem;
-            background-color: rgba(230, 57, 70, 0.1);
-            border-radius: 4px;
-            font-weight: 600;
+        .toast.error {
+            border-left-color: var(--danger);
         }
 
-        /* Admin login */
+        .toast.warning {
+            border-left-color: var(--warning);
+        }
+
+        .toast.info {
+            border-left-color: var(--primary);
+        }
+
+        /* Admin Login */
         .admin-login {
             display: none;
             position: fixed;
@@ -491,7 +647,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0,0,0,0.8);
+            background-color: rgba(0, 0, 0, 0.5);
             z-index: 2000;
             justify-content: center;
             align-items: center;
@@ -502,65 +658,60 @@
         }
 
         .login-box {
-            background-color: var(--card-bg);
+            background-color: var(--white);
             padding: 2rem;
-            border-radius: 12px;
-            width: 300px;
-            text-align: center;
+            border-radius: 0.5rem;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: var(--shadow-lg);
         }
 
         .login-box h2 {
             margin-bottom: 1.5rem;
-        }
-
-        .login-box input {
-            width: 100%;
-            padding: 0.75rem;
-            margin-bottom: 1rem;
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            background-color: var(--card-bg);
-            color: var(--text);
+            text-align: center;
         }
 
         /* Utilidades */
+        .flex {
+            display: flex;
+            gap: 1rem;
+        }
+
         .hidden {
             display: none !important;
         }
 
-        .flex {
-            display: flex;
-            gap: 1rem;
-            align-items: center;
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--gray-400);
         }
 
-        .grid {
-            display: grid;
-            gap: 1rem;
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
         }
-
-        .mt-1 { margin-top: 0.5rem; }
-        .mt-2 { margin-top: 1rem; }
-        .mt-3 { margin-top: 1.5rem; }
-        .mb-1 { margin-bottom: 0.5rem; }
-        .mb-2 { margin-bottom: 1rem; }
-        .mb-3 { margin-bottom: 1.5rem; }
     </style>
 </head>
 <body>
+    <!-- Admin Login -->
     <div class="admin-login" id="adminLogin">
         <div class="login-box">
             <h2>Acceso Administrador</h2>
-            <input type="password" id="adminPassword" placeholder="Contraseña">
-            <button onclick="checkAdminPassword()" class="btn btn-primary">Ingresar</button>
+            <div class="form-group">
+                <input type="password" id="adminPassword" placeholder="Contraseña">
+            </div>
+            <button class="btn btn-primary" style="width: 100%;" onclick="checkAdminPassword()">Ingresar</button>
         </div>
     </div>
 
+    <!-- Toast Container -->
     <div class="toast-container" id="toastContainer"></div>
 
+    <!-- Header -->
     <header>
         <div class="logo">
-            <h1>MURRITOS PRO</h1>
+            <h1>MURRITOS</h1>
         </div>
         <nav>
             <ul>
@@ -568,137 +719,123 @@
                 <li data-section="orders"><i class="fas fa-clipboard-list"></i> Pedidos</li>
                 <li data-section="kitchen"><i class="fas fa-utensils"></i> Cocina</li>
                 <li data-section="sales"><i class="fas fa-chart-line"></i> Ventas</li>
-                <li data-section="menu" id="menuTab"><i class="fas fa-utensils"></i> Menú</li>
+                <li data-section="menu" id="menuTab" class="hidden"><i class="fas fa-utensils"></i> Menú</li>
             </ul>
         </nav>
-        <div class="header-actions">
-            <button class="theme-toggle" id="themeToggle">
-                <i class="fas fa-moon"></i>
-            </button>
-            <select id="userRole" class="btn-secondary" style="padding: 0.5rem;">
+        <div class="user-controls">
+            <select class="role-select" id="userRole">
                 <option value="waiter">👨‍🍳 Mesero</option>
                 <option value="kitchen">👩‍🍳 Cocina</option>
             </select>
         </div>
     </header>
 
+    <!-- Main -->
     <main>
-        <!-- Sección de Mesas (Nueva) -->
+        <!-- Sección Mesas -->
         <section id="tables" class="section active">
             <div class="section-header">
                 <h2>Mapa de Mesas</h2>
-                <div class="flex">
-                    <button id="addTableBtn" class="btn btn-primary"><i class="fas fa-plus"></i> Agregar Mesa</button>
-                </div>
+                <button class="btn btn-primary" id="addTableBtn"><i class="fas fa-plus"></i> Agregar Mesa</button>
             </div>
             
             <div class="tables-grid" id="tablesGrid"></div>
             
-            <div class="order-controls">
-                <div class="active-orders" style="flex: 1;">
+            <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 1rem;">
+                <div class="active-orders">
                     <h3>Órdenes Activas</h3>
                     <div class="orders-list" id="activeOrdersList"></div>
                 </div>
                 
-                <div class="order-details" style="flex: 2;" id="orderDetails">
+                <div class="order-details" id="orderDetails">
                     <div class="empty-state">
                         <i class="fas fa-clipboard-list"></i>
-                        <p>Selecciona una mesa o crea una nueva orden</p>
+                        <p>Selecciona una mesa o una orden</p>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Sección de Pedidos (ahora enfocada en orden actual) -->
+        <!-- Sección Pedidos -->
         <section id="orders" class="section">
             <div class="section-header">
                 <h2>Pedido Actual</h2>
-                <div class="flex">
-                    <button id="backToTablesBtn" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Volver a Mesas</button>
-                </div>
+                <button class="btn btn-secondary" id="backToTablesBtn"><i class="fas fa-arrow-left"></i> Volver a Mesas</button>
             </div>
-            
-            <div class="order-details-full" id="orderDetailsFull"></div>
+            <div class="order-details" id="orderDetailsFull"></div>
         </section>
 
-        <!-- Sección de Cocina -->
+        <!-- Sección Cocina -->
         <section id="kitchen" class="section">
             <div class="section-header">
-                <h2>Pantalla de Cocina</h2>
-                <div class="time-filters">
-                    <button class="btn-filter active" data-kitchen-filter="pending">Pendientes</button>
-                    <button class="btn-filter" data-kitchen-filter="preparation">En Preparación</button>
-                    <button class="btn-filter" data-kitchen-filter="ready">Listos</button>
+                <h2>Cocina</h2>
+                <div class="flex">
+                    <button class="btn btn-secondary kitchen-filter active" data-filter="pending">Pendientes</button>
+                    <button class="btn btn-secondary kitchen-filter" data-filter="preparation">Preparación</button>
+                    <button class="btn btn-secondary kitchen-filter" data-filter="ready">Listos</button>
                 </div>
             </div>
-            
-            <div class="kitchen-orders" id="kitchenOrders"></div>
+            <div class="kitchen-grid" id="kitchenOrders"></div>
         </section>
 
-        <!-- Sección de Ventas con Dashboard -->
+        <!-- Sección Ventas -->
         <section id="sales" class="section">
             <div class="section-header">
-                <h2>Dashboard de Ventas</h2>
-                <div class="flex">
-                    <button id="exportExcelBtn" class="btn btn-success"><i class="fas fa-file-excel"></i> Exportar</button>
+                <h2>Ventas</h2>
+                <button class="btn btn-success" id="exportExcelBtn"><i class="fas fa-file-excel"></i> Exportar</button>
+            </div>
+            
+            <div class="sales-summary">
+                <div class="summary-card">
+                    <h3>Total Ventas</h3>
+                    <p id="totalSales">$0</p>
+                </div>
+                <div class="summary-card">
+                    <h3>Órdenes</h3>
+                    <p id="totalOrders">0</p>
+                </div>
+                <div class="summary-card">
+                    <h3>Promedio</h3>
+                    <p id="averageOrder">$0</p>
                 </div>
             </div>
             
-            <div class="dashboard-grid">
-                <div class="chart-card">
-                    <h3>Ventas por Día</h3>
-                    <canvas id="salesChart"></canvas>
-                </div>
-                <div class="chart-card">
-                    <h3>Top Productos</h3>
-                    <canvas id="productsChart"></canvas>
-                </div>
-            </div>
-            
-            <div class="filters-bar flex mb-2">
-                <select id="salesFilterWaiter" class="btn-secondary" style="padding: 0.5rem;">
+            <div class="filters-bar">
+                <select id="filterWaiter">
                     <option value="all">Todos los meseros</option>
                 </select>
-                <select id="salesFilterPayment" class="btn-secondary" style="padding: 0.5rem;">
+                <select id="filterPayment">
                     <option value="all">Todos los pagos</option>
                     <option value="cash">Efectivo</option>
                     <option value="card">Tarjeta</option>
                 </select>
-                <input type="date" id="salesDateFrom" class="btn-secondary" style="padding: 0.5rem;">
-                <input type="date" id="salesDateTo" class="btn-secondary" style="padding: 0.5rem;">
+                <input type="date" id="filterDateFrom">
+                <input type="date" id="filterDateTo">
             </div>
             
-            <div class="sales-list">
-                <h3>Historial de Ventas</h3>
-                <table id="salesTable">
-                    <thead>
-                        <tr>
-                            <th>Fecha</th>
-                            <th>Mesa</th>
-                            <th>Mesero</th>
-                            <th>Items</th>
-                            <th>Subtotal</th>
-                            <th>Propina</th>
-                            <th>Total</th>
-                            <th>Pago</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody id="salesList"></tbody>
-                </table>
-            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Mesa</th>
+                        <th>Mesero</th>
+                        <th>Items</th>
+                        <th>Total</th>
+                        <th>Pago</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="salesTable"></tbody>
+            </table>
         </section>
 
-        <!-- Sección de Menú -->
+        <!-- Sección Menú -->
         <section id="menu" class="section">
             <div class="section-header">
-                <h2>Administrar Menú</h2>
-                <div class="admin-controls flex">
-                    <button id="addSectionBtn" class="btn btn-primary"><i class="fas fa-plus"></i> Sección</button>
-                </div>
+                <h2>Menú</h2>
+                <button class="btn btn-primary" id="addSectionBtn"><i class="fas fa-plus"></i> Sección</button>
             </div>
-            
-            <div class="menu-sections" id="menuSections"></div>
+            <div id="menuSections"></div>
         </section>
     </main>
 
@@ -707,64 +844,55 @@
         <div class="modal-content">
             <span class="close">&times;</span>
             <h2>Nueva Orden</h2>
-            <div class="form-group mb-2">
-                <label>Mesa:</label>
-                <select id="orderTableSelect" class="form-control"></select>
+            <div class="form-group">
+                <label>Mesa</label>
+                <select id="orderTableSelect"></select>
             </div>
-            <div class="form-group mb-2">
-                <label>Mesero:</label>
-                <select id="orderWaiterSelect" class="form-control">
-                    <option value="Mesero 1">Mesero 1</option>
-                    <option value="Mesero 2">Mesero 2</option>
-                    <option value="Mesero 3">Mesero 3</option>
+            <div class="form-group">
+                <label>Mesero</label>
+                <select id="orderWaiterSelect">
+                    <option value="Carlos">Carlos</option>
+                    <option value="María">María</option>
+                    <option value="José">José</option>
                 </select>
             </div>
-            <button id="createOrderBtn" class="btn btn-primary">Crear Orden</button>
+            <button class="btn btn-primary" id="createOrderBtn">Crear Orden</button>
         </div>
     </div>
 
-    <!-- Modal Agregar Item (Táctil) -->
+    <!-- Modal Agregar Item -->
     <div class="modal" id="addItemModal">
         <div class="modal-content large">
             <span class="close">&times;</span>
             <h2>Agregar Items</h2>
             
-            <div class="flex mb-2">
-                <select id="itemSectionSelect" class="btn-secondary" style="flex: 1;">
+            <div class="form-group">
+                <select id="menuSectionFilter" class="form-control">
                     <option value="">Todas las secciones</option>
                 </select>
             </div>
             
-            <div class="touch-menu" id="touchMenu"></div>
+            <div class="menu-grid" id="menuGrid"></div>
             
-            <div class="mt-2" id="selectedItemPanel" style="display: none;">
-                <h3>Item seleccionado</h3>
-                <div id="selectedItemInfo"></div>
-                
-                <div class="form-group mt-2">
-                    <label>Cantidad:</label>
-                    <input type="number" id="itemQuantity" min="1" value="1" class="form-control">
+            <div id="itemConfigPanel" style="display: none; margin-top: 1rem;">
+                <h3>Configurar Item</h3>
+                <div class="form-group">
+                    <label>Cantidad</label>
+                    <input type="number" id="itemQuantity" min="1" value="1">
                 </div>
-                
-                <div class="form-group mt-2">
-                    <label>Modificadores:</label>
-                    <div class="modifiers-grid" id="modifiersGrid"></div>
+                <div class="form-group">
+                    <label>Comentarios</label>
+                    <textarea id="itemComments" rows="2"></textarea>
                 </div>
-                
-                <div class="form-group mt-2">
-                    <label>Comentarios:</label>
-                    <textarea id="itemComments" rows="2" class="form-control"></textarea>
-                </div>
-                
-                <div class="flex mt-2">
-                    <button id="addItemToOrderBtn" class="btn btn-primary">Agregar a Orden</button>
-                    <button id="cancelItemSelectionBtn" class="btn btn-secondary">Cancelar</button>
+                <div class="flex">
+                    <button class="btn btn-primary" id="addItemToOrderBtn">Agregar</button>
+                    <button class="btn btn-secondary" id="cancelItemBtn">Cancelar</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Modal Cerrar Orden con Propinas y Split -->
+    <!-- Modal Cerrar Orden -->
     <div class="modal" id="closeOrderModal">
         <div class="modal-content">
             <span class="close">&times;</span>
@@ -772,129 +900,94 @@
             
             <div class="order-summary" id="closeOrderSummary"></div>
             
-            <div class="form-group mt-2">
-                <label>Método de Pago:</label>
-                <select id="paymentMethod" class="form-control">
+            <div class="form-group">
+                <label>Método de Pago</label>
+                <select id="paymentMethod">
                     <option value="cash">Efectivo</option>
                     <option value="card">Tarjeta</option>
                 </select>
             </div>
             
-            <div class="form-group mt-2">
-                <label>Propina:</label>
+            <div class="form-group">
+                <label>Propina</label>
                 <div class="flex">
                     <button class="btn btn-secondary tip-btn" data-tip="0">0%</button>
                     <button class="btn btn-secondary tip-btn" data-tip="10">10%</button>
                     <button class="btn btn-secondary tip-btn" data-tip="15">15%</button>
                     <button class="btn btn-secondary tip-btn" data-tip="20">20%</button>
                 </div>
-                <div class="flex mt-1">
-                    <input type="number" id="customTip" placeholder="Monto fijo" class="form-control" style="flex: 1;">
-                </div>
+                <input type="number" id="customTip" placeholder="Monto fijo" style="margin-top: 0.5rem; width: 100%; padding: 0.5rem;">
             </div>
             
-            <div class="form-group mt-2">
-                <label>Dividir cuenta:</label>
-                <button id="splitBillBtn" class="btn btn-secondary">Configurar división</button>
+            <div class="form-group">
+                <label>Comentarios</label>
+                <textarea id="finalComments" rows="2"></textarea>
             </div>
             
-            <div id="splitBillPanel" style="display: none;" class="mt-2">
-                <h4>Dividir entre <input type="number" id="numPeople" min="1" value="1" style="width: 60px;"> personas</h4>
-                <div id="splitItemsList"></div>
-                <div id="splitTotals"></div>
-            </div>
-            
-            <div class="form-group mt-2">
-                <label>Comentarios Finales:</label>
-                <textarea id="finalComments" rows="2" class="form-control"></textarea>
-            </div>
-            
-            <div class="flex mt-2">
-                <button id="processPaymentBtn" class="btn btn-primary">Procesar Pago</button>
-                <button id="printKitchenOrderBtn" class="btn btn-secondary">Imprimir Comanda</button>
-            </div>
+            <button class="btn btn-primary" id="processPaymentBtn" style="width: 100%;">Procesar Pago</button>
         </div>
     </div>
 
-    <!-- Modal Configuración de Mesas -->
+    <!-- Modal Mesa -->
     <div class="modal" id="tableModal">
         <div class="modal-content">
             <span class="close">&times;</span>
             <h2 id="tableModalTitle">Configurar Mesa</h2>
-            
             <div class="form-group">
-                <label>Número de Mesa:</label>
-                <input type="text" id="tableNumber" class="form-control">
+                <label>Número</label>
+                <input type="text" id="tableNumber">
             </div>
-            
             <div class="form-group">
-                <label>Estado:</label>
-                <select id="tableStatus" class="form-control">
+                <label>Capacidad</label>
+                <input type="number" id="tableCapacity" min="1" value="4">
+            </div>
+            <div class="form-group">
+                <label>Estado</label>
+                <select id="tableStatus">
                     <option value="free">Libre</option>
                     <option value="occupied">Ocupada</option>
                     <option value="bill">Pidiendo Cuenta</option>
                     <option value="reserved">Reservada</option>
                 </select>
             </div>
-            
-            <div class="form-group">
-                <label>Capacidad:</label>
-                <input type="number" id="tableCapacity" min="1" value="4" class="form-control">
-            </div>
-            
-            <button id="saveTableBtn" class="btn btn-primary">Guardar</button>
+            <button class="btn btn-primary" id="saveTableBtn">Guardar</button>
         </div>
     </div>
 
-    <!-- Modal Sección de Menú -->
+    <!-- Modal Sección -->
     <div class="modal" id="sectionModal">
         <div class="modal-content">
             <span class="close">&times;</span>
             <h2 id="sectionModalTitle">Nueva Sección</h2>
             <div class="form-group">
-                <label>Nombre de la Sección:</label>
-                <input type="text" id="sectionName" class="form-control">
+                <label>Nombre</label>
+                <input type="text" id="sectionName">
             </div>
-            <button id="saveSectionBtn" class="btn btn-primary">Guardar</button>
+            <button class="btn btn-primary" id="saveSectionBtn">Guardar</button>
         </div>
     </div>
 
-    <!-- Modal Item de Menú -->
+    <!-- Modal Item -->
     <div class="modal" id="itemModal">
         <div class="modal-content">
             <span class="close">&times;</span>
             <h2 id="itemModalTitle">Nuevo Item</h2>
             <div class="form-group">
-                <label>Nombre:</label>
-                <input type="text" id="itemName" class="form-control">
+                <label>Nombre</label>
+                <input type="text" id="itemName">
             </div>
             <div class="form-group">
-                <label>Precio:</label>
-                <input type="number" id="itemPrice" min="0" step="0.01" class="form-control">
+                <label>Precio</label>
+                <input type="number" id="itemPrice" min="0" step="0.01">
             </div>
-            <div class="form-group">
-                <label>Modificadores (opcional):</label>
-                <div id="modifiersList"></div>
-                <button id="addModifierBtn" class="btn btn-secondary btn-sm mt-1">+ Agregar modificador</button>
-            </div>
-            <button id="saveItemBtn" class="btn btn-primary">Guardar</button>
+            <button class="btn btn-primary" id="saveItemBtn">Guardar</button>
         </div>
     </div>
 
-    <!-- Modal Confirmación -->
-    <div class="modal" id="confirmModal">
-        <div class="modal-content small">
-            <h2 id="confirmModalTitle">Confirmar</h2>
-            <p id="confirmModalMessage"></p>
-            <div class="modal-buttons flex mt-2">
-                <button id="confirmModalCancel" class="btn btn-secondary">Cancelar</button>
-                <button id="confirmModalConfirm" class="btn btn-primary">Confirmar</button>
-            </div>
-        </div>
-    </div>
-
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <script>
-        // Configuración de Firebase
+        // Firebase Config
         const firebaseConfig = {
             apiKey: "AIzaSyC70WGYyyvUVyK_d_haRQKQSXyoroNrx2w",
             authDomain: "murritos-3640e.firebaseapp.com",
@@ -905,330 +998,227 @@
             appId: "1:286299522702:web:9eacfa403ff6bcf78aabdf"
         };
 
-        // Inicializar Firebase
         firebase.initializeApp(firebaseConfig);
-        const database = firebase.database();
+        const db = firebase.database();
 
-        // Variables globales
-        let isAdmin = false;
-        let currentOrderId = null;
-        let currentTableId = null;
-        let currentSectionId = null;
-        let currentItemId = null;
-        let currentUserRole = 'waiter';
-        let menuCache = null;
-        let selectedMenuItem = null;
-        let selectedModifiers = [];
-        let salesChart = null;
-        let productsChart = null;
-        let currentTip = 0;
-        let splitMode = false;
-        let splitPeople = [];
+        // ========== ESTADO GLOBAL ==========
+        let state = {
+            isAdmin: localStorage.getItem('murritos_admin') === 'true',
+            currentOrderId: null,
+            currentTableId: null,
+            currentSectionId: null,
+            currentItemId: null,
+            userRole: 'waiter',
+            tables: [],
+            selectedMenuItem: null,
+            currentTip: 0,
+            menuCache: null
+        };
 
-        // Toast System
-        function showToast(title, message, type = 'info', duration = 3000) {
+        // ========== UTILIDADES ==========
+        function showToast(title, message, type = 'info') {
             const container = document.getElementById('toastContainer');
             const toast = document.createElement('div');
             toast.className = `toast ${type}`;
-            
-            const icon = {
-                success: 'fa-check-circle',
-                error: 'fa-exclamation-circle',
-                warning: 'fa-exclamation-triangle',
-                info: 'fa-info-circle'
-            }[type];
-            
             toast.innerHTML = `
-                <i class="fas ${icon}"></i>
-                <div class="toast-content">
-                    <div class="toast-title">${title}</div>
-                    <div class="toast-message">${message}</div>
+                <div>
+                    <strong>${title}</strong>
+                    <p style="margin-top: 0.25rem; font-size: 0.875rem;">${message}</p>
                 </div>
-                <i class="fas fa-times toast-close"></i>
             `;
-            
             container.appendChild(toast);
             
-            toast.querySelector('.toast-close').addEventListener('click', () => {
-                toast.style.animation = 'fadeOut 0.3s ease';
-                setTimeout(() => toast.remove(), 300);
-            });
-            
-            setTimeout(() => {
-                if (toast.parentNode) {
-                    toast.style.animation = 'fadeOut 0.3s ease';
-                    setTimeout(() => toast.remove(), 300);
-                }
-            }, duration);
+            setTimeout(() => toast.remove(), 3000);
         }
 
-        // Theme Toggle
-        function initTheme() {
-            const savedTheme = localStorage.getItem('murritos_theme');
-            if (savedTheme === 'dark') {
-                document.body.classList.add('dark-mode');
-                document.querySelector('#themeToggle i').className = 'fas fa-sun';
+        function formatDate(timestamp) {
+            return new Date(timestamp).toLocaleString('es-MX', {
+                day: '2-digit',
+                month: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        function formatTimeAgo(timestamp) {
+            const minutes = Math.floor((Date.now() - timestamp) / 60000);
+            if (minutes < 1) return 'Ahora';
+            if (minutes < 60) return `${minutes} min`;
+            return `${Math.floor(minutes / 60)} h`;
+        }
+
+        // ========== TOAST ==========
+        window.showToast = showToast;
+
+        // ========== ADMIN ==========
+        window.checkAdminPassword = function() {
+            const password = document.getElementById('adminPassword').value;
+            if (password === 'Tonrry13') {
+                state.isAdmin = true;
+                localStorage.setItem('murritos_admin', 'true');
+                document.getElementById('adminLogin').classList.remove('show');
+                document.getElementById('menuTab').classList.remove('hidden');
+                loadMenuSections();
+                showToast('Bienvenido', 'Acceso de administrador concedido', 'success');
+            } else {
+                showToast('Error', 'Contraseña incorrecta', 'error');
             }
-            
-            document.getElementById('themeToggle').addEventListener('click', () => {
-                document.body.classList.toggle('dark-mode');
-                const isDark = document.body.classList.contains('dark-mode');
-                localStorage.setItem('murritos_theme', isDark ? 'dark' : 'light');
-                document.querySelector('#themeToggle i').className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+        };
+
+        // ========== NAVEGACIÓN ==========
+        document.querySelectorAll('nav ul li').forEach(item => {
+            item.addEventListener('click', function() {
+                document.querySelectorAll('nav ul li').forEach(li => li.classList.remove('active'));
+                document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+                
+                this.classList.add('active');
+                const sectionId = this.dataset.section;
+                document.getElementById(sectionId).classList.add('active');
+                
+                if (sectionId === 'kitchen') loadKitchenOrders('pending');
+                if (sectionId === 'sales') loadSalesData();
             });
+        });
+
+        document.getElementById('userRole').addEventListener('change', function() {
+            state.userRole = this.value;
+            if (state.userRole === 'kitchen') {
+                document.querySelector('nav ul li[data-section="kitchen"]').click();
+            }
+        });
+
+        document.getElementById('backToTablesBtn').addEventListener('click', () => {
+            document.querySelector('nav ul li[data-section="tables"]').click();
+        });
+
+        // ========== MESAS ==========
+        function loadTables() {
+            const saved = localStorage.getItem('murritos_tables');
+            if (saved) {
+                state.tables = JSON.parse(saved);
+            } else {
+                state.tables = [
+                    { id: '1', number: 'Mesa 1', status: 'free', capacity: 4 },
+                    { id: '2', number: 'Mesa 2', status: 'free', capacity: 4 },
+                    { id: '3', number: 'Mesa 3', status: 'free', capacity: 2 },
+                    { id: '4', number: 'Mesa 4', status: 'free', capacity: 6 }
+                ];
+            }
+            renderTables();
         }
 
-        // Tablas (Mesas)
-        function initTables() {
-            // Cargar mesas desde localStorage o crear por defecto
-            let tables = JSON.parse(localStorage.getItem('murritos_tables')) || [
-                { id: '1', number: 'Mesa 1', status: 'free', capacity: 4 },
-                { id: '2', number: 'Mesa 2', status: 'free', capacity: 4 },
-                { id: '3', number: 'Mesa 3', status: 'free', capacity: 2 },
-                { id: '4', number: 'Mesa 4', status: 'free', capacity: 6 },
-                { id: '5', number: 'Barra 1', status: 'free', capacity: 2 },
-                { id: '6', number: 'Barra 2', status: 'free', capacity: 2 }
-            ];
-            
-            renderTables(tables);
-            
-            document.getElementById('addTableBtn').addEventListener('click', () => {
-                currentTableId = null;
-                document.getElementById('tableModalTitle').textContent = 'Nueva Mesa';
-                document.getElementById('tableNumber').value = '';
-                document.getElementById('tableStatus').value = 'free';
-                document.getElementById('tableCapacity').value = '4';
-                document.getElementById('tableModal').classList.add('show');
-            });
-            
-            document.getElementById('saveTableBtn').addEventListener('click', saveTable);
-        }
-
-        function renderTables(tables) {
+        function renderTables() {
             const grid = document.getElementById('tablesGrid');
             grid.innerHTML = '';
             
-            tables.forEach(table => {
+            state.tables.forEach(table => {
                 const card = document.createElement('div');
                 card.className = `table-card ${table.status}`;
-                card.setAttribute('draggable', 'true');
-                card.setAttribute('data-table-id', table.id);
+                card.dataset.tableId = table.id;
                 
                 const statusText = {
-                    'free': 'Libre',
-                    'occupied': 'Ocupada',
-                    'bill': 'Pidiendo Cuenta',
-                    'reserved': 'Reservada'
+                    free: 'Libre',
+                    occupied: 'Ocupada',
+                    bill: 'Cuenta',
+                    reserved: 'Reservada'
                 }[table.status];
                 
                 card.innerHTML = `
                     <div class="table-number">${table.number}</div>
                     <div class="table-status">${statusText}</div>
-                    <div><i class="fas fa-user"></i> ${table.capacity}</div>
+                    <div class="table-capacity"><i class="fas fa-user"></i> ${table.capacity}</div>
                 `;
                 
-                // Drag and drop
-                card.addEventListener('dragstart', (e) => {
-                    e.dataTransfer.setData('text/plain', table.id);
-                    card.classList.add('dragging');
-                });
-                
-                card.addEventListener('dragend', () => {
-                    card.classList.remove('dragging');
-                });
-                
-                card.addEventListener('dragover', (e) => e.preventDefault());
-                
-                card.addEventListener('drop', (e) => {
-                    e.preventDefault();
-                    const draggedId = e.dataTransfer.getData('text/plain');
-                    if (draggedId !== table.id) {
-                        // Intercambiar mesas
-                        const tables = JSON.parse(localStorage.getItem('murritos_tables'));
-                        const draggedIndex = tables.findIndex(t => t.id === draggedId);
-                        const targetIndex = tables.findIndex(t => t.id === table.id);
-                        [tables[draggedIndex], tables[targetIndex]] = [tables[targetIndex], tables[draggedIndex]];
-                        localStorage.setItem('murritos_tables', JSON.stringify(tables));
-                        renderTables(tables);
-                    }
-                });
-                
-                card.addEventListener('click', () => {
-                    if (table.status === 'free') {
-                        // Crear nueva orden
-                        currentTableId = table.id;
-                        document.getElementById('orderTableSelect').innerHTML = `<option value="${table.id}">${table.number}</option>`;
-                        document.getElementById('newOrderModal').classList.add('show');
-                    } else {
-                        // Ver orden existente
-                        showToast('Información', `Mesa ${table.number} está ${statusText}`, 'info');
-                    }
-                });
-                
+                card.addEventListener('click', () => handleTableClick(table));
                 card.addEventListener('dblclick', () => {
-                    if (isAdmin) {
-                        currentTableId = table.id;
-                        document.getElementById('tableModalTitle').textContent = 'Editar Mesa';
-                        document.getElementById('tableNumber').value = table.number;
-                        document.getElementById('tableStatus').value = table.status;
-                        document.getElementById('tableCapacity').value = table.capacity;
-                        document.getElementById('tableModal').classList.add('show');
-                    }
+                    if (state.isAdmin) editTable(table);
                 });
                 
                 grid.appendChild(card);
             });
         }
 
-        function saveTable() {
+        function handleTableClick(table) {
+            if (table.status === 'free') {
+                // Crear nueva orden
+                state.currentTableId = table.id;
+                const select = document.getElementById('orderTableSelect');
+                select.innerHTML = `<option value="${table.id}">${table.number}</option>`;
+                document.getElementById('newOrderModal').classList.add('show');
+            } else {
+                // Buscar orden activa de esta mesa
+                db.ref('orders').orderByChild('tableId').equalTo(table.id).once('value', snapshot => {
+                    const orders = snapshot.val();
+                    if (orders) {
+                        const orderId = Object.keys(orders).find(id => orders[id].status === 'active');
+                        if (orderId) {
+                            state.currentOrderId = orderId;
+                            loadOrderDetails(orderId);
+                        }
+                    }
+                });
+            }
+        }
+
+        function editTable(table) {
+            state.currentTableId = table.id;
+            document.getElementById('tableModalTitle').textContent = 'Editar Mesa';
+            document.getElementById('tableNumber').value = table.number;
+            document.getElementById('tableCapacity').value = table.capacity;
+            document.getElementById('tableStatus').value = table.status;
+            document.getElementById('tableModal').classList.add('show');
+        }
+
+        document.getElementById('addTableBtn').addEventListener('click', () => {
+            state.currentTableId = null;
+            document.getElementById('tableModalTitle').textContent = 'Nueva Mesa';
+            document.getElementById('tableNumber').value = '';
+            document.getElementById('tableCapacity').value = '4';
+            document.getElementById('tableStatus').value = 'free';
+            document.getElementById('tableModal').classList.add('show');
+        });
+
+        document.getElementById('saveTableBtn').addEventListener('click', () => {
             const number = document.getElementById('tableNumber').value;
+            const capacity = parseInt(document.getElementById('tableCapacity').value);
             const status = document.getElementById('tableStatus').value;
-            const capacity = document.getElementById('tableCapacity').value;
             
             if (!number) {
                 showToast('Error', 'El número de mesa es requerido', 'error');
                 return;
             }
             
-            let tables = JSON.parse(localStorage.getItem('murritos_tables')) || [];
-            
-            if (currentTableId) {
+            if (state.currentTableId) {
                 // Editar
-                const index = tables.findIndex(t => t.id === currentTableId);
+                const index = state.tables.findIndex(t => t.id === state.currentTableId);
                 if (index !== -1) {
-                    tables[index] = { ...tables[index], number, status, capacity: parseInt(capacity) };
+                    state.tables[index] = { ...state.tables[index], number, capacity, status };
                 }
             } else {
-                // Nuevo
-                const newId = Date.now().toString();
-                tables.push({
-                    id: newId,
+                // Nueva
+                state.tables.push({
+                    id: Date.now().toString(),
                     number,
-                    status,
-                    capacity: parseInt(capacity)
+                    capacity,
+                    status
                 });
             }
             
-            localStorage.setItem('murritos_tables', JSON.stringify(tables));
-            renderTables(tables);
+            localStorage.setItem('murritos_tables', JSON.stringify(state.tables));
+            renderTables();
             document.getElementById('tableModal').classList.remove('show');
-            showToast('Éxito', 'Mesa guardada correctamente', 'success');
-        }
+            showToast('Éxito', 'Mesa guardada', 'success');
+        });
 
-        // Menú táctil
-        function loadTouchMenu() {
-            if (menuCache) {
-                renderTouchMenu(menuCache);
-                return;
-            }
-            
-            database.ref('menuSections').once('value').then(snapshot => {
-                menuCache = snapshot.val() || {};
-                renderTouchMenu(menuCache);
-                
-                // Llenar selector de secciones
-                const select = document.getElementById('itemSectionSelect');
-                select.innerHTML = '<option value="">Todas las secciones</option>';
-                Object.entries(menuCache).forEach(([id, section]) => {
-                    select.innerHTML += `<option value="${id}">${section.name}</option>`;
-                });
-            });
-        }
-
-        function renderTouchMenu(sections) {
-            const container = document.getElementById('touchMenu');
-            container.innerHTML = '';
-            
-            const filter = document.getElementById('itemSectionSelect').value;
-            
-            Object.entries(sections).forEach(([sectionId, section]) => {
-                if (filter && filter !== sectionId) return;
-                
-                if (section.items) {
-                    Object.entries(section.items).forEach(([itemId, item]) => {
-                        const card = document.createElement('div');
-                        card.className = 'menu-item-card';
-                        card.setAttribute('data-section-id', sectionId);
-                        card.setAttribute('data-item-id', itemId);
-                        
-                        card.innerHTML = `
-                            <div class="menu-item-name">${item.name}</div>
-                            <div class="menu-item-price">$${item.price.toFixed(2)}</div>
-                        `;
-                        
-                        card.addEventListener('click', () => {
-                            // Quitar selección anterior
-                            document.querySelectorAll('.menu-item-card').forEach(c => c.classList.remove('selected'));
-                            card.classList.add('selected');
-                            
-                            // Mostrar panel de selección
-                            selectedMenuItem = { sectionId, itemId, ...item };
-                            renderSelectedItem();
-                            document.getElementById('selectedItemPanel').style.display = 'block';
-                        });
-                        
-                        container.appendChild(card);
-                    });
-                }
-            });
-        }
-
-        function renderSelectedItem() {
-            if (!selectedMenuItem) return;
-            
-            const panel = document.getElementById('selectedItemInfo');
-            panel.innerHTML = `
-                <h4>${selectedMenuItem.name}</h4>
-                <p>Precio base: $${selectedMenuItem.price.toFixed(2)}</p>
-            `;
-            
-            // Modificadores de ejemplo
-            const modifiers = [
-                { name: 'Queso extra', price: 15 },
-                { name: 'Guacamole', price: 20 },
-                { name: 'Tocino', price: 25 },
-                { name: 'Sin cebolla', price: 0 },
-                { name: 'Salsa extra', price: 5 },
-                { name: 'Frijoles', price: 10 }
-            ];
-            
-            const modifiersGrid = document.getElementById('modifiersGrid');
-            modifiersGrid.innerHTML = '';
-            
-            modifiers.forEach((mod, index) => {
-                const chip = document.createElement('div');
-                chip.className = 'modifier-chip';
-                chip.innerHTML = `
-                    <div>${mod.name}</div>
-                    <div class="modifier-price">${mod.price > 0 ? '+$' + mod.price : 'Gratis'}</div>
-                `;
-                
-                chip.addEventListener('click', () => {
-                    chip.classList.toggle('selected');
-                    if (chip.classList.contains('selected')) {
-                        selectedModifiers.push(mod);
-                    } else {
-                        selectedModifiers = selectedModifiers.filter(m => m.name !== mod.name);
-                    }
-                });
-                
-                modifiersGrid.appendChild(chip);
-            });
-        }
-
-        // Crear orden
+        // ========== ÓRDENES ==========
         document.getElementById('createOrderBtn').addEventListener('click', () => {
             const tableId = document.getElementById('orderTableSelect').value;
             const waiter = document.getElementById('orderWaiterSelect').value;
-            
-            if (!tableId) return;
-            
-            const tables = JSON.parse(localStorage.getItem('murritos_tables'));
-            const table = tables.find(t => t.id === tableId);
+            const table = state.tables.find(t => t.id === tableId);
             
             const newOrder = {
-                tableName: table.number,
                 tableId,
+                tableName: table.number,
                 waiter,
                 status: 'active',
                 preparationStatus: 'pending',
@@ -1236,32 +1226,63 @@
                 items: {}
             };
             
-            const newOrderRef = database.ref('orders').push();
-            newOrderRef.set(newOrder).then(() => {
-                // Actualizar estado de la mesa
-                table.status = 'occupied';
-                localStorage.setItem('murritos_tables', JSON.stringify(tables));
-                renderTables(tables);
+            const orderRef = db.ref('orders').push();
+            orderRef.set(newOrder).then(() => {
+                // Actualizar estado de mesa
+                const index = state.tables.findIndex(t => t.id === tableId);
+                state.tables[index].status = 'occupied';
+                localStorage.setItem('murritos_tables', JSON.stringify(state.tables));
+                renderTables();
                 
                 document.getElementById('newOrderModal').classList.remove('show');
-                currentOrderId = newOrderRef.key;
+                state.currentOrderId = orderRef.key;
                 
-                // Ir a la vista de pedidos
+                // Ir a pedidos
                 document.querySelector('nav ul li[data-section="orders"]').click();
-                loadOrderDetailsFull(currentOrderId);
+                loadOrderDetailsFull(orderRef.key);
                 
-                showToast('Éxito', 'Orden creada correctamente', 'success');
-                
-                // Imprimir comanda automática
-                printKitchenOrder(newOrderRef.key);
+                showToast('Éxito', 'Orden creada', 'success');
             });
         });
 
-        // Cargar detalles de orden en vista completa
-        function loadOrderDetailsFull(orderId) {
-            const container = document.getElementById('orderDetailsFull');
-            
-            database.ref(`orders/${orderId}`).on('value', snapshot => {
+        function loadActiveOrders() {
+            db.ref('orders').orderByChild('status').equalTo('active').on('value', snapshot => {
+                const orders = snapshot.val();
+                const list = document.getElementById('activeOrdersList');
+                list.innerHTML = '';
+                
+                if (!orders) {
+                    list.innerHTML = '<p class="empty-state">No hay órdenes activas</p>';
+                    return;
+                }
+                
+                Object.entries(orders).forEach(([id, order]) => {
+                    const card = document.createElement('div');
+                    card.className = 'order-card';
+                    if (id === state.currentOrderId) card.classList.add('active');
+                    
+                    card.innerHTML = `
+                        <h4>${order.tableName}</h4>
+                        <p>${order.items ? Object.keys(order.items).length : 0} items</p>
+                        <p>${formatTimeAgo(order.createdAt)}</p>
+                        <span class="status-badge ${order.preparationStatus || 'pending'}">
+                            ${order.preparationStatus === 'ready' ? 'Listo' : 
+                              order.preparationStatus === 'preparation' ? 'Prep.' : 'Pend.'}
+                        </span>
+                    `;
+                    
+                    card.addEventListener('click', () => {
+                        state.currentOrderId = id;
+                        loadOrderDetails(id);
+                    });
+                    
+                    list.appendChild(card);
+                });
+            });
+        }
+
+        function loadOrderDetails(orderId) {
+            db.ref(`orders/${orderId}`).once('value', snapshot => {
                 const order = snapshot.val();
                 if (!order) return;
                 
@@ -1274,428 +1295,348 @@
                         total += itemTotal;
                         
                         itemsHtml += `
-                            <div class="order-item" data-item-id="${id}" style="display: flex; justify-content: space-between; padding: 0.5rem; border-bottom: 1px solid var(--border);">
-                                <div>
-                                    <strong>${item.quantity}x ${item.name}</strong>
-                                    ${item.modifiers ? `<br><small>${item.modifiers.join(', ')}</small>` : ''}
-                                    ${item.comments ? `<br><small class="text-muted">${item.comments}</small>` : ''}
+                            <div class="order-item" data-item-id="${id}">
+                                <div class="order-item-info">
+                                    <h4>${item.quantity}x ${item.name}</h4>
+                                    ${item.comments ? `<p>${item.comments}</p>` : ''}
                                 </div>
-                                <div>$${itemTotal.toFixed(2)}</div>
+                                <div class="order-item-price">$${itemTotal.toFixed(2)}</div>
                             </div>
                         `;
                     });
                 }
                 
-                container.innerHTML = `
-                    <div class="order-header" style="background-color: var(--card-bg); padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                document.getElementById('orderDetails').innerHTML = `
+                    <div class="order-details-header">
                         <h3>${order.tableName}</h3>
                         <p>Mesero: ${order.waiter}</p>
-                        <p>Estado: <span class="status-badge ${order.preparationStatus || 'pending'}">${order.preparationStatus || 'Pendiente'}</span></p>
                     </div>
-                    
-                    <div class="order-items" style="background-color: var(--card-bg); padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
-                        <h4>Items</h4>
+                    <div class="order-items-list">
                         ${itemsHtml || '<p>No hay items</p>'}
                     </div>
-                    
-                    <div class="order-total" style="background-color: var(--card-bg); padding: 1rem; border-radius: 8px; margin-bottom: 1rem; text-align: right; font-size: 1.2rem; font-weight: bold;">
+                    <div class="order-total">
                         Total: $${total.toFixed(2)}
                     </div>
-                    
-                    <div class="order-actions flex">
-                        <button id="addItemFullBtn" class="btn btn-primary"><i class="fas fa-plus"></i> Agregar Item</button>
-                        <button id="closeOrderFullBtn" class="btn btn-success"><i class="fas fa-check"></i> Cerrar Orden</button>
-                        <button id="printKitchenFullBtn" class="btn btn-secondary"><i class="fas fa-print"></i> Imprimir Comanda</button>
-                    </div>
-                `;
-                
-                document.getElementById('addItemFullBtn').addEventListener('click', () => {
-                    loadTouchMenu();
-                    document.getElementById('addItemModal').classList.add('show');
-                });
-                
-                document.getElementById('closeOrderFullBtn').addEventListener('click', () => {
-                    openCloseOrderModalFull(order, total);
-                });
-                
-                document.getElementById('printKitchenFullBtn').addEventListener('click', () => {
-                    printKitchenOrder(orderId);
-                });
-            });
-        }
-
-        // Agregar item a orden
-        document.getElementById('addItemToOrderBtn').addEventListener('click', () => {
-            if (!selectedMenuItem || !currentOrderId) return;
-            
-            const quantity = parseInt(document.getElementById('itemQuantity').value);
-            const comments = document.getElementById('itemComments').value;
-            
-            let totalPrice = selectedMenuItem.price;
-            const modifiersList = selectedModifiers.map(m => {
-                totalPrice += m.price;
-                return m.name;
-            });
-            
-            const newItem = {
-                sectionId: selectedMenuItem.sectionId,
-                itemId: selectedMenuItem.itemId,
-                name: selectedMenuItem.name,
-                basePrice: selectedMenuItem.price,
-                price: totalPrice,
-                quantity,
-                modifiers: modifiersList,
-                comments
-            };
-            
-            database.ref(`orders/${currentOrderId}/items`).push(newItem).then(() => {
-                document.getElementById('addItemModal').classList.remove('show');
-                document.getElementById('selectedItemPanel').style.display = 'none';
-                selectedMenuItem = null;
-                selectedModifiers = [];
-                showToast('Éxito', 'Item agregado a la orden', 'success');
-            });
-        });
-
-        // Cerrar orden con propinas y split
-        function openCloseOrderModalFull(order, total) {
-            document.getElementById('closeOrderSummary').innerHTML = `
-                <h3>${order.tableName}</h3>
-                <p>Total: $${total.toFixed(2)}</p>
-            `;
-            
-            window.currentOrderTotal = total;
-            window.currentOrderData = order;
-            
-            // Resetear UI de split
-            splitMode = false;
-            document.getElementById('splitBillPanel').style.display = 'none';
-            
-            document.getElementById('closeOrderModal').classList.add('show');
-        }
-
-        // Manejo de propinas
-        document.querySelectorAll('.tip-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const tipPercent = parseInt(this.dataset.tip);
-                const total = window.currentOrderTotal;
-                currentTip = tipPercent > 0 ? (total * tipPercent / 100) : 0;
-                
-                // Mostrar total con propina
-                const finalTotal = total + currentTip;
-                showToast('Propina', `Propina: $${currentTip.toFixed(2)}\nTotal: $${finalTotal.toFixed(2)}`, 'info');
-            });
-        });
-
-        document.getElementById('customTip').addEventListener('input', function() {
-            currentTip = parseFloat(this.value) || 0;
-        });
-
-        // Split bill
-        document.getElementById('splitBillBtn').addEventListener('click', () => {
-            splitMode = true;
-            document.getElementById('splitBillPanel').style.display = 'block';
-            renderSplitBill();
-        });
-
-        function renderSplitBill() {
-            const numPeople = parseInt(document.getElementById('numPeople').value) || 1;
-            const order = window.currentOrderData;
-            const container = document.getElementById('splitItemsList');
-            
-            if (!order || !order.items) return;
-            
-            let itemsHtml = '';
-            let personTotals = new Array(numPeople).fill(0);
-            
-            Object.entries(order.items).forEach(([id, item]) => {
-                const itemTotal = item.price * item.quantity;
-                
-                itemsHtml += `
-                    <div class="split-bill-item">
-                        <span>${item.name} ($${itemTotal.toFixed(2)})</span>
-                        <div>
-                            <label>Persona:</label>
-                            <input type="number" min="1" max="${numPeople}" value="1" data-item-id="${id}" class="split-person" style="width: 60px;">
-                        </div>
+                    <div class="order-actions">
+                        <button class="btn btn-primary" onclick="openAddItemModal()">
+                            <i class="fas fa-plus"></i> Agregar
+                        </button>
+                        <button class="btn btn-success" onclick="openCloseOrderModal()">
+                            <i class="fas fa-check"></i> Cerrar
+                        </button>
                     </div>
                 `;
             });
-            
-            container.innerHTML = itemsHtml;
-            
-            // Actualizar totales cuando cambien las asignaciones
-            document.querySelectorAll('.split-person').forEach(input => {
-                input.addEventListener('change', updateSplitTotals);
-            });
-            
-            updateSplitTotals();
         }
 
-        function updateSplitTotals() {
-            const numPeople = parseInt(document.getElementById('numPeople').value) || 1;
-            const personTotals = new Array(numPeople).fill(0);
-            const order = window.currentOrderData;
-            
-            document.querySelectorAll('.split-person').forEach(input => {
-                const person = parseInt(input.value) - 1;
-                const itemId = input.dataset.itemId;
-                const item = order.items[itemId];
-                const itemTotal = item.price * item.quantity;
-                
-                if (person >= 0 && person < numPeople) {
-                    personTotals[person] += itemTotal;
-                }
-            });
-            
-            let totalsHtml = '<h4>Totales por persona:</h4>';
-            personTotals.forEach((total, i) => {
-                totalsHtml += `<div>Persona ${i+1}: $${total.toFixed(2)}</div>`;
-            });
-            
-            document.getElementById('splitTotals').innerHTML = totalsHtml;
-        }
-
-        // Procesar pago
-        document.getElementById('processPaymentBtn').addEventListener('click', () => {
-            const paymentMethod = document.getElementById('paymentMethod').value;
-            const finalComments = document.getElementById('finalComments').value;
-            const total = window.currentOrderTotal + currentTip;
-            
-            database.ref(`orders/${currentOrderId}`).update({
-                status: 'closed',
-                closedAt: Date.now(),
-                paymentMethod,
-                tip: currentTip,
-                finalTotal: total,
-                finalComments
-            }).then(() => {
-                // Liberar mesa
-                const tables = JSON.parse(localStorage.getItem('murritos_tables'));
-                const table = tables.find(t => t.number === window.currentOrderData.tableName);
-                if (table) {
-                    table.status = 'free';
-                    localStorage.setItem('murritos_tables', JSON.stringify(tables));
-                    renderTables(tables);
-                }
-                
-                document.getElementById('closeOrderModal').classList.remove('show');
-                showToast('Éxito', `Orden cerrada. Total: $${total.toFixed(2)}`, 'success');
-                
-                // Volver a mesas
-                document.querySelector('nav ul li[data-section="tables"]').click();
-                loadSalesData();
-                updateCharts();
-            });
-        });
-
-        // Imprimir comanda para cocina
-        function printKitchenOrder(orderId) {
-            database.ref(`orders/${orderId}`).once('value').then(snapshot => {
+        function loadOrderDetailsFull(orderId) {
+            db.ref(`orders/${orderId}`).on('value', snapshot => {
                 const order = snapshot.val();
+                if (!order) return;
                 
                 let itemsHtml = '';
+                let total = 0;
+                
                 if (order.items) {
-                    Object.values(order.items).forEach(item => {
+                    Object.entries(order.items).forEach(([id, item]) => {
+                        const itemTotal = item.price * item.quantity;
+                        total += itemTotal;
+                        
                         itemsHtml += `
-                            <tr>
-                                <td>${item.quantity}</td>
-                                <td>${item.name}</td>
-                                <td>${item.modifiers ? item.modifiers.join(', ') : ''}</td>
-                                <td>${item.comments || ''}</td>
-                            </tr>
+                            <div class="order-item" data-item-id="${id}">
+                                <div class="order-item-info">
+                                    <h4>${item.quantity}x ${item.name}</h4>
+                                    ${item.comments ? `<p>${item.comments}</p>` : ''}
+                                </div>
+                                <div class="order-item-price">$${itemTotal.toFixed(2)}</div>
+                            </div>
                         `;
                     });
                 }
                 
-                const kitchenOrder = `
-                    <!DOCTYPE html>
-                    <html>
-                    <head>
-                        <meta charset="utf-8">
-                        <title>Comanda Cocina</title>
-                        <style>
-                            body { font-family: 'Courier New', monospace; width: 80mm; padding: 5mm; }
-                            h1 { text-align: center; }
-                            table { width: 100%; border-collapse: collapse; }
-                            th, td { border-bottom: 1px dashed #000; padding: 4px 0; text-align: left; }
-                        </style>
-                    </head>
-                    <body>
-                        <h1>MURRITOS</h1>
-                        <h2>COMANDA</h2>
-                        <p>Mesa: ${order.tableName}</p>
+                document.getElementById('orderDetailsFull').innerHTML = `
+                    <div class="order-details-header">
+                        <h3>${order.tableName}</h3>
                         <p>Mesero: ${order.waiter}</p>
-                        <p>Hora: ${new Date().toLocaleTimeString()}</p>
-                        <hr>
-                        <table>
-                            <tr>
-                                <th>Cant</th>
-                                <th>Item</th>
-                                <th>Mod</th>
-                                <th>Obs</th>
-                            </tr>
-                            ${itemsHtml}
-                        </table>
-                        <hr>
-                        <p style="text-align: center;">Gracias</p>
-                    </body>
-                    </html>
+                    </div>
+                    <div class="order-items-list">
+                        ${itemsHtml || '<p>No hay items</p>'}
+                    </div>
+                    <div class="order-total">
+                        Total: $${total.toFixed(2)}
+                    </div>
+                    <div class="order-actions">
+                        <button class="btn btn-primary" onclick="openAddItemModal()">
+                            <i class="fas fa-plus"></i> Agregar
+                        </button>
+                        <button class="btn btn-success" onclick="openCloseOrderModal()">
+                            <i class="fas fa-check"></i> Cerrar
+                        </button>
+                    </div>
+                `;
+            });
+        }
+
+        window.openAddItemModal = function() {
+            loadMenuForSelection();
+            document.getElementById('addItemModal').classList.add('show');
+        };
+
+        window.openCloseOrderModal = function() {
+            db.ref(`orders/${state.currentOrderId}`).once('value', snapshot => {
+                const order = snapshot.val();
+                let total = 0;
+                
+                if (order.items) {
+                    Object.values(order.items).forEach(item => {
+                        total += item.price * item.quantity;
+                    });
+                }
+                
+                document.getElementById('closeOrderSummary').innerHTML = `
+                    <h3>${order.tableName}</h3>
+                    <p style="font-size: 1.5rem; font-weight: 700; color: var(--primary); margin-top: 1rem;">
+                        Total: $${total.toFixed(2)}
+                    </p>
                 `;
                 
-                const ventana = window.open('', '_blank', 'width=300,height=600');
-                ventana.document.write(kitchenOrder);
-                ventana.document.close();
-                ventana.print();
+                window.currentOrderTotal = total;
+                document.getElementById('closeOrderModal').classList.add('show');
+            });
+        };
+
+        // ========== MENÚ TÁCTIL ==========
+        function loadMenuForSelection() {
+            if (state.menuCache) {
+                renderMenuGrid(state.menuCache);
+                return;
+            }
+            
+            db.ref('menuSections').once('value', snapshot => {
+                state.menuCache = snapshot.val() || {};
+                renderMenuGrid(state.menuCache);
                 
-                showToast('Comanda', 'Comanda enviada a impresión', 'success');
+                // Llenar filtro
+                const filter = document.getElementById('menuSectionFilter');
+                filter.innerHTML = '<option value="">Todas las secciones</option>';
+                Object.entries(state.menuCache).forEach(([id, section]) => {
+                    filter.innerHTML += `<option value="${id}">${section.name}</option>`;
+                });
             });
         }
 
-        // Dashboard y gráficas
-        function initCharts() {
-            const salesCtx = document.getElementById('salesChart').getContext('2d');
-            const productsCtx = document.getElementById('productsChart').getContext('2d');
+        function renderMenuGrid(sections) {
+            const grid = document.getElementById('menuGrid');
+            grid.innerHTML = '';
             
-            salesChart = new Chart(salesCtx, {
-                type: 'line',
-                data: {
-                    labels: ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'],
-                    datasets: [{
-                        label: 'Ventas',
-                        data: [0, 0, 0, 0, 0, 0, 0],
-                        borderColor: '#e63946',
-                        backgroundColor: 'rgba(230, 57, 70, 0.1)',
-                        tension: 0.4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false
+            const filter = document.getElementById('menuSectionFilter').value;
+            
+            Object.entries(sections).forEach(([sectionId, section]) => {
+                if (filter && filter !== sectionId) return;
+                
+                if (section.items) {
+                    Object.entries(section.items).forEach(([itemId, item]) => {
+                        const card = document.createElement('div');
+                        card.className = 'menu-item-card';
+                        card.dataset.sectionId = sectionId;
+                        card.dataset.itemId = itemId;
+                        
+                        card.innerHTML = `
+                            <div class="menu-item-name">${item.name}</div>
+                            <div class="menu-item-price">$${item.price.toFixed(2)}</div>
+                        `;
+                        
+                        card.addEventListener('click', () => {
+                            document.querySelectorAll('.menu-item-card').forEach(c => c.classList.remove('selected'));
+                            card.classList.add('selected');
+                            
+                            state.selectedMenuItem = {
+                                sectionId,
+                                itemId,
+                                name: item.name,
+                                price: item.price
+                            };
+                            
+                            document.getElementById('itemConfigPanel').style.display = 'block';
+                        });
+                        
+                        grid.appendChild(card);
+                    });
                 }
             });
+        }
+
+        document.getElementById('menuSectionFilter').addEventListener('change', () => {
+            renderMenuGrid(state.menuCache);
+        });
+
+        document.getElementById('addItemToOrderBtn').addEventListener('click', () => {
+            if (!state.selectedMenuItem || !state.currentOrderId) return;
             
-            productsChart = new Chart(productsCtx, {
-                type: 'doughnut',
-                data: {
-                    labels: [],
-                    datasets: [{
-                        data: [],
-                        backgroundColor: ['#e63946', '#1d3557', '#28a745', '#ffc107', '#6c757d']
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false
-                }
-            });
-        }
-
-        function updateCharts() {
-            database.ref('orders').orderByChild('status').equalTo('closed').once('value').then(snapshot => {
-                const orders = snapshot.val() || {};
-                
-                // Ventas por día
-                const daySales = [0, 0, 0, 0, 0, 0, 0];
-                const productCount = {};
-                
-                Object.values(orders).forEach(order => {
-                    if (order.closedAt) {
-                        const date = new Date(order.closedAt);
-                        const day = date.getDay(); // 0 = Domingo, 1 = Lunes...
-                        // Ajustar para que Lunes sea índice 0
-                        const adjustedDay = day === 0 ? 6 : day - 1;
-                        
-                        if (order.finalTotal) {
-                            daySales[adjustedDay] += order.finalTotal;
-                        }
-                        
-                        // Contar productos
-                        if (order.items) {
-                            Object.values(order.items).forEach(item => {
-                                const key = item.name;
-                                productCount[key] = (productCount[key] || 0) + item.quantity;
-                            });
-                        }
-                    }
-                });
-                
-                // Actualizar gráfico de ventas
-                salesChart.data.datasets[0].data = daySales;
-                salesChart.update();
-                
-                // Top 5 productos
-                const topProducts = Object.entries(productCount)
-                    .sort((a, b) => b[1] - a[1])
-                    .slice(0, 5);
-                
-                productsChart.data.labels = topProducts.map(p => p[0]);
-                productsChart.data.datasets[0].data = topProducts.map(p => p[1]);
-                productsChart.update();
-            });
-        }
-
-        // Exportar a Excel
-        document.getElementById('exportExcelBtn').addEventListener('click', () => {
-            database.ref('orders').orderByChild('status').equalTo('closed').once('value').then(snapshot => {
-                const orders = snapshot.val() || {};
-                
-                const data = [];
-                data.push(['Fecha', 'Mesa', 'Mesero', 'Items', 'Subtotal', 'Propina', 'Total', 'Método Pago']);
-                
-                Object.values(orders).forEach(order => {
-                    if (order.closedAt) {
-                        let subtotal = 0;
-                        let itemCount = 0;
-                        
-                        if (order.items) {
-                            Object.values(order.items).forEach(item => {
-                                subtotal += item.price * item.quantity;
-                                itemCount += item.quantity;
-                            });
-                        }
-                        
-                        data.push([
-                            new Date(order.closedAt).toLocaleString(),
-                            order.tableName,
-                            order.waiter || 'N/A',
-                            itemCount,
-                            subtotal.toFixed(2),
-                            (order.tip || 0).toFixed(2),
-                            (order.finalTotal || subtotal).toFixed(2),
-                            order.paymentMethod || 'N/A'
-                        ]);
-                    }
-                });
-                
-                const wb = XLSX.utils.book_new();
-                const ws = XLSX.utils.aoa_to_sheet(data);
-                XLSX.utils.book_append_sheet(wb, ws, 'Ventas');
-                XLSX.writeFile(wb, `ventas_${new Date().toISOString().split('T')[0]}.xlsx`);
-                
-                showToast('Éxito', 'Archivo Excel generado', 'success');
+            const quantity = parseInt(document.getElementById('itemQuantity').value);
+            const comments = document.getElementById('itemComments').value;
+            
+            const newItem = {
+                ...state.selectedMenuItem,
+                quantity,
+                comments,
+                price: state.selectedMenuItem.price // Mantener precio base
+            };
+            
+            db.ref(`orders/${state.currentOrderId}/items`).push(newItem).then(() => {
+                document.getElementById('addItemModal').classList.remove('show');
+                document.getElementById('itemConfigPanel').style.display = 'none';
+                state.selectedMenuItem = null;
+                showToast('Éxito', 'Item agregado', 'success');
             });
         });
 
-        // Cargar datos de ventas
-        function loadSalesData() {
-            const tbody = document.getElementById('salesList');
+        document.getElementById('cancelItemBtn').addEventListener('click', () => {
+            document.getElementById('itemConfigPanel').style.display = 'none';
+            state.selectedMenuItem = null;
+        });
+
+        // ========== PROPI NAS ==========
+        document.querySelectorAll('.tip-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const percent = parseInt(this.dataset.tip);
+                const total = window.currentOrderTotal;
+                state.currentTip = percent > 0 ? (total * percent / 100) : 0;
+                showToast('Propina', `$${state.currentTip.toFixed(2)}`, 'info');
+            });
+        });
+
+        document.getElementById('customTip').addEventListener('input', function() {
+            state.currentTip = parseFloat(this.value) || 0;
+        });
+
+        // ========== PAGO ==========
+        document.getElementById('processPaymentBtn').addEventListener('click', () => {
+            const paymentMethod = document.getElementById('paymentMethod').value;
+            const comments = document.getElementById('finalComments').value;
+            const total = window.currentOrderTotal + state.currentTip;
             
-            database.ref('orders').orderByChild('status').equalTo('closed').once('value').then(snapshot => {
+            db.ref(`orders/${state.currentOrderId}`).update({
+                status: 'closed',
+                closedAt: Date.now(),
+                paymentMethod,
+                tip: state.currentTip,
+                finalTotal: total,
+                finalComments: comments
+            }).then(() => {
+                // Liberar mesa
+                db.ref(`orders/${state.currentOrderId}`).once('value', snapshot => {
+                    const order = snapshot.val();
+                    const tableIndex = state.tables.findIndex(t => t.number === order.tableName);
+                    if (tableIndex !== -1) {
+                        state.tables[tableIndex].status = 'free';
+                        localStorage.setItem('murritos_tables', JSON.stringify(state.tables));
+                        renderTables();
+                    }
+                });
+                
+                document.getElementById('closeOrderModal').classList.remove('show');
+                showToast('Éxito', `Pago procesado: $${total.toFixed(2)}`, 'success');
+                
+                // Volver a mesas
+                document.querySelector('nav ul li[data-section="tables"]').click();
+                loadSalesData();
+            });
+        });
+
+        // ========== COCINA ==========
+        function loadKitchenOrders(filter) {
+            db.ref('orders').orderByChild('status').equalTo('active').once('value', snapshot => {
+                const orders = snapshot.val();
+                const grid = document.getElementById('kitchenOrders');
+                grid.innerHTML = '';
+                
+                if (!orders) {
+                    grid.innerHTML = '<p class="empty-state">No hay órdenes</p>';
+                    return;
+                }
+                
+                Object.entries(orders).forEach(([id, order]) => {
+                    const status = order.preparationStatus || 'pending';
+                    if (filter !== 'all' && status !== filter) return;
+                    
+                    let itemsHtml = '';
+                    if (order.items) {
+                        Object.values(order.items).forEach(item => {
+                            itemsHtml += `
+                                <div class="kitchen-item">
+                                    <span class="kitchen-item-quantity">${item.quantity}x</span>
+                                    ${item.name}
+                                    ${item.comments ? `<br><small>${item.comments}</small>` : ''}
+                                </div>
+                            `;
+                        });
+                    }
+                    
+                    const card = document.createElement('div');
+                    card.className = `kitchen-card ${status}`;
+                    card.innerHTML = `
+                        <div class="kitchen-header">
+                            <h3>${order.tableName}</h3>
+                            <span class="kitchen-time">${formatTimeAgo(order.createdAt)}</span>
+                        </div>
+                        <div class="kitchen-items">
+                            ${itemsHtml}
+                        </div>
+                        <button class="btn btn-secondary" style="margin-top: 1rem; width: 100%;" 
+                                onclick="updateOrderStatus('${id}', '${status}')">
+                            ${status === 'pending' ? 'Iniciar Preparación' :
+                              status === 'preparation' ? 'Marcar Listo' :
+                              'Completado'}
+                        </button>
+                    `;
+                    
+                    grid.appendChild(card);
+                });
+            });
+        }
+
+        window.updateOrderStatus = function(orderId, currentStatus) {
+            let newStatus;
+            if (currentStatus === 'pending') newStatus = 'preparation';
+            else if (currentStatus === 'preparation') newStatus = 'ready';
+            else return;
+            
+            db.ref(`orders/${orderId}`).update({ preparationStatus: newStatus }).then(() => {
+                const activeFilter = document.querySelector('.kitchen-filter.active').dataset.filter;
+                loadKitchenOrders(activeFilter);
+            });
+        };
+
+        document.querySelectorAll('.kitchen-filter').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.kitchen-filter').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                loadKitchenOrders(this.dataset.filter);
+            });
+        });
+
+        // ========== VENTAS ==========
+        function loadSalesData() {
+            db.ref('orders').orderByChild('status').equalTo('closed').once('value', snapshot => {
                 const orders = snapshot.val() || {};
+                const tbody = document.getElementById('salesTable');
                 tbody.innerHTML = '';
                 
-                const waiterFilter = document.getElementById('salesFilterWaiter').value;
-                const paymentFilter = document.getElementById('salesFilterPayment').value;
-                const dateFrom = document.getElementById('salesDateFrom').value;
-                const dateTo = document.getElementById('salesDateTo').value;
-                
+                let totalSales = 0;
+                let totalOrders = 0;
                 const waiters = new Set();
+                
+                // Aplicar filtros
+                const waiterFilter = document.getElementById('filterWaiter').value;
+                const paymentFilter = document.getElementById('filterPayment').value;
+                const dateFrom = document.getElementById('filterDateFrom').value;
+                const dateTo = document.getElementById('filterDateTo').value;
                 
                 Object.entries(orders).forEach(([id, order]) => {
                     if (order.waiter) waiters.add(order.waiter);
                     
-                    // Aplicar filtros
+                    // Filtros
                     if (waiterFilter !== 'all' && order.waiter !== waiterFilter) return;
                     if (paymentFilter !== 'all' && order.paymentMethod !== paymentFilter) return;
                     
@@ -1708,6 +1649,85 @@
                         if (orderDate > dateTo) return;
                     }
                     
+                    let itemCount = order.items ? Object.keys(order.items).length : 0;
+                    const total = order.finalTotal || 0;
+                    
+                    totalSales += total;
+                    totalOrders++;
+                    
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>${formatDate(order.closedAt)}</td>
+                            <td>${order.tableName}</td>
+                            <td>${order.waiter || 'N/A'}</td>
+                            <td>${itemCount}</td>
+                            <td>$${total.toFixed(2)}</td>
+                            <td>${order.paymentMethod === 'cash' ? 'Efectivo' : 'Tarjeta'}</td>
+                            <td>
+                                <button class="btn btn-secondary btn-sm" onclick="viewOrder('${id}')">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                });
+                
+                // Actualizar resumen
+                document.getElementById('totalSales').textContent = `$${totalSales.toFixed(2)}`;
+                document.getElementById('totalOrders').textContent = totalOrders;
+                document.getElementById('averageOrder').textContent = `$${(totalSales / totalOrders || 0).toFixed(2)}`;
+                
+                // Actualizar filtro de meseros
+                const waiterSelect = document.getElementById('filterWaiter');
+                const currentWaiter = waiterSelect.value;
+                waiterSelect.innerHTML = '<option value="all">Todos los meseros</option>';
+                Array.from(waiters).sort().forEach(w => {
+                    waiterSelect.innerHTML += `<option value="${w}">${w}</option>`;
+                });
+                waiterSelect.value = currentWaiter;
+            });
+        }
+
+        window.viewOrder = function(orderId) {
+            db.ref(`orders/${orderId}`).once('value', snapshot => {
+                const order = snapshot.val();
+                let itemsHtml = '';
+                let total = 0;
+                
+                if (order.items) {
+                    Object.values(order.items).forEach(item => {
+                        total += item.price * item.quantity;
+                        itemsHtml += `
+                            <div class="order-item">
+                                <div>${item.quantity}x ${item.name}</div>
+                                <div>$${(item.price * item.quantity).toFixed(2)}</div>
+                            </div>
+                        `;
+                    });
+                }
+                
+                showToast(
+                    'Detalle de Orden',
+                    `Mesa: ${order.tableName}\nTotal: $${total.toFixed(2)}\nPago: ${order.paymentMethod}`,
+                    'info'
+                );
+            });
+        };
+
+        // ========== FILTROS VENTAS ==========
+        document.getElementById('filterWaiter').addEventListener('change', loadSalesData);
+        document.getElementById('filterPayment').addEventListener('change', loadSalesData);
+        document.getElementById('filterDateFrom').addEventListener('change', loadSalesData);
+        document.getElementById('filterDateTo').addEventListener('change', loadSalesData);
+
+        // ========== EXPORTAR EXCEL ==========
+        document.getElementById('exportExcelBtn').addEventListener('click', () => {
+            db.ref('orders').orderByChild('status').equalTo('closed').once('value', snapshot => {
+                const orders = snapshot.val() || {};
+                
+                let csv = 'Fecha,Mesa,Mesero,Items,Subtotal,Propina,Total,Pago\n';
+                
+                Object.values(orders).forEach(order => {
                     let subtotal = 0;
                     let itemCount = 0;
                     
@@ -1720,215 +1740,30 @@
                     
                     const total = order.finalTotal || subtotal;
                     
-                    tbody.innerHTML += `
-                        <tr>
-                            <td>${new Date(order.closedAt).toLocaleString()}</td>
-                            <td>${order.tableName}</td>
-                            <td>${order.waiter || 'N/A'}</td>
-                            <td>${itemCount}</td>
-                            <td>$${subtotal.toFixed(2)}</td>
-                            <td>$${(order.tip || 0).toFixed(2)}</td>
-                            <td><strong>$${total.toFixed(2)}</strong></td>
-                            <td>${order.paymentMethod || 'N/A'}</td>
-                            <td>
-                                <button class="btn btn-secondary btn-sm view-order" data-order-id="${id}">
-                                    <i class="fas fa-eye"></i>
-                                </button>
-                            </td>
-                        </tr>
-                    `;
+                    csv += `${new Date(order.closedAt).toLocaleString()},` +
+                           `${order.tableName},` +
+                           `${order.waiter || 'N/A'},` +
+                           `${itemCount},` +
+                           `${subtotal.toFixed(2)},` +
+                           `${(order.tip || 0).toFixed(2)},` +
+                           `${total.toFixed(2)},` +
+                           `${order.paymentMethod || 'N/A'}\n`;
                 });
                 
-                // Llenar filtro de meseros
-                const waiterSelect = document.getElementById('salesFilterWaiter');
-                const currentValue = waiterSelect.value;
-                waiterSelect.innerHTML = '<option value="all">Todos los meseros</option>';
-                Array.from(waiters).sort().forEach(w => {
-                    waiterSelect.innerHTML += `<option value="${w}">${w}</option>`;
-                });
-                waiterSelect.value = currentValue;
-            });
-        }
-
-        // Inicialización
-        document.addEventListener('DOMContentLoaded', function() {
-            // Verificar admin
-            if (localStorage.getItem('murritos_admin') === 'true') {
-                isAdmin = true;
-                document.getElementById('menuTab').style.display = 'flex';
-            } else {
-                document.getElementById('adminLogin').classList.add('show');
-                document.getElementById('menuTab').style.display = 'none';
-            }
-            
-            // Inicializar componentes
-            initTheme();
-            initTables();
-            initCharts();
-            
-            // Configurar navegación
-            document.querySelectorAll('nav ul li').forEach(item => {
-                item.addEventListener('click', function() {
-                    document.querySelectorAll('nav ul li').forEach(li => li.classList.remove('active'));
-                    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-                    
-                    this.classList.add('active');
-                    document.getElementById(this.dataset.section).classList.add('active');
-                    
-                    if (this.dataset.section === 'kitchen') {
-                        loadKitchenOrders('pending');
-                    } else if (this.dataset.section === 'sales') {
-                        loadSalesData();
-                        updateCharts();
-                    }
-                });
-            });
-            
-            // Back to tables
-            document.getElementById('backToTablesBtn').addEventListener('click', () => {
-                document.querySelector('nav ul li[data-section="tables"]').click();
-            });
-            
-            // Filtro de sección en menú táctil
-            document.getElementById('itemSectionSelect').addEventListener('change', () => {
-                renderTouchMenu(menuCache);
-            });
-            
-            // Cancelar selección de item
-            document.getElementById('cancelItemSelectionBtn').addEventListener('click', () => {
-                document.getElementById('selectedItemPanel').style.display = 'none';
-                selectedMenuItem = null;
-                selectedModifiers = [];
-            });
-            
-            // Cerrar modales
-            document.querySelectorAll('.close').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    this.closest('.modal').classList.remove('show');
-                });
-            });
-            
-            // Rol de usuario
-            document.getElementById('userRole').addEventListener('change', function() {
-                currentUserRole = this.value;
-                if (currentUserRole === 'kitchen') {
-                    document.querySelector('nav ul li[data-section="kitchen"]').click();
-                }
-            });
-            
-            // Filtros de cocina
-            document.querySelectorAll('[data-kitchen-filter]').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    document.querySelectorAll('[data-kitchen-filter]').forEach(b => b.classList.remove('active'));
-                    this.classList.add('active');
-                    loadKitchenOrders(this.dataset.kitchenFilter);
-                });
-            });
-            
-            // Filtros de ventas
-            document.getElementById('salesFilterWaiter').addEventListener('change', loadSalesData);
-            document.getElementById('salesFilterPayment').addEventListener('change', loadSalesData);
-            document.getElementById('salesDateFrom').addEventListener('change', loadSalesData);
-            document.getElementById('salesDateTo').addEventListener('change', loadSalesData);
-            
-            // Número de personas en split
-            document.getElementById('numPeople').addEventListener('input', renderSplitBill);
-            
-            // Imprimir comanda
-            document.getElementById('printKitchenOrderBtn').addEventListener('click', () => {
-                printKitchenOrder(currentOrderId);
+                const blob = new Blob([csv], { type: 'text/csv' });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `ventas_${new Date().toISOString().split('T')[0]}.csv`;
+                a.click();
+                
+                showToast('Éxito', 'Archivo exportado', 'success');
             });
         });
 
-        // Funciones existentes (mantener las que ya tenías)
-        function checkAdminPassword() {
-            const password = document.getElementById('adminPassword').value;
-            if (password === 'Tonrry13') {
-                isAdmin = true;
-                localStorage.setItem('murritos_admin', 'true');
-                document.getElementById('adminLogin').classList.remove('show');
-                document.getElementById('userType').textContent = 'Administrador';
-                document.getElementById('menuTab').style.display = 'flex';
-                loadMenuSections();
-            } else {
-                alert('Contraseña incorrecta');
-            }
-        }
-
-        function loadKitchenOrders(filter) {
-            // Mantener la implementación original
-            const kitchenOrders = document.getElementById('kitchenOrders');
-            kitchenOrders.innerHTML = '<p>Cargando...</p>';
-            
-            database.ref('orders').orderByChild('status').equalTo('active').once('value').then(snapshot => {
-                const orders = snapshot.val();
-                kitchenOrders.innerHTML = '';
-                
-                if (orders) {
-                    Object.entries(orders).forEach(([id, order]) => {
-                        if (filter === 'all' || order.preparationStatus === filter || 
-                            (filter === 'pending' && !order.preparationStatus)) {
-                            
-                            kitchenOrders.innerHTML += `
-                                <div class="kitchen-card ${order.preparationStatus || 'pending'}">
-                                    <div class="order-header">
-                                        <h3>${order.tableName}</h3>
-                                        <span class="time-ago">${formatTimeAgo(order.createdAt)}</span>
-                                    </div>
-                                    <div class="order-items">
-                                        ${renderKitchenItems(order.items)}
-                                    </div>
-                                    <div class="order-actions">
-                                        <button class="btn-status ${order.preparationStatus || 'pending'}" 
-                                            onclick="updatePreparationStatus('${id}', '${order.preparationStatus || 'pending'}')">
-                                            ${order.preparationStatus === 'ready' ? 'Listo' : 
-                                              order.preparationStatus === 'preparation' ? 'En Preparación' : 'Marcar como En Preparación'}
-                                        </button>
-                                    </div>
-                                </div>
-                            `;
-                        }
-                    });
-                }
-            });
-        }
-
-        function updatePreparationStatus(orderId, currentStatus) {
-            let newStatus;
-            if (currentStatus === 'pending') newStatus = 'preparation';
-            else if (currentStatus === 'preparation') newStatus = 'ready';
-            else return;
-            
-            database.ref(`orders/${orderId}`).update({ preparationStatus: newStatus })
-                .then(() => loadKitchenOrders(document.querySelector('[data-kitchen-filter].active').dataset.kitchenFilter));
-        }
-
-        function renderKitchenItems(items) {
-            if (!items) return '<p>No hay items</p>';
-            
-            let html = '';
-            Object.values(items).forEach(item => {
-                html += `
-                    <div class="kitchen-item">
-                        <span class="item-quantity">${item.quantity}x</span>
-                        <span class="item-name">${item.name}</span>
-                        ${item.comments ? `<span class="item-comments">${item.comments}</span>` : ''}
-                    </div>
-                `;
-            });
-            return html;
-        }
-
-        function formatTimeAgo(timestamp) {
-            const seconds = Math.floor((Date.now() - timestamp) / 1000);
-            if (seconds < 60) return 'Ahora';
-            if (seconds < 3600) return `${Math.floor(seconds/60)} min`;
-            return `${Math.floor(seconds/3600)} h`;
-        }
-
-        // Funciones de menú (simplificadas)
+        // ========== MENÚ ADMIN ==========
         function loadMenuSections() {
-            database.ref('menuSections').on('value', snapshot => {
+            db.ref('menuSections').on('value', snapshot => {
                 const sections = snapshot.val() || {};
                 renderMenuSections(sections);
             });
@@ -1939,56 +1774,92 @@
             container.innerHTML = '';
             
             Object.entries(sections).forEach(([id, section]) => {
-                container.innerHTML += `
-                    <div class="menu-section" data-section-id="${id}">
-                        <div class="section-header">
-                            <h3>${section.name}</h3>
-                            <div class="section-actions">
-                                <button class="btn btn-primary btn-sm add-item" data-section="${id}">
-                                    <i class="fas fa-plus"></i> Item
-                                </button>
-                                <button class="btn btn-secondary btn-sm edit-section" data-section="${id}">
+                const div = document.createElement('div');
+                div.className = 'menu-section';
+                div.innerHTML = `
+                    <div style="background: var(--white); padding: 1rem; border-radius: 0.5rem; margin-bottom: 1rem;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                            <h3 style="font-size: 1.125rem;">${section.name}</h3>
+                            <div>
+                                <button class="btn btn-secondary btn-sm" onclick="editSection('${id}')">
                                     <i class="fas fa-edit"></i>
                                 </button>
-                                <button class="btn btn-secondary btn-sm delete-section" data-section="${id}">
+                                <button class="btn btn-secondary btn-sm" onclick="deleteSection('${id}')">
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </div>
                         </div>
-                        <div class="menu-items">
+                        <div class="menu-grid">
                             ${section.items ? Object.entries(section.items).map(([itemId, item]) => `
-                                <div class="menu-item" data-item-id="${itemId}">
-                                    <h4>${item.name}</h4>
-                                    <p>$${item.price.toFixed(2)}</p>
-                                    <div class="item-actions">
-                                        <button class="btn btn-secondary btn-sm edit-item" data-item="${itemId}">
+                                <div class="menu-item-card" style="cursor: default;">
+                                    <div class="menu-item-name">${item.name}</div>
+                                    <div class="menu-item-price">$${item.price.toFixed(2)}</div>
+                                    <div style="margin-top: 0.5rem;">
+                                        <button class="btn btn-secondary btn-sm" onclick="editItem('${id}', '${itemId}')">
                                             <i class="fas fa-edit"></i>
                                         </button>
-                                        <button class="btn btn-secondary btn-sm delete-item" data-item="${itemId}">
+                                        <button class="btn btn-secondary btn-sm" onclick="deleteItem('${id}', '${itemId}')">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </div>
                                 </div>
                             `).join('') : '<p>No hay items</p>'}
                         </div>
+                        <button class="btn btn-primary btn-sm" style="margin-top: 1rem;" onclick="addItem('${id}')">
+                            <i class="fas fa-plus"></i> Agregar Item
+                        </button>
                     </div>
                 `;
-            });
-            
-            // Agregar event listeners (simplificado)
-            document.querySelectorAll('.add-item').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    currentSectionId = btn.dataset.section;
-                    document.getElementById('itemModalTitle').textContent = 'Nuevo Item';
-                    document.getElementById('itemName').value = '';
-                    document.getElementById('itemPrice').value = '';
-                    document.getElementById('itemModal').classList.add('show');
-                });
+                container.appendChild(div);
             });
         }
 
+        window.addItem = function(sectionId) {
+            state.currentSectionId = sectionId;
+            state.currentItemId = null;
+            document.getElementById('itemModalTitle').textContent = 'Nuevo Item';
+            document.getElementById('itemName').value = '';
+            document.getElementById('itemPrice').value = '';
+            document.getElementById('itemModal').classList.add('show');
+        };
+
+        window.editItem = function(sectionId, itemId) {
+            state.currentSectionId = sectionId;
+            state.currentItemId = itemId;
+            
+            db.ref(`menuSections/${sectionId}/items/${itemId}`).once('value', snapshot => {
+                const item = snapshot.val();
+                document.getElementById('itemModalTitle').textContent = 'Editar Item';
+                document.getElementById('itemName').value = item.name;
+                document.getElementById('itemPrice').value = item.price;
+                document.getElementById('itemModal').classList.add('show');
+            });
+        };
+
+        window.deleteItem = function(sectionId, itemId) {
+            if (confirm('¿Eliminar item?')) {
+                db.ref(`menuSections/${sectionId}/items/${itemId}`).remove();
+            }
+        };
+
+        window.editSection = function(sectionId) {
+            state.currentSectionId = sectionId;
+            db.ref(`menuSections/${sectionId}`).once('value', snapshot => {
+                const section = snapshot.val();
+                document.getElementById('sectionModalTitle').textContent = 'Editar Sección';
+                document.getElementById('sectionName').value = section.name;
+                document.getElementById('sectionModal').classList.add('show');
+            });
+        };
+
+        window.deleteSection = function(sectionId) {
+            if (confirm('¿Eliminar sección y todos sus items?')) {
+                db.ref(`menuSections/${sectionId}`).remove();
+            }
+        };
+
         document.getElementById('addSectionBtn').addEventListener('click', () => {
-            currentSectionId = null;
+            state.currentSectionId = null;
             document.getElementById('sectionModalTitle').textContent = 'Nueva Sección';
             document.getElementById('sectionName').value = '';
             document.getElementById('sectionModal').classList.add('show');
@@ -1998,10 +1869,10 @@
             const name = document.getElementById('sectionName').value;
             if (!name) return;
             
-            if (currentSectionId) {
-                database.ref(`menuSections/${currentSectionId}`).update({ name });
+            if (state.currentSectionId) {
+                db.ref(`menuSections/${state.currentSectionId}`).update({ name });
             } else {
-                database.ref('menuSections').push({ name, items: {} });
+                db.ref('menuSections').push({ name, items: {} });
             }
             
             document.getElementById('sectionModal').classList.remove('show');
@@ -2011,15 +1882,39 @@
             const name = document.getElementById('itemName').value;
             const price = parseFloat(document.getElementById('itemPrice').value);
             
-            if (!name || isNaN(price) || !currentSectionId) return;
+            if (!name || isNaN(price)) return;
             
-            if (currentItemId) {
-                database.ref(`menuSections/${currentSectionId}/items/${currentItemId}`).update({ name, price });
+            if (state.currentItemId) {
+                db.ref(`menuSections/${state.currentSectionId}/items/${state.currentItemId}`)
+                  .update({ name, price });
             } else {
-                database.ref(`menuSections/${currentSectionId}/items`).push({ name, price });
+                db.ref(`menuSections/${state.currentSectionId}/items`).push({ name, price });
             }
             
             document.getElementById('itemModal').classList.remove('show');
+        });
+
+        // ========== CERRAR MODALES ==========
+        document.querySelectorAll('.close').forEach(btn => {
+            btn.addEventListener('click', function() {
+                this.closest('.modal').classList.remove('show');
+            });
+        });
+
+        window.addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal')) {
+                e.target.classList.remove('show');
+            }
+        });
+
+        // ========== INICIALIZACIÓN ==========
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!state.isAdmin) {
+                document.getElementById('adminLogin').classList.add('show');
+            }
+            
+            loadTables();
+            loadActiveOrders();
         });
     </script>
 </body>
