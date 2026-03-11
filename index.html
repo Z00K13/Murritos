@@ -3,20 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TaskFlow - Gestor de Tareas</title>
+    <title>ATR TaskFlow - Gestor de Tareas</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
-    
     <style>
         :root {
-            --primary: #4361ee;
-            --primary-light: #4895ef;
-            --secondary: #3f37c9;
+            --primary: #2563eb;
+            --primary-light: #3b82f6;
+            --secondary: #1d4ed8;
             --success: #4cc9f0;
             --danger: #f72585;
             --warning: #f8961e;
@@ -55,7 +49,6 @@
             padding: 20px;
         }
         
-        /* Pantalla de selección de usuario */
         .login-screen {
             display: flex;
             justify-content: center;
@@ -221,7 +214,6 @@
             justify-content: flex-end;
         }
         
-        /* Estilos existentes de la aplicación */
         header {
             display: flex;
             justify-content: space-between;
@@ -395,7 +387,7 @@
         .form-control:focus {
             outline: none;
             border-color: var(--primary-light);
-            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
             background-color: white;
         }
         
@@ -432,26 +424,6 @@
             box-shadow: var(--shadow-md);
         }
         
-        .btn-danger {
-            background-color: var(--danger);
-            color: white;
-        }
-        
-        .btn-danger:hover {
-            opacity: 0.9;
-            box-shadow: var(--shadow-md);
-        }
-        
-        .btn-warning {
-            background-color: var(--warning);
-            color: white;
-        }
-        
-        .btn-warning:hover {
-            opacity: 0.9;
-            box-shadow: var(--shadow-md);
-        }
-        
         .btn-sm {
             padding: 8px 15px;
             font-size: 14px;
@@ -473,7 +445,6 @@
             display: flex;
             align-items: center;
             gap: 15px;
-            position: relative;
         }
         
         .user-card:hover {
@@ -521,18 +492,6 @@
         .role-housekeeping {
             background-color: #e8f5e9;
             color: #388e3c;
-        }
-        
-        .user-actions {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            display: flex;
-            gap: 5px;
-        }
-        
-        .user-card.admin-user {
-            border: 2px solid var(--primary);
         }
         
         .task-list {
@@ -713,274 +672,44 @@
             display: inline-block;
         }
         
-        /* Estilos para el sistema de fotos */
-        .photo-section {
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 1px dashed var(--light-gray);
-        }
-        
-        .photo-upload-area {
-            border: 2px dashed var(--light-gray);
-            border-radius: var(--radius-sm);
-            padding: 20px;
-            text-align: center;
-            margin-bottom: 15px;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-        
-        .photo-upload-area:hover {
-            border-color: var(--primary);
-            background-color: rgba(67, 97, 238, 0.05);
-        }
-        
-        .photo-upload-area i {
-            font-size: 40px;
-            color: var(--gray);
-            margin-bottom: 10px;
-        }
-        
-        .photo-preview {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-            gap: 10px;
-            margin-top: 15px;
-        }
-        
-        .photo-item {
-            position: relative;
-            border-radius: var(--radius-sm);
-            overflow: hidden;
-            aspect-ratio: 1;
-        }
-        
-        .photo-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        
-        .photo-remove {
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            background: rgba(247, 37, 133, 0.8);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 24px;
-            height: 24px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-        }
-        
-        .photos-display {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-            gap: 10px;
-            margin-top: 10px;
-        }
-        
-        .photo-thumbnail {
-            border-radius: var(--radius-sm);
-            overflow: hidden;
-            aspect-ratio: 1;
-            cursor: pointer;
-            position: relative;
-        }
-        
-        .photo-thumbnail img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: var(--transition);
-        }
-        
-        .photo-thumbnail:hover img {
-            transform: scale(1.05);
-        }
-        
-        .photo-download {
-            position: absolute;
-            bottom: 5px;
-            right: 5px;
-            background: rgba(67, 97, 238, 0.8);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 24px;
-            height: 24px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-        }
-        
-        .photo-modal {
-            display: none;
+        .notification {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.9);
-            z-index: 2000;
-            justify-content: center;
-            align-items: center;
-        }
-        
-        .photo-modal-content {
-            max-width: 90%;
-            max-height: 90%;
-            position: relative;
-        }
-        
-        .photo-modal-content img {
-            max-width: 100%;
-            max-height: 100%;
-            border-radius: var(--radius-sm);
-        }
-        
-        .photo-modal-close {
-            position: absolute;
-            top: -40px;
-            right: 0;
-            background: none;
-            border: none;
-            color: white;
-            font-size: 30px;
-            cursor: pointer;
-        }
-        
-        /* Estilos para el sistema de inventario */
-        .inventory-tabs {
-            display: flex;
-            margin-bottom: 20px;
-            background-color: white;
-            border-radius: var(--radius-md);
-            box-shadow: var(--shadow-sm);
-            overflow: hidden;
-        }
-        
-        .inventory-tab {
+            top: 20px;
+            right: 20px;
             padding: 15px 20px;
-            cursor: pointer;
-            flex: 1;
-            text-align: center;
-            transition: var(--transition);
-            font-weight: 500;
-            color: var(--gray);
-            border-bottom: 3px solid transparent;
+            border-radius: var(--radius-sm);
+            background-color: white;
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transform: translateX(150%);
+            transition: transform 0.3s ease;
+            z-index: 1000;
         }
         
-        .inventory-tab:hover {
-            color: var(--primary);
+        .notification.show {
+            transform: translateX(0);
         }
         
-        .inventory-tab.active {
-            color: var(--primary);
-            font-weight: 600;
-            border-bottom-color: var(--primary);
+        .notification.success {
+            border-left: 4px solid var(--success);
         }
         
-        .inventory-content {
-            display: none;
+        .notification.error {
+            border-left: 4px solid var(--danger);
         }
         
-        .inventory-content.active {
-            display: block;
+        .notification i {
+            font-size: 20px;
         }
         
-        .category-badge {
-            display: inline-block;
-            padding: 4px 10px;
-            border-radius: 50px;
-            font-size: 12px;
-            font-weight: 500;
-            margin-right: 5px;
-        }
-        
-        .stock-low {
-            color: var(--danger);
-            font-weight: 600;
-        }
-        
-        .stock-ok {
+        .notification.success i {
             color: var(--success);
         }
         
-        .materials-list {
-            margin-top: 15px;
-        }
-        
-        .material-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px;
-            background-color: var(--light);
-            border-radius: var(--radius-sm);
-            margin-bottom: 10px;
-        }
-        
-        .material-info {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .material-quantity {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .quantity-input {
-            width: 70px;
-            padding: 5px;
-            border: 1px solid var(--light-gray);
-            border-radius: var(--radius-sm);
-            text-align: center;
-        }
-        
-        .table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-        }
-        
-        .table th, .table td {
-            padding: 12px 15px;
-            text-align: left;
-            border-bottom: 1px solid var(--light-gray);
-        }
-        
-        .table th {
-            background-color: var(--light);
-            font-weight: 600;
-        }
-        
-        .table tr:hover {
-            background-color: rgba(0,0,0,0.02);
-        }
-        
-        .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255,255,255,.3);
-            border-radius: 50%;
-            border-top-color: #fff;
-            animation: spin 1s ease-in-out infinite;
-        }
-        
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+        .notification.error i {
+            color: var(--danger);
         }
         
         @media (max-width: 768px) {
@@ -1005,25 +734,19 @@
             .login-card {
                 padding: 30px 20px;
             }
-            
-            .inventory-tabs {
-                flex-direction: column;
-            }
         }
     </style>
 </head>
 <body>
-    <!-- Pantalla de selección de usuario -->
     <div id="loginScreen" class="login-screen">
         <div class="login-card">
             <div class="login-logo">
                 <i class="fas fa-tasks"></i>
-                <h1>TaskFlow</h1>
+                <h1>ATR TaskFlow</h1>
                 <p>Selecciona tu usuario para comenzar</p>
             </div>
             
             <div class="user-list" id="userLoginList">
-                <!-- Usuarios se mostrarán aquí dinámicamente -->
             </div>
             
             <div class="admin-access">
@@ -1034,7 +757,6 @@
         </div>
     </div>
     
-    <!-- Modal para contraseña de admin -->
     <div id="adminPasswordModal" class="password-modal">
         <div class="password-modal-content">
             <h3>Ingresa la contraseña de administrador</h3>
@@ -1046,22 +768,11 @@
         </div>
     </div>
     
-    <!-- Modal para ver fotos -->
-    <div id="photoModal" class="photo-modal">
-        <div class="photo-modal-content">
-            <button class="photo-modal-close" onclick="hidePhotoModal()">
-                <i class="fas fa-times"></i>
-            </button>
-            <img id="modalPhoto" src="" alt="Foto en tamaño completo">
-        </div>
-    </div>
-    
-    <!-- Aplicación principal (oculta inicialmente) -->
     <div id="appContainer" class="container" style="display: none;">
         <header>
             <div class="logo">
                 <i class="fas fa-tasks"></i>
-                <h1>TaskFlow</h1>
+                <h1>ATR TaskFlow</h1>
             </div>
             <div class="user-badge" onclick="showLoginScreen()">
                 <i class="fas fa-user" id="currentUserIcon"></i>
@@ -1080,13 +791,9 @@
                 <div class="tab" onclick="openTab('housekeeping')">
                     <i class="fas fa-broom"></i> Intendencia
                 </div>
-                <div class="tab" onclick="openTab('inventory')">
-                    <i class="fas fa-boxes"></i> Inventario
-                </div>
-                <div class="tab-indicator" style="width: 25%; left: 0;"></div>
+                <div class="tab-indicator" style="width: 33.33%; left: 0;"></div>
             </div>
             
-            <!-- Pestaña de Administrador -->
             <div id="admin" class="tab-content active">
                 <div class="stats-cards">
                     <div class="stat-card">
@@ -1129,7 +836,7 @@
                         <label class="form-label">Contraseña generada</label>
                         <div class="password-display" id="generatedPassword">Se generará al crear el usuario</div>
                     </div>
-                    <button class="btn btn-primary" onclick="createUser()" id="createUserBtn">
+                    <button class="btn btn-primary" onclick="createUser()">
                         <i class="fas fa-plus"></i> Crear Usuario
                     </button>
                 </div>
@@ -1154,7 +861,6 @@
                         <select id="taskAssignee" class="form-control">
                             <option value="">Seleccionar usuario o rol</option>
                             <optgroup label="Usuarios">
-                                <!-- Usuarios se llenarán dinámicamente -->
                             </optgroup>
                             <optgroup label="Roles">
                                 <option value="role_maintenance">Todo el equipo de Mantenimiento</option>
@@ -1162,18 +868,7 @@
                             </optgroup>
                         </select>
                     </div>
-                    <div class="form-group">
-                        <label class="form-label">Materiales necesarios</label>
-                        <div class="materials-list" id="taskMaterialsList">
-                            <!-- Los materiales se agregarán aquí -->
-                        </div>
-                        <div class="task-actions">
-                            <button class="btn btn-sm" onclick="addMaterialToTask()">
-                                <i class="fas fa-plus"></i> Agregar Material
-                            </button>
-                        </div>
-                    </div>
-                    <button class="btn btn-primary" onclick="createTask()" id="createTaskBtn">
+                    <button class="btn btn-primary" onclick="createTask()">
                         <i class="fas fa-paper-plane"></i> Asignar Tarea
                     </button>
                 </div>
@@ -1186,7 +881,6 @@
                         </div>
                     </div>
                     <div id="usersList" class="user-grid">
-                        <!-- Usuarios se mostrarán aquí -->
                     </div>
                 </div>
                 
@@ -1198,12 +892,10 @@
                         </div>
                     </div>
                     <div id="allTasksList" class="task-list">
-                        <!-- Tareas se mostrarán aquí -->
                     </div>
                 </div>
             </div>
             
-            <!-- Pestaña de Mantenimiento -->
             <div id="maintenance" class="tab-content">
                 <div class="filter-bar">
                     <div class="section-title">
@@ -1218,11 +910,9 @@
                 </div>
                 
                 <div id="maintenanceTasks" class="task-list">
-                    <!-- Tareas de mantenimiento se mostrarán aquí -->
                 </div>
             </div>
             
-            <!-- Pestaña de Intendencia -->
             <div id="housekeeping" class="tab-content">
                 <div class="filter-bar">
                     <div class="section-title">
@@ -1237,382 +927,35 @@
                 </div>
                 
                 <div id="housekeepingTasks" class="task-list">
-                    <!-- Tareas de intendencia se mostrarán aquí -->
-                </div>
-            </div>
-            
-            <!-- Pestaña de Inventario -->
-            <div id="inventory" class="tab-content">
-                <div class="inventory-tabs">
-                    <div class="inventory-tab active" onclick="openInventoryTab('summary')">
-                        <i class="fas fa-chart-bar"></i> Resumen
-                    </div>
-                    <div class="inventory-tab" onclick="openInventoryTab('categories')">
-                        <i class="fas fa-tags"></i> Categorías
-                    </div>
-                    <div class="inventory-tab" onclick="openInventoryTab('items')">
-                        <i class="fas fa-box"></i> Items
-                    </div>
-                    <div class="inventory-tab" onclick="openInventoryTab('movements')">
-                        <i class="fas fa-exchange-alt"></i> Movimientos
-                    </div>
-                </div>
-                
-                <!-- Resumen del Inventario -->
-                <div id="inventory-summary" class="inventory-content active">
-                    <div class="stats-cards">
-                        <div class="stat-card">
-                            <div class="stat-value" id="totalCategories">0</div>
-                            <div class="stat-label">Categorías</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-value" id="totalItems">0</div>
-                            <div class="stat-label">Items en Inventario</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-value" id="lowStockItems">0</div>
-                            <div class="stat-label">Items con Stock Bajo</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-value" id="outOfStockItems">0</div>
-                            <div class="stat-label">Items Sin Stock</div>
-                        </div>
-                    </div>
-                    
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="section-title">
-                                <i class="fas fa-exclamation-triangle"></i>
-                                <h2>Alertas de Stock Bajo</h2>
-                            </div>
-                        </div>
-                        <div id="lowStockAlerts">
-                            <!-- Alertas se mostrarán aquí -->
-                        </div>
-                    </div>
-                    
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="section-title">
-                                <i class="fas fa-history"></i>
-                                <h2>Movimientos Recientes</h2>
-                            </div>
-                        </div>
-                        <div id="recentMovements">
-                            <!-- Movimientos recientes se mostrarán aquí -->
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Gestión de Categorías -->
-                <div id="inventory-categories" class="inventory-content">
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="section-title">
-                                <i class="fas fa-tag"></i>
-                                <h2>Gestión de Categorías</h2>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="categoryName" class="form-label">Nombre de la Categoría</label>
-                            <input type="text" id="categoryName" class="form-control" placeholder="Ej: Herramientas Eléctricas">
-                        </div>
-                        <div class="form-group">
-                            <label for="categoryDescription" class="form-label">Descripción</label>
-                            <textarea id="categoryDescription" class="form-control" rows="2" placeholder="Descripción de la categoría..."></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="categoryColor" class="form-label">Color de Identificación</label>
-                            <input type="color" id="categoryColor" class="form-control" value="#4361ee">
-                        </div>
-                        <button class="btn btn-primary" onclick="createCategory()" id="createCategoryBtn">
-                            <i class="fas fa-plus"></i> Crear Categoría
-                        </button>
-                    </div>
-                    
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="section-title">
-                                <i class="fas fa-tags"></i>
-                                <h2>Categorías Existentes</h2>
-                            </div>
-                        </div>
-                        <div id="categoriesList">
-                            <!-- Categorías se mostrarán aquí -->
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Gestión de Items -->
-                <div id="inventory-items" class="inventory-content">
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="section-title">
-                                <i class="fas fa-box"></i>
-                                <h2>Gestión de Items</h2>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="itemName" class="form-label">Nombre del Item</label>
-                            <input type="text" id="itemName" class="form-control" placeholder="Ej: Taladro Percutor">
-                        </div>
-                        <div class="form-group">
-                            <label for="itemDescription" class="form-label">Descripción</label>
-                            <textarea id="itemDescription" class="form-control" rows="2" placeholder="Descripción del item..."></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="itemCategory" class="form-label">Categoría</label>
-                            <select id="itemCategory" class="form-control">
-                                <option value="">Seleccionar categoría</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="itemSKU" class="form-label">Código SKU</label>
-                            <input type="text" id="itemSKU" class="form-control" placeholder="Código único">
-                        </div>
-                        <div class="form-group">
-                            <label for="itemUnit" class="form-label">Unidad de Medida</label>
-                            <input type="text" id="itemUnit" class="form-control" placeholder="Ej: unidad, pieza, metro">
-                        </div>
-                        <div class="form-group">
-                            <label for="itemStock" class="form-label">Stock Actual</label>
-                            <input type="number" id="itemStock" class="form-control" value="0" min="0">
-                        </div>
-                        <div class="form-group">
-                            <label for="itemMinStock" class="form-label">Stock Mínimo</label>
-                            <input type="number" id="itemMinStock" class="form-control" value="0" min="0">
-                        </div>
-                        <div class="form-group">
-                            <label for="itemLocation" class="form-label">Ubicación</label>
-                            <input type="text" id="itemLocation" class="form-control" placeholder="Ej: Estante A, Nivel 2">
-                        </div>
-                        <button class="btn btn-primary" onclick="createItem()" id="createItemBtn">
-                            <i class="fas fa-plus"></i> Crear Item
-                        </button>
-                    </div>
-                    
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="section-title">
-                                <i class="fas fa-boxes"></i>
-                                <h2>Items en Inventario</h2>
-                            </div>
-                            <div class="filter-group">
-                                <select id="itemCategoryFilter" class="form-control" onchange="filterItems()" style="width: auto;">
-                                    <option value="">Todas las categorías</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div id="itemsList">
-                            <!-- Items se mostrarán aquí -->
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Movimientos de Inventario -->
-                <div id="inventory-movements" class="inventory-content">
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="section-title">
-                                <i class="fas fa-exchange-alt"></i>
-                                <h2>Movimientos de Inventario</h2>
-                            </div>
-                        </div>
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>Fecha</th>
-                                    <th>Item</th>
-                                    <th>Tipo</th>
-                                    <th>Cantidad</th>
-                                    <th>Stock Anterior</th>
-                                    <th>Stock Nuevo</th>
-                                    <th>Razón</th>
-                                    <th>Usuario</th>
-                                </tr>
-                            </thead>
-                            <tbody id="movementsTable">
-                                <!-- Movimientos se mostrarán aquí -->
-                            </tbody>
-                        </table>
-                    </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
+
     <script>
-        // ========== CONFIGURACIÓN DE FIREBASE ==========
         // Configuración de Firebase - REEMPLAZA CON TUS PROPIAS CREDENCIALES
         const firebaseConfig = {
-            apiKey: "AIzaSyD7mMZPmSekKugpXvTlVPgtTO2l2tQ1YT8",
-            authDomain: "Tatr-flowtask.firebaseapp.com",
-            projectId: "atr-flowtask",
-            storageBucket: "atr-flowtask.firebasestorage.app",
-            messagingSenderId: "452132314929",
-            appId: "1:452132314929:web:375842e04fa391711e1a10"
+            apiKey: "AIzaSyABC123XYZ456DEF789GHI",
+            authDomain: "atr-taskflow.firebaseapp.com",
+            projectId: "atr-taskflow",
+            storageBucket: "atr-taskflow.appspot.com",
+            messagingSenderId: "123456789012",
+            appId: "1:123456789012:web:abc123def456ghi789jkl"
         };
 
-        // Inicializar Firebase
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-        const auth = firebase.auth();
+        // Inicializa Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore(app);
 
-        // ========== VARIABLES GLOBALES ==========
+        // Variables globales
         let users = [];
         let tasks = [];
-        let categories = [];
-        let items = [];
-        let inventoryMovements = [];
         let currentUser = null;
-        let taskMaterials = [];
 
-        // ========== FUNCIONES DE FIREBASE ==========
-        // Cargar todos los datos de Firebase
-        async function loadAllData() {
-            try {
-                showLoading();
-                
-                // Cargar usuarios
-                const usersSnapshot = await db.collection('users').get();
-                users = usersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                
-                // Cargar tareas
-                const tasksSnapshot = await db.collection('tasks').get();
-                tasks = tasksSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                
-                // Cargar categorías
-                const categoriesSnapshot = await db.collection('categories').get();
-                categories = categoriesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                
-                // Cargar items
-                const itemsSnapshot = await db.collection('items').get();
-                items = itemsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                
-                // Cargar movimientos
-                const movementsSnapshot = await db.collection('movements').get();
-                inventoryMovements = movementsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                
-                // Actualizar la interfaz
-                updateUserSelects();
-                renderLoginUsers();
-                updateStats();
-                updateInventoryStats();
-                renderCategoriesList();
-                renderItemsList();
-                renderMovementsTable();
-                updateCategorySelects();
-                
-                hideLoading();
-                
-            } catch (error) {
-                console.error("Error cargando datos:", error);
-                showNotification('Error al cargar los datos', 'error');
-                hideLoading();
-            }
-        }
-
-        // Guardar usuario en Firebase
-        async function saveUser(user) {
-            try {
-                await db.collection('users').doc(user.id).set(user);
-                return true;
-            } catch (error) {
-                console.error("Error guardando usuario:", error);
-                return false;
-            }
-        }
-
-        // Guardar tarea en Firebase
-        async function saveTask(task) {
-            try {
-                await db.collection('tasks').doc(task.id).set(task);
-                return true;
-            } catch (error) {
-                console.error("Error guardando tarea:", error);
-                return false;
-            }
-        }
-
-        // Guardar categoría en Firebase
-        async function saveCategory(category) {
-            try {
-                await db.collection('categories').doc(category.id).set(category);
-                return true;
-            } catch (error) {
-                console.error("Error guardando categoría:", error);
-                return false;
-            }
-        }
-
-        // Guardar item en Firebase
-        async function saveItem(item) {
-            try {
-                await db.collection('items').doc(item.id).set(item);
-                return true;
-            } catch (error) {
-                console.error("Error guardando item:", error);
-                return false;
-            }
-        }
-
-        // Guardar movimiento en Firebase
-        async function saveMovement(movement) {
-            try {
-                await db.collection('movements').doc(movement.id).set(movement);
-                return true;
-            } catch (error) {
-                console.error("Error guardando movimiento:", error);
-                return false;
-            }
-        }
-
-        // Eliminar usuario de Firebase
-        async function deleteUserFromFirebase(userId) {
-            try {
-                await db.collection('users').doc(userId).delete();
-                return true;
-            } catch (error) {
-                console.error("Error eliminando usuario:", error);
-                return false;
-            }
-        }
-
-        // Eliminar categoría de Firebase
-        async function deleteCategoryFromFirebase(categoryId) {
-            try {
-                await db.collection('categories').doc(categoryId).delete();
-                return true;
-            } catch (error) {
-                console.error("Error eliminando categoría:", error);
-                return false;
-            }
-        }
-
-        // Eliminar item de Firebase
-        async function deleteItemFromFirebase(itemId) {
-            try {
-                await db.collection('items').doc(itemId).delete();
-                return true;
-            } catch (error) {
-                console.error("Error eliminando item:", error);
-                return false;
-            }
-        }
-
-        // ========== FUNCIONES GENERALES ==========
-        // Mostrar/ocultar loading
-        function showLoading() {
-            document.body.style.opacity = '0.7';
-            document.body.style.pointerEvents = 'none';
-        }
-
-        function hideLoading() {
-            document.body.style.opacity = '1';
-            document.body.style.pointerEvents = 'auto';
-        }
-
-        // Generar contraseña aleatoria
+        // Función para generar contraseñas aleatorias
         function generatePassword() {
             const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
             let password = '';
@@ -1622,46 +965,162 @@
             return password;
         }
 
-        // Configurar el indicador de pestaña
-        function setupTabIndicator() {
-            const tabs = document.querySelectorAll('.tab');
-            const indicator = document.querySelector('.tab-indicator');
+        // Cargar usuarios desde Firestore
+        async function loadUsers() {
+            try {
+                const snapshot = await db.collection("users").get();
+                users = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                
+                // Crear usuario admin si no existe
+                if(!users.some(u => u.role === 'admin')) {
+                    const adminPass = "AcuaticaTriRacing";
+                    const docRef = await db.collection("users").add({
+                        name: "Admin",
+                        role: "admin",
+                        password: adminPass
+                    });
+                    users.push({ id: docRef.id, name: "Admin", role: "admin", password: adminPass });
+                }
+                
+                renderLoginUsers();
+                updateUserSelects();
+                renderUsersList();
+                updateStats();
+            } catch (error) {
+                console.error("Error cargando usuarios:", error);
+                showNotification("Error al cargar usuarios", "error");
+            }
+        }
+
+        // Cargar tareas desde Firestore
+        async function loadTasks() {
+            try {
+                const snapshot = await db.collection("tasks").get();
+                tasks = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                renderAllTasks();
+                renderRoleTasks();
+                updateStats();
+            } catch (error) {
+                console.error("Error cargando tareas:", error);
+                showNotification("Error al cargar tareas", "error");
+            }
+        }
+
+        // Crear un nuevo usuario
+        async function createUser() {
+            const name = document.getElementById('userName').value.trim();
+            const role = document.getElementById('userRole').value;
             
-            tabs.forEach(tab => {
-                tab.addEventListener('click', function() {
-                    const tabWidth = 100 / tabs.length;
-                    const index = Array.from(tabs).indexOf(this);
-                    indicator.style.width = `${tabWidth}%`;
-                    indicator.style.left = `${index * tabWidth}%`;
+            if (!name) {
+                showNotification("Por favor ingresa un nombre", "error");
+                return;
+            }
+            
+            const password = generatePassword();
+            
+            try {
+                const docRef = await db.collection("users").add({
+                    name: name,
+                    role: role,
+                    password: password
                 });
-            });
+                
+                document.getElementById('userName').value = '';
+                document.getElementById('generatedPassword').textContent = password;
+                showNotification(`Usuario ${name} creado correctamente`);
+                
+                // Agregar el nuevo usuario a la lista local
+                users.push({ id: docRef.id, name: name, role: role, password: password });
+                
+                // Actualizar las vistas
+                renderLoginUsers();
+                updateUserSelects();
+                renderUsersList();
+                updateStats();
+            } catch (error) {
+                console.error("Error creando usuario:", error);
+                showNotification("Error al crear usuario", "error");
+            }
         }
 
-        // Mostrar notificación
-        function showNotification(message, type = 'success') {
-            const notification = document.createElement('div');
-            notification.className = `notification ${type}`;
-            notification.innerHTML = `
-                <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
-                ${message}
-            `;
+        // Crear una nueva tarea
+        async function createTask() {
+            const title = document.getElementById('taskTitle').value.trim();
+            const description = document.getElementById('taskDescription').value.trim();
+            const assignee = document.getElementById('taskAssignee').value;
             
-            document.body.appendChild(notification);
+            if (!title || !assignee) {
+                showNotification('Por favor completa título y asignación', 'error');
+                return;
+            }
             
-            setTimeout(() => {
-                notification.classList.add('show');
-            }, 10);
+            let assignedTo = [];
+            if (assignee.startsWith('role_')) {
+                const role = assignee.replace('role_', '');
+                assignedTo = users.filter(u => u.role === role).map(u => u.id);
+            } else {
+                assignedTo = [assignee];
+            }
             
-            setTimeout(() => {
-                notification.classList.remove('show');
-                setTimeout(() => {
-                    document.body.removeChild(notification);
-                }, 300);
-            }, 3000);
+            try {
+                for (const userId of assignedTo) {
+                    await db.collection("tasks").add({
+                        title: title,
+                        description: description,
+                        assignedTo: userId,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                        completed: false,
+                        observations: '',
+                        createdBy: currentUser.id
+                    });
+                }
+                
+                document.getElementById('taskTitle').value = '';
+                document.getElementById('taskDescription').value = '';
+                document.getElementById('taskAssignee').value = '';
+                
+                showNotification(`Tarea asignada a ${assignedTo.length} ${assignedTo.length > 1 ? 'personas' : 'persona'}`);
+                await loadTasks();
+            } catch (error) {
+                console.error("Error creando tarea:", error);
+                showNotification("Error al crear tarea", "error");
+            }
         }
 
-        // ========== SISTEMA DE USUARIOS ==========
-        // Mostrar usuarios en pantalla de login
+        // Mostrar campo para completar tarea
+        function completeTask(taskId) {
+            const obsElement = document.getElementById(`obs-${taskId}`);
+            if (obsElement) {
+                obsElement.style.display = 'block';
+                obsElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+        }
+
+        // Guardar observaciones y marcar tarea como completada
+        async function saveObservation(taskId) {
+            const observation = document.getElementById(`obs-text-${taskId}`).value.trim();
+            
+            if (!observation) {
+                showNotification("Por favor ingresa observaciones", "error");
+                return;
+            }
+            
+            try {
+                await db.collection("tasks").doc(taskId).update({
+                    observations: observation,
+                    completed: true,
+                    completedAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                
+                showNotification('Tarea marcada como completada');
+                await loadTasks();
+            } catch (error) {
+                console.error("Error actualizando tarea:", error);
+                showNotification("Error al completar tarea", "error");
+            }
+        }
+
+        // Renderizar lista de usuarios para login
         function renderLoginUsers() {
             const container = document.getElementById('userLoginList');
             container.innerHTML = '';
@@ -1693,156 +1152,6 @@
             });
         }
 
-        // Iniciar sesión como usuario
-        function loginUser(userId) {
-            currentUser = users.find(u => u.id === userId);
-            
-            // Actualizar interfaz
-            document.getElementById('currentUserName').textContent = currentUser.name;
-            document.getElementById('currentUserIcon').className = 
-                currentUser.role === 'admin' ? 'fas fa-user-shield' : 
-                currentUser.role === 'maintenance' ? 'fas fa-tools' : 'fas fa-broom';
-            
-            // Mostrar la aplicación y ocultar login
-            document.getElementById('loginScreen').style.display = 'none';
-            document.getElementById('appContainer').style.display = 'block';
-            
-            // Configurar pestañas según el rol
-            if (currentUser.role === 'maintenance') {
-                openTab('maintenance');
-            } else if (currentUser.role === 'housekeeping') {
-                openTab('housekeeping');
-            } else if (currentUser.role === 'admin') {
-                openTab('admin');
-            }
-            
-            // Actualizar datos
-            renderAllTasks();
-            renderRoleTasks();
-            renderUsersList();
-        }
-
-        // Mostrar pantalla de login
-        function showLoginScreen() {
-            document.getElementById('loginScreen').style.display = 'flex';
-            document.getElementById('appContainer').style.display = 'none';
-            currentUser = null;
-        }
-
-        // Mostrar modal de contraseña para admin
-        function showAdminPasswordModal() {
-            document.getElementById('adminPasswordModal').style.display = 'flex';
-            document.getElementById('adminPasswordInput').value = '';
-            document.getElementById('adminPasswordInput').focus();
-        }
-
-        // Ocultar modal de contraseña
-        function hideAdminPasswordModal() {
-            document.getElementById('adminPasswordModal').style.display = 'none';
-        }
-
-        // Verificar contraseña de admin
-        function verifyAdminPassword() {
-            const password = document.getElementById('adminPasswordInput').value;
-            const admin = users.find(u => u.role === 'admin');
-            
-            if (password === admin.password) {
-                hideAdminPasswordModal();
-                loginUser(admin.id);
-            } else {
-                alert('Contraseña incorrecta');
-                document.getElementById('adminPasswordInput').focus();
-            }
-        }
-
-        // Funciones para cambiar pestañas
-        function openTab(tabName) {
-            // Solo admin puede ver la pestaña de admin
-            if (tabName === 'admin' && currentUser.role !== 'admin') {
-                showAdminPasswordModal();
-                return;
-            }
-            
-            const tabs = document.querySelectorAll('.tab-content');
-            tabs.forEach(tab => tab.classList.remove('active'));
-            
-            const tabButtons = document.querySelectorAll('.tab');
-            tabButtons.forEach(button => button.classList.remove('active'));
-            
-            document.getElementById(tabName).classList.add('active');
-            document.querySelector(`.tab[onclick="openTab('${tabName}')"]`).classList.add('active');
-            
-            // Actualizar el indicador de pestaña
-            const tabIndex = Array.from(tabButtons).findIndex(btn => btn.getAttribute('onclick').includes(tabName));
-            const tabWidth = 100 / tabButtons.length;
-            const indicator = document.querySelector('.tab-indicator');
-            indicator.style.width = `${tabWidth}%`;
-            indicator.style.left = `${tabIndex * tabWidth}%`;
-            
-            // Si es la pestaña de inventario, actualizar estadísticas
-            if (tabName === 'inventory') {
-                updateInventoryStats();
-            }
-        }
-
-        // Crear nuevo usuario
-        async function createUser() {
-            const name = document.getElementById('userName').value;
-            const role = document.getElementById('userRole').value;
-            
-            if (!name) {
-                showNotification('Por favor ingresa un nombre', 'error');
-                return;
-            }
-            
-            const password = generatePassword();
-            
-            const newUser = {
-                id: Date.now().toString(),
-                name: name,
-                role: role,
-                password: password
-            };
-            
-            // Mostrar loading
-            const btn = document.getElementById('createUserBtn');
-            const originalText = btn.innerHTML;
-            btn.innerHTML = '<div class="loading"></div> Creando...';
-            btn.disabled = true;
-            
-            try {
-                // Guardar en Firebase
-                const success = await saveUser(newUser);
-                
-                if (success) {
-                    // Agregar al array local
-                    users.push(newUser);
-                    
-                    // Actualizar interfaz
-                    updateUserSelects();
-                    renderUsersList();
-                    renderLoginUsers();
-                    document.getElementById('userName').value = '';
-                    
-                    // Mostrar la contraseña generada
-                    document.getElementById('generatedPassword').textContent = password;
-                    
-                    // Mostrar notificación visual
-                    showNotification(`Usuario ${name} creado como ${role === 'maintenance' ? 'Mantenimiento' : 'Intendencia'}`);
-                    
-                    updateStats();
-                } else {
-                    showNotification('Error al crear el usuario', 'error');
-                }
-            } catch (error) {
-                showNotification('Error al crear el usuario', 'error');
-            } finally {
-                // Restaurar botón
-                btn.innerHTML = originalText;
-                btn.disabled = false;
-            }
-        }
-
         // Actualizar selects de usuarios
         function updateUserSelects() {
             const userSelects = [
@@ -1851,101 +1160,44 @@
                 document.getElementById('housekeepingUserSelect')
             ];
             
-            // Limpiar opciones de usuarios (excepto la primera opción en algunos casos)
             userSelects.forEach(select => {
-                const optgroups = select.querySelectorAll('optgroup[label="Usuarios"]');
-                optgroups.forEach(optgroup => {
-                    const options = optgroup.querySelectorAll('option');
-                    options.forEach(option => {
-                        if (option.value !== '') optgroup.removeChild(option);
-                    });
+                // Limpiar solo las opciones de usuarios, no los grupos
+                const userOptions = select.querySelectorAll('optgroup[label="Usuarios"] > option');
+                userOptions.forEach(option => {
+                    if (option.value !== '') {
+                        option.remove();
+                    }
                 });
             });
             
-            // Agregar usuarios a los selects
             users.forEach(user => {
                 if (user.role === 'maintenance' || user.role === 'housekeeping') {
                     const option = document.createElement('option');
                     option.value = user.id;
                     option.textContent = `${user.name}`;
                     
-                    // Agregar al select de asignación de tareas
                     const assignOptgroup = document.querySelector('#taskAssignee optgroup[label="Usuarios"]');
-                    assignOptgroup.appendChild(option.cloneNode(true));
+                    if (assignOptgroup) assignOptgroup.appendChild(option.cloneNode(true));
                     
-                    // Agregar al select correspondiente según rol
                     if (user.role === 'maintenance') {
-                        document.querySelector('#maintenanceUserSelect').appendChild(option.cloneNode(true));
+                        const maintenanceSelect = document.querySelector('#maintenanceUserSelect');
+                        if (maintenanceSelect) maintenanceSelect.appendChild(option.cloneNode(true));
                     } else {
-                        document.querySelector('#housekeepingUserSelect').appendChild(option.cloneNode(true));
+                        const housekeepingSelect = document.querySelector('#housekeepingUserSelect');
+                        if (housekeepingSelect) housekeepingSelect.appendChild(option.cloneNode(true));
                     }
                 }
             });
         }
 
-        // Eliminar usuario
-        async function deleteUser(userId) {
-            const user = users.find(u => u.id === userId);
-            
-            // No permitir eliminar al usuario admin
-            if (user.role === 'admin') {
-                showNotification('No se puede eliminar el usuario administrador', 'error');
-                return;
-            }
-            
-            // Verificar si el usuario tiene tareas asignadas
-            const userTasks = tasks.filter(task => task.assignedTo === userId);
-            const createdTasks = tasks.filter(task => task.createdBy === userId);
-            
-            if (userTasks.length > 0 || createdTasks.length > 0) {
-                let message = `No se puede eliminar el usuario "${user.name}" porque tiene `;
-                
-                if (userTasks.length > 0 && createdTasks.length > 0) {
-                    message += `${userTasks.length} tareas asignadas y ${createdTasks.length} tareas creadas`;
-                } else if (userTasks.length > 0) {
-                    message += `${userTasks.length} tareas asignadas`;
-                } else {
-                    message += `${createdTasks.length} tareas creadas`;
-                }
-                
-                showNotification(message, 'error');
-                return;
-            }
-            
-            if (confirm(`¿Estás seguro de que quieres eliminar al usuario "${user.name}"?`)) {
-                try {
-                    // Eliminar de Firebase
-                    const success = await deleteUserFromFirebase(userId);
-                    
-                    if (success) {
-                        // Eliminar el usuario localmente
-                        users = users.filter(u => u.id !== userId);
-                        
-                        // Actualizar todas las vistas
-                        updateUserSelects();
-                        renderUsersList();
-                        renderLoginUsers();
-                        updateStats();
-                        
-                        showNotification(`Usuario "${user.name}" eliminado correctamente`);
-                    } else {
-                        showNotification('Error al eliminar el usuario', 'error');
-                    }
-                } catch (error) {
-                    showNotification('Error al eliminar el usuario', 'error');
-                }
-            }
-        }
-
-        // Renderizar lista de usuarios
+        // Renderizar lista de usuarios en panel admin
         function renderUsersList() {
             const container = document.getElementById('usersList');
             container.innerHTML = '';
             
             const roleUsers = users.filter(u => u.role !== 'admin');
-            const adminUsers = users.filter(u => u.role === 'admin');
             
-            if (users.length === 0) {
+            if (roleUsers.length === 0) {
                 container.innerHTML = `
                     <div class="empty-state">
                         <i class="fas fa-user-slash"></i>
@@ -1955,31 +1207,6 @@
                 return;
             }
             
-            // Mostrar usuarios admin primero
-            adminUsers.forEach(user => {
-                const userCard = document.createElement('div');
-                userCard.className = 'user-card admin-user';
-                userCard.innerHTML = `
-                    <div class="user-avatar">${user.name.charAt(0)}</div>
-                    <div class="user-info">
-                        <h3>${user.name} <i class="fas fa-crown" style="color: var(--warning);"></i></h3>
-                        <p>
-                            <span class="role-badge role-maintenance">
-                                Administrador
-                            </span>
-                        </p>
-                        <small>Contraseña: ${user.password}</small>
-                    </div>
-                    <div class="user-actions">
-                        <button class="btn btn-danger btn-sm" onclick="showNotification('El usuario administrador no puede ser eliminado', 'error')">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </div>
-                `;
-                container.appendChild(userCard);
-            });
-            
-            // Mostrar usuarios normales
             roleUsers.forEach(user => {
                 const userCard = document.createElement('div');
                 userCard.className = 'user-card';
@@ -1994,245 +1221,411 @@
                         </p>
                         <small>Contraseña: ${user.password}</small>
                     </div>
-                    <div class="user-actions">
-                        <button class="btn btn-danger btn-sm" onclick="deleteUser('${user.id}')">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </div>
                 `;
                 container.appendChild(userCard);
             });
         }
 
-        // ========== SISTEMA DE TAREAS ==========
-        // Agregar material a la tarea
-        function addMaterialToTask() {
-            if (items.length === 0) {
-                showNotification('Primero debes crear items en el inventario', 'error');
+        // Renderizar todas las tareas en panel admin
+        function renderAllTasks() {
+            const container = document.getElementById('allTasksList');
+            container.innerHTML = '';
+            
+            if (tasks.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-clipboard"></i>
+                        <p>No hay tareas creadas aún</p>
+                    </div>
+                `;
                 return;
             }
             
-            const materialsList = document.getElementById('taskMaterialsList');
-            const materialId = `material-${Date.now()}`;
-            
-            const materialElement = document.createElement('div');
-            materialElement.className = 'material-item';
-            materialElement.id = materialId;
-            materialElement.innerHTML = `
-                <div class="material-info">
-                    <select class="form-control material-select" onchange="updateMaterialQuantityOptions('${materialId}')">
-                        <option value="">Seleccionar material</option>
-                        ${items.map(item => `
-                            <option value="${item.id}" data-max="${item.currentStock}">${item.name} (Stock: ${item.currentStock})</option>
-                        `).join('')}
-                    </select>
-                </div>
-                <div class="material-quantity">
-                    <input type="number" class="quantity-input" value="1" min="1" max="1">
-                    <button class="btn btn-danger btn-sm" onclick="removeMaterial('${materialId}')">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </div>
-            `;
-            
-            materialsList.appendChild(materialElement);
-            taskMaterials.push(materialId);
-        }
-
-        // Actualizar opciones de cantidad según el material seleccionado
-        function updateMaterialQuantityOptions(materialId) {
-            const materialElement = document.getElementById(materialId);
-            const select = materialElement.querySelector('.material-select');
-            const quantityInput = materialElement.querySelector('.quantity-input');
-            const selectedOption = select.options[select.selectedIndex];
-            
-            if (selectedOption && selectedOption.value) {
-                const maxQuantity = parseInt(selectedOption.getAttribute('data-max'));
-                quantityInput.max = maxQuantity;
-                quantityInput.value = Math.min(parseInt(quantityInput.value), maxQuantity);
-            }
-        }
-
-        // Eliminar material de la tarea
-        function removeMaterial(materialId) {
-            const materialElement = document.getElementById(materialId);
-            materialElement.remove();
-            taskMaterials = taskMaterials.filter(id => id !== materialId);
-        }
-
-        // Crear nueva tarea
-        async function createTask() {
-            const title = document.getElementById('taskTitle').value;
-            const description = document.getElementById('taskDescription').value;
-            const assignee = document.getElementById('taskAssignee').value;
-            
-            if (!title || !assignee) {
-                showNotification('Por favor completa título y asignación', 'error');
-                return;
-            }
-            
-            // Recopilar materiales seleccionados
-            const materials = [];
-            let hasErrors = false;
-            
-            taskMaterials.forEach(materialId => {
-                const materialElement = document.getElementById(materialId);
-                const select = materialElement.querySelector('.material-select');
-                const quantityInput = materialElement.querySelector('.quantity-input');
-                
-                if (select.value && quantityInput.value) {
-                    const item = items.find(i => i.id === select.value);
-                    if (item) {
-                        const quantity = parseInt(quantityInput.value);
-                        
-                        // Verificar stock suficiente
-                        if (quantity > item.currentStock) {
-                            showNotification(`Stock insuficiente para ${item.name}. Stock disponible: ${item.currentStock}`, 'error');
-                            hasErrors = true;
-                            return;
-                        }
-                        
-                        materials.push({
-                            itemId: item.id,
-                            itemName: item.name,
-                            quantity: quantity,
-                            unit: item.unit
-                        });
-                    }
-                }
+            const sortedTasks = [...tasks].sort((a, b) => {
+                if (a.completed && !b.completed) return 1;
+                if (!a.completed && b.completed) return -1;
+                return new Date(b.createdAt?.toDate?.() || b.createdAt) - new Date(a.createdAt?.toDate?.() || a.createdAt);
             });
             
-            if (hasErrors) return;
+            sortedTasks.forEach(task => {
+                const user = users.find(u => u.id === task.assignedTo);
+                const creator = users.find(u => u.id === task.createdBy);
+                
+                const taskElement = document.createElement('div');
+                taskElement.className = `task-card ${task.completed ? 'completed' : ''}`;
+                taskElement.innerHTML = `
+                    <h3 class="task-title">${task.title}</h3>
+                    <p class="task-desc">${task.description}</p>
+                    
+                    ${task.completed && task.observations ? `
+                        <div class="task-observations">
+                            <strong>Observaciones:</strong> ${task.observations}
+                        </div>
+                    ` : ''}
+                    
+                    <div class="task-meta">
+                        <div class="task-assignee">
+                            <div class="task-assignee-avatar">${user ? user.name.charAt(0) : '?'}</div>
+                            <span>${user ? user.name : 'Desconocido'}</span>
+                        </div>
+                        <div class="task-date">
+                            ${task.createdAt?.toDate?.()?.toLocaleDateString() || new Date(task.createdAt).toLocaleDateString()}
+                        </div>
+                    </div>
+                `;
+                container.appendChild(taskElement);
+            });
+        }
+
+        // Renderizar tareas por rol
+        function renderRoleTasks() {
+            renderTasksForRole('maintenance');
+            renderTasksForRole('housekeeping');
+        }
+
+        // Renderizar tareas para un rol específico
+        function renderTasksForRole(role) {
+            const container = document.getElementById(`${role}Tasks`);
+            if (!container) return;
             
-            // Mostrar loading
-            const btn = document.getElementById('createTaskBtn');
-            const originalText = btn.innerHTML;
-            btn.innerHTML = '<div class="loading"></div> Creando...';
-            btn.disabled = true;
+            container.innerHTML = '';
             
-            try {
-                let assignedTo = [];
-                if (assignee.startsWith('role_')) {
-                    const role = assignee.replace('role_', '');
-                    assignedTo = users.filter(u => u.role === role).map(u => u.id);
+            const roleTasks = tasks.filter(task => {
+                const user = users.find(u => u.id === task.assignedTo);
+                return user && user.role === role;
+            });
+            
+            if (roleTasks.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-clipboard"></i>
+                        <p>No hay tareas de ${role === 'maintenance' ? 'Mantenimiento' : 'Intendencia'}</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            const sortedTasks = [...roleTasks].sort((a, b) => {
+                if (a.completed && !b.completed) return 1;
+                if (!a.completed && b.completed) return -1;
+                return new Date(b.createdAt?.toDate?.() || b.createdAt) - new Date(a.createdAt?.toDate?.() || a.createdAt);
+            });
+            
+            sortedTasks.forEach(task => {
+                const user = users.find(u => u.id === task.assignedTo);
+                
+                const taskElement = document.createElement('div');
+                taskElement.className = `task-card ${task.completed ? 'completed' : ''}`;
+                
+                if (!task.completed) {
+                    taskElement.innerHTML = `
+                        <h3 class="task-title">${task.title}</h3>
+                        <p class="task-desc">${task.description}</p>
+                        
+                        <div class="task-meta">
+                            <div class="task-assignee">
+                                <div class="task-assignee-avatar">${user?.name?.charAt(0) || '?'}</div>
+                                <span>${user?.name || 'Desconocido'}</span>
+                            </div>
+                            <div class="task-date">
+                                ${task.createdAt?.toDate?.()?.toLocaleDateString() || new Date(task.createdAt).toLocaleDateString()}
+                            </div>
+                        </div>
+                        
+                        <div class="task-actions">
+                            <button class="btn btn-success btn-sm" onclick="completeTask('${task.id}')">
+                                <i class="fas fa-check"></i> Completar
+                            </button>
+                        </div>
+                        
+                        <div id="obs-${task.id}" style="margin-top: 15px; display: none;">
+                            <textarea id="obs-text-${task.id}" class="form-control" rows="2" placeholder="Agregar observaciones..."></textarea>
+                            <button class="btn btn-primary btn-sm" onclick="saveObservation('${task.id}')" style="margin-top: 8px;">
+                                <i class="fas fa-save"></i> Guardar
+                            </button>
+                        </div>
+                    `;
                 } else {
-                    assignedTo = [assignee];
+                    taskElement.innerHTML = `
+                        <h3 class="task-title">${task.title}</h3>
+                        <p class="task-desc">${task.description}</p>
+                        
+                        ${task.observations ? `
+                            <div class="task-observations">
+                                <strong>Observaciones:</strong> ${task.observations}
+                            </div>
+                        ` : ''}
+                        
+                        <div class="task-meta">
+                            <div class="task-assignee">
+                                <div class="task-assignee-avatar">${user?.name?.charAt(0) || '?'}</div>
+                                <span>${user?.name || 'Desconocido'}</span>
+                            </div>
+                            <div class="task-date">
+                                Completada: ${task.completedAt?.toDate?.()?.toLocaleDateString() || new Date(task.completedAt).toLocaleDateString()}
+                            </div>
+                        </div>
+                    `;
                 }
                 
-                // Crear tareas para cada usuario asignado
-                const savePromises = assignedTo.map(async (userId) => {
-                    const newTask = {
-                        id: Date.now().toString() + Math.random().toString(36).substr(2, 5),
-                        title: title,
-                        description: description,
-                        assignedTo: userId,
-                        createdAt: new Date().toISOString(),
-                        completed: false,
-                        observations: '',
-                        photos: [],
-                        materials: [...materials],
-                        createdBy: currentUser.id
-                    };
-                    
-                    // Guardar en Firebase
-                    const success = await saveTask(newTask);
-                    if (success) {
-                        tasks.push(newTask);
-                    }
-                    return success;
-                });
+                container.appendChild(taskElement);
+            });
+        }
+
+        // Filtrar tareas de mantenimiento por usuario
+        function filterMaintenanceTasks() {
+            const userId = document.getElementById('maintenanceUserSelect').value;
+            filterTasksByUser('maintenance', userId);
+        }
+
+        // Filtrar tareas de intendencia por usuario
+        function filterHousekeepingTasks() {
+            const userId = document.getElementById('housekeepingUserSelect').value;
+            filterTasksByUser('housekeeping', userId);
+        }
+
+        // Filtrar tareas por usuario
+        function filterTasksByUser(role, userId) {
+            const container = document.getElementById(`${role}Tasks`);
+            if (!container) return;
+            
+            const tasksToShow = tasks.filter(task => {
+                const user = users.find(u => u.id === task.assignedTo);
+                if (!user || user.role !== role) return false;
+                if (userId && task.assignedTo !== userId) return false;
+                return true;
+            });
+            
+            container.innerHTML = '';
+            
+            if (tasksToShow.length === 0) {
+                const filterText = userId ? `para este usuario` : `de ${role === 'maintenance' ? 'Mantenimiento' : 'Intendencia'}`;
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-clipboard"></i>
+                        <p>No hay tareas ${filterText}</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            tasksToShow.forEach(task => {
+                const user = users.find(u => u.id === task.assignedTo);
+                const taskElement = document.createElement('div');
+                taskElement.className = `task-card ${task.completed ? 'completed' : ''}`;
                 
-                // Esperar a que todas las tareas se guarden
-                const results = await Promise.all(savePromises);
-                const allSuccess = results.every(result => result === true);
-                
-                if (allSuccess) {
-                    // Limpiar formulario
-                    document.getElementById('taskTitle').value = '';
-                    document.getElementById('taskDescription').value = '';
-                    document.getElementById('taskAssignee').value = '';
-                    document.getElementById('taskMaterialsList').innerHTML = '';
-                    taskMaterials = [];
-                    
-                    // Actualizar vistas
-                    renderAllTasks();
-                    renderRoleTasks();
-                    updateStats();
-                    
-                    // Mostrar notificación
-                    const assignedCount = assignedTo.length;
-                    showNotification(`Tarea creada y asignada a ${assignedCount} ${assignedCount > 1 ? 'personas' : 'persona'}`);
+                if (!task.completed) {
+                    taskElement.innerHTML = `
+                        <h3 class="task-title">${task.title}</h3>
+                        <p class="task-desc">${task.description}</p>
+                        
+                        <div class="task-meta">
+                            <div class="task-assignee">
+                                <div class="task-assignee-avatar">${user?.name?.charAt(0) || '?'}</div>
+                                <span>${user?.name || 'Desconocido'}</span>
+                            </div>
+                            <div class="task-date">
+                                ${task.createdAt?.toDate?.()?.toLocaleDateString() || new Date(task.createdAt).toLocaleDateString()}
+                            </div>
+                        </div>
+                        
+                        <div class="task-actions">
+                            <button class="btn btn-success btn-sm" onclick="completeTask('${task.id}')">
+                                <i class="fas fa-check"></i> Completar
+                            </button>
+                        </div>
+                        
+                        <div id="obs-${task.id}" style="margin-top: 15px; display: none;">
+                            <textarea id="obs-text-${task.id}" class="form-control" rows="2" placeholder="Agregar observaciones..."></textarea>
+                            <button class="btn btn-primary btn-sm" onclick="saveObservation('${task.id}')" style="margin-top: 8px;">
+                                <i class="fas fa-save"></i> Guardar
+                            </button>
+                        </div>
+                    `;
                 } else {
-                    showNotification('Error al crear algunas tareas', 'error');
+                    taskElement.innerHTML = `
+                        <h3 class="task-title">${task.title}</h3>
+                        <p class="task-desc">${task.description}</p>
+                        
+                        ${task.observations ? `
+                            <div class="task-observations">
+                                <strong>Observaciones:</strong> ${task.observations}
+                            </div>
+                        ` : ''}
+                        
+                        <div class="task-meta">
+                            <div class="task-assignee">
+                                <div class="task-assignee-avatar">${user?.name?.charAt(0) || '?'}</div>
+                                <span>${user?.name || 'Desconocido'}</span>
+                            </div>
+                            <div class="task-date">
+                                Completada: ${task.completedAt?.toDate?.()?.toLocaleDateString() || new Date(task.completedAt).toLocaleDateString()}
+                            </div>
+                        </div>
+                    `;
                 }
-            } catch (error) {
-                showNotification('Error al crear la tarea', 'error');
-            } finally {
-                // Restaurar botón
-                btn.innerHTML = originalText;
-                btn.disabled = false;
+                
+                container.appendChild(taskElement);
+            });
+        }
+
+        // Iniciar sesión como usuario
+        function loginUser(userId) {
+            currentUser = users.find(u => u.id === userId);
+            
+            if (!currentUser) {
+                showNotification("Usuario no encontrado", "error");
+                return;
+            }
+            
+            document.getElementById('currentUserName').textContent = currentUser.name;
+            document.getElementById('currentUserIcon').className = 
+                currentUser.role === 'admin' ? 'fas fa-user-shield' : 
+                currentUser.role === 'maintenance' ? 'fas fa-tools' : 'fas fa-broom';
+            
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('appContainer').style.display = 'block';
+            
+            if (currentUser.role === 'maintenance') {
+                openTab('maintenance');
+            } else if (currentUser.role === 'housekeeping') {
+                openTab('housekeeping');
+            } else if (currentUser.role === 'admin') {
+                openTab('admin');
             }
         }
 
-        // ========== EL RESTO DEL CÓDIGO SE MANTIENE IGUAL ==========
-        // ... (Todas las demás funciones de renderizado, inventario, fotos, etc.) ...
+        // Mostrar pantalla de login
+        function showLoginScreen() {
+            document.getElementById('loginScreen').style.display = 'flex';
+            document.getElementById('appContainer').style.display = 'none';
+            currentUser = null;
+        }
 
-        // Inicializar la aplicación cuando se carga la página
-        document.addEventListener('DOMContentLoaded', function() {
-            // Configurar el indicador de pestaña
-            setupTabIndicator();
+        // Mostrar modal de contraseña de admin
+        function showAdminPasswordModal() {
+            document.getElementById('adminPasswordModal').style.display = 'flex';
+            document.getElementById('adminPasswordInput').value = '';
+            document.getElementById('adminPasswordInput').focus();
+        }
+
+        // Ocultar modal de contraseña de admin
+        function hideAdminPasswordModal() {
+            document.getElementById('adminPasswordModal').style.display = 'none';
+        }
+
+        // Verificar contraseña de admin
+        function verifyAdminPassword() {
+            const password = document.getElementById('adminPasswordInput').value;
+            const admin = users.find(u => u.role === 'admin');
             
-            // Generar una contraseña de ejemplo para mostrar
-            document.getElementById('generatedPassword').textContent = generatePassword();
+            if (admin && password === admin.password) {
+                hideAdminPasswordModal();
+                loginUser(admin.id);
+            } else {
+                showNotification('Contraseña incorrecta', 'error');
+                document.getElementById('adminPasswordInput').focus();
+            }
+        }
+
+        // Cambiar entre pestañas
+        function openTab(tabName) {
+            if (!currentUser) {
+                showLoginScreen();
+                return;
+            }
             
-            // Cargar datos de Firebase
-            loadAllData();
+            if (tabName === 'admin' && currentUser.role !== 'admin') {
+                showAdminPasswordModal();
+                return;
+            }
+            
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            
+            const tabButtons = document.querySelectorAll('.tab');
+            tabButtons.forEach(button => button.classList.remove('active'));
+            
+            const tabElement = document.getElementById(tabName);
+            if (tabElement) tabElement.classList.add('active');
+            
+            const tabButton = document.querySelector(`.tab[onclick*="${tabName}"]`);
+            if (tabButton) tabButton.classList.add('active');
+            
+            const tabIndex = Array.from(tabButtons).findIndex(btn => 
+                btn.getAttribute('onclick')?.includes(tabName));
+            const tabWidth = 100 / tabButtons.length;
+            const indicator = document.querySelector('.tab-indicator');
+            if (indicator && tabIndex >= 0) {
+                indicator.style.width = `${tabWidth}%`;
+                indicator.style.left = `${tabIndex * tabWidth}%`;
+            }
+        }
+
+        // Actualizar estadísticas
+        function updateStats() {
+            document.getElementById('totalUsers').textContent = users.filter(u => u.role !== 'admin').length;
+            document.getElementById('totalTasks').textContent = tasks.length;
+            document.getElementById('completedTasks').textContent = tasks.filter(t => t.completed).length;
+            document.getElementById('pendingTasks').textContent = tasks.filter(t => !t.completed).length;
+        }
+
+        // Mostrar notificaciones
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
+                ${message}
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.classList.add('show');
+            }, 10);
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+        }
+
+        // Configurar indicador de pestañas
+        function setupTabIndicator() {
+            const tabs = document.querySelectorAll('.tab');
+            const indicator = document.querySelector('.tab-indicator');
+            
+            if (!indicator) return;
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const tabWidth = 100 / tabs.length;
+                    const index = Array.from(tabs).indexOf(this);
+                    indicator.style.width = `${tabWidth}%`;
+                    indicator.style.left = `${index * tabWidth}%`;
+                });
+            });
+        }
+
+        // Inicializar la aplicación
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                await loadUsers();
+                await loadTasks();
+                setupTabIndicator();
+                
+                // Verificar si hay un error en la conexión con Firebase
+                if (!firebase.apps.length) {
+                    showNotification("Error de conexión con Firebase", "error");
+                }
+            } catch (error) {
+                console.error("Error inicializando la aplicación:", error);
+                showNotification("Error al cargar los datos iniciales", "error");
+            }
         });
-
-        // Agregar estilos para notificaciones
-        const notificationStyles = document.createElement('style');
-        notificationStyles.innerHTML = `
-            .notification {
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                padding: 15px 20px;
-                border-radius: var(--radius-sm);
-                background-color: white;
-                box-shadow: var(--shadow-lg);
-                display: flex;
-                align-items: center;
-                gap: 10px;
-                transform: translateX(150%);
-                transition: transform 0.3s ease;
-                z-index: 1000;
-            }
-            
-            .notification.show {
-                transform: translateX(0);
-            }
-            
-            .notification.success {
-                border-left: 4px solid var(--success);
-            }
-            
-            .notification.error {
-                border-left: 4px solid var(--danger);
-            }
-            
-            .notification i {
-                font-size: 20px;
-            }
-            
-            .notification.success i {
-                color: var(--success);
-            }
-            
-            .notification.error i {
-                color: var(--danger);
-            }
-        `;
-        document.head.appendChild(notificationStyles);
     </script>
 </body>
 </html>
